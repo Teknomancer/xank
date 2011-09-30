@@ -23,20 +23,12 @@
 #include "Atom.h"
 #include "Operator.h"
 
-/**
- * Evaluator constructor.
- *
- */
 Evaluator::Evaluator()
 {
     /** @todo add parameters to accept settings */
 }
 
 
-/**
- * Evaluator destructor.
- *
- */
 Evaluator::~Evaluator()
 {
 }
