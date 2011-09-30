@@ -33,11 +33,9 @@ class Evaluator
 
 
     private:
-        /** Internal RPN representation done at the parsing stage. */
-        std::queue<Atom*>           m_RPNQueue;
-        /** List of variables being evaulated, used for circular dependency
-         *  prevention. */
-        std::list<Atom*>            m_VarList;
+        std::queue<Atom*>           m_RPNQueue; /**< Internal RPN representation done at the parsing stage. */
+        std::list<Atom*>            m_VarList;  /**< List of variables being evaulated, used for circular dependency checks. */
+
 };
 
 #endif /* XANK_EVALUATOR_H */
