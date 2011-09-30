@@ -25,5 +25,18 @@
 /** Maximum length of a variable name, in bytes. */
 #define XANK_MAX_VARIABLE_NAME_LEN                  128
 
+/** Operator Id for Open Paranthesis Operator. */
+#define XANK_OPEN_PARANTHESIS_OPERATOR_ID           0
+
+/** Operator Id for Close Paranthesis Operator. */
+#define XANK_CLOSE_PARANTHESIS_OPERATOR_ID          1
+
+/** Operator Id for Parameter Separator Operator. */
+#define XANK_PARAM_SEPARATOR_OPERATOR_ID            2
+
+/** Operator Id for Assignment Operator. */
+#define XANK_ASSIGNMENT_OPERATOR_ID                 3
+
+
 #endif /* XANK_EVALUATOR_DEFS_H */
 

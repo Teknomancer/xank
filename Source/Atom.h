@@ -103,7 +103,7 @@ class Atom
             Operator               *pOperator;    /*< Pointer to the Operator for an Operator Atom. */
             Function               *pFunction;    /*< Pointer to the Function for a Function Atom. */
             Variable               *pVariable;    /*< Pointer to the Variable for a Variable Atom. */
-        } u;
+        } m_u;
 };
 
 #endif /* XANK_ATOM_H */

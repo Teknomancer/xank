@@ -97,7 +97,7 @@ class Function
          * @param apAtoms_      An array of pointers to Atoms.
          * @param cAtoms_       Number of elements in the array apAtoms_.
          *
-         * @return int: Appropriate error code.
+         * @return int: xank error code..
          */
         int                 InvokeFunction(Atoms *apAtoms_[], uint64_t cAtoms_);
 
