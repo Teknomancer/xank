@@ -67,7 +67,7 @@ C_FLAGS += -O2 -Wuninitialized $(C_FLAGS_COMMON) ${INC_FLAGS}
 endif
 
 # Common linker flags for all build types
-LD_FLAGS += -ltermcap -lreadline -lstdc++ -lm
+LD_FLAGS += -ltermcap -lreadline -lm
 
 all: begin $(OUT_DIR_BIN)/${TARGET} done
 
