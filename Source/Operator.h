@@ -51,22 +51,91 @@ class Operator
             PFNOPERATOR pfnOperator, std::string sShortDesc, std::string sLongDesc);
         virtual ~Operator();
 
-        /** Returns the Id of this Operator. */
+        /**
+         * Returns the Id of this Operator.
+         *
+         * @return uint32_t
+         */
         uint32_t                Id() const;
-        /** Returns the priority of this Operator. */
+
+        /**
+         * Returns the priority of this Operator.
+         *
+         * @return int32_t
+         */
         int32_t                 Priority() const;
-        /** Returns the direction (associativity) of this Operator. */
+
+        /**
+         * Returns the direction (associativity) of this Operator.
+         *
+         * @return OperatorDirection
+         */
         OperatorDirection       Direction() const;
-        /** Returns the number of parameters taken by the Operator function. */
+
+        /**
+         * Returns the number of parameters taken by the Operator function.
+         *
+         * @return uint8_t
+         */
         uint8_t                 Parameters() const;
-        /** Returns a copy of the name of this Operator. */
+
+        /**
+         * Returns a copy of the name of this Operator.
+         *
+         * @return std::string
+         */
         std::string             Name() const;
-        /** Returns a copy of the short description of this Operator. */
+
+        /**
+         * Returns a copy of the short description of this Operator.
+         *
+         * @return std::string
+         */
         std::string             ShortDesc() const;
-        /** Returns a copy of the long descriptrion of this Operator. */
+
+        /**
+         * Returns a copy of the long descriptrion of this Operator.
+         *
+         * @return std::string
+         */
         std::string             LongDesc() const;
-        /** Invokes the function associated with this Operator. */
+
+        /**
+         * Invokes the function associated with this Operator.
+         *
+         * @param apAtoms_              Array of pointers of Atoms.
+         *
+         * @return int: xank error code.
+         */
         int                     InvokeFunction(Atoms *apAtoms_[]);
+
+        /**
+         * Returns if this Operator is the Open Paranthesis Operator.
+         *
+         * @return bool: true if it's the Open Paranthesis Operator, false otherwise.
+         */
+        bool                    IsOpenParanthesis() const;
+
+        /**
+         * Returns if this Operator is the Close Paranthesis Operator.
+         *
+         * @return bool: true if it's the Close Paranthesis Operator, false otherwise.
+         */
+        bool                    IsCloseParanthesis() const;
+
+        /**
+         * Returns if this Operator is the Parameter Separator Operator.
+         *
+         * @return bool: true if it's the Parameter Separator Operator, false otherwise.
+         */
+        bool                    IsParameterSeparator() const;
+
+        /**
+         * Returns if this Operator is the Assignment Operator.
+         *
+         * @return bool: true if it's the Assignment Operator, false otherwise.
+         */
+        bool                    IsAssignment() const;
 
     private:
         uint32_t                m_Id;           /**< The operator Id, used to identify certain key Operators. */
@@ -77,7 +146,6 @@ class Operator
         PFNOPERATOR             m_pfnOperator;  /**< Pointer to the Operator evaluator function. */
         std::string             m_sShortDesc;   /**< Short description of the Operator. */
         std::string             m_sLongDesc;    /**< Long description of the Operator. */
-
 }
 
 #endif /* XANK_OPERATOR_H */

@@ -76,5 +76,6 @@ void Atom::SetTo_(const Atom &a_Atom)
     m_cParams   = a_Atom.m_cParams;
     m_iPosition = a_Atom.m_iPosition;
     m_sVariable = a_Atom.m_sVariable;
+    m_u         = a_Atom.m_u;
 }
 
