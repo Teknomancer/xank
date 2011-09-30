@@ -22,19 +22,21 @@
 #ifndef XANK_OPERATOR_H
 # define XANK_OPERATOR_H
 
+class Atom;
+
 /**
- * OperatorDir: Operator direction.
+ * OperatorDirection: Operator direction.
  * The associativity associated with the Operator. hehe.
  */
-typedef enum OperatorDir
+typedef enum OperatorDirection
 {
-    enmOperatorDirNone = 0x30,
-    enmOperatorDirLeft,
-    enmOperatorDirRight
-} OperatorDir;
+    enmOperatorDirectionNone = 0x30,
+    enmOperatorDirectionLeft,
+    enmOperatorDirectionRight
+} OperatorDirection;
 
 /** An Operator function. */
-typedef int FNOPERATOR(Atom *a_apAtoms[]);
+typedef int FNOPERATOR(Atom *apAtoms_[]);
 /** Pointer to an Operator function. */
 typedef FNOPERATOR *PFNOPERATOR;
 
@@ -42,29 +44,48 @@ typedef FNOPERATOR *PFNOPERATOR;
  * An Operator.
  * An Operator performs an operation on one or more operands.
  */
-typedef struct Operator
+class Operator
 {
-    /** The operator Id, used to identify certain key Operators. */
-    uint32_t        OperatorId;
-    /** Operator priority, value is relative to Operators. */
-    int32_t         Priority;
-    /** Operator associativity. */
-    OperatorDIr     Direction;
-    /** Number of parameters to the operator. */
-    uint64_t        cParams;
-    /** Name of the Operator as seen in the expression. */
-    std::string     sOperator;
-    /** Pointer to the Operator evaluator function. */
-    PFNOPERATOR     pfnOperator;
-    /** Short description of the Operator. */
-    std::string     sShortDesc;
-    /** Long description of the Operator. */
-    std::string     sLongDesc;
-} OPERATOR;
-/** Pointer to an Operator object. */
-typedef OPERATOR *POPERATOR;
-/** Pointer to a const Operator object. */
-typedef const OPERATOR *PCOPERATOR;
+    public:
+        Operator(uint32_t Id_, int32_t Priority_, OperatorDirection Dir_, uint8_t cParams_, std::string sName,
+            PFNOPERATOR pfnOperator, std::string sShortDesc, std::string sLongDesc);
+        virtual ~Operator();
+
+        /** Returns the Id of this Operator. */
+        uint32_t                Id() const;
+        /** Returns the priority of this Operator. */
+        int32_t                 Priority() const;
+        /** Returns the direction (associativity) of this Operator. */
+        OperatorDirection       Direction() const;
+        /** Returns the number of parameters taken by the Operator function. */
+        uint8_t                 Parameters() const;
+        /** Returns a copy of the name of this Operator. */
+        std::string             Name() const;
+        /** Returns a copy of the short description of this Operator. */
+        std::string             ShortDesc() const;
+        /** Returns a copy of the long descriptrion of this Operator. */
+        std::string             LongDesc() const;
+        /** Invokes the function associated with this Operator. */
+        int                     InvokeFunction(Atoms *apAtoms_[]);
+
+    private:
+        /** The operator Id, used to identify certain key Operators. */
+        uint32_t                m_Id;
+        /** Operator priority, value is relative to Operators. */
+        int32_t                 m_Priority;
+        /** Operator associativity. */
+        OperatorDIr             m_Direction;
+        /** Number of parameters to the operator (valid values: 0, 1 or 2) */
+        uint8_t                 m_cParams;
+        /** Name of the Operator as seen in the expression. */
+        std::string             m_sName;
+        /** Pointer to the Operator evaluator function. */
+        PFNOPERATOR             m_pfnOperator;
+        /** Short description of the Operator. */
+        std::string             m_sShortDesc;
+        /** Long description of the Operator. */
+        std::string             m_sLongDesc;
+}
 
 #endif /* XANK_OPERATOR_H */
 
