@@ -43,7 +43,7 @@ typedef enum AtomType
     enmAtomTypeFunction,
     /** Atom represents a variable. */
     enmAtomTypeVariable
-} AtomType;
+}
 
 /**
  * An Atom represents the smallest unit of parsing.

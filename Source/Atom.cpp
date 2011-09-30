@@ -22,7 +22,6 @@
 
 #include "Atom.h"
 
-
 Atom::Atom()
     : m_AtomType(enmAtomTypeEmpty)
 {

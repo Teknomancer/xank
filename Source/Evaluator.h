@@ -30,8 +30,6 @@ class Evaluator
         Evaluator();
         virtual ~Evaluator();
 
-
-
     private:
         std::queue<Atom*>           m_RPNQueue; /**< Internal RPN representation done at the parsing stage. */
         std::list<Atom*>            m_VarList;  /**< List of variables being evaulated, used for circular dependency checks. */
