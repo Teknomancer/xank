@@ -1,3 +1,5 @@
+UNAME := $(shell uname)
+
 # The directories containing the source files, separated by ':'
 # "VPATH" is a builtin by make, do not rename
 VPATH=Source
@@ -57,6 +59,9 @@ CC = g++
 
 # What include flags to pass to the compiler
 INC_FLAGS = -I Source -I $(OUT_DIR_GEN)
+ifeq ($(UNAME), SunOS)
+ INC_FLAGS += -I /usr/include/gmp/
+endif
 
 C_FLAGS_COMMON = -Wall -pedantic -Wshadow -Wunused-function -Wunused-label -Wunused-value -Wunused-variable
 
