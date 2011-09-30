@@ -57,41 +57,54 @@ class Atom
         Atom(const Atom &a_Atom);
         virtual ~Atom();
 
-        /** Returns the type of Atom. */
-
+        /**
+         * Returns the type of this Atom.
+         *
+         * @return AtomType
+         */
         AtomType                    Type() const;
-        /** Returns if this is a Number Atom.  */
+
+        /**
+         * Returns if this Atom is a number.
+         *
+         * @return bool: true if it's a number, false otherwise.
+         */
         bool                        IsNumber() const;
-        /** Returns if this is a Function Atom. */
+
+        /**
+         * Returns if this Atom is a function.
+         *
+         * @return bool: true if it's a function, false otherwise.
+         */
         bool                        IsFunction() const;
-        /** Returns if this is a Variable Atom. */
+
+        /**
+         * Returns if this Atom is a variable.
+         *
+         * @return bool: true if it's a variable, false otehrwise.
+         */
         bool                        IsVariable() const;
 
     private:
-        /** Sets this Atom to be a duplicate of another. */
+        /**
+         * Sets this Atom to be identical to the passed in Atom.
+         *
+         * @param Atom          The source Atom.
+         */
         void                        SetTo_(const Atom &Atom);
 
-        /** The type this Atom represents. */
-        AtomType                    m_AtomType;
-        /** Cursor position, an index used to associate an Atom with an error. */
-        uint64_t                    m_iPosition;
-        /** Number of parameters to pass if this is a Function Atom. */
-        uint64_t                    m_cParams;
-        /** Name of the variable if this is/might become a Variable Atom. */
-        std::string                 m_sVariable;
+        AtomType                    m_AtomType;   /**< The type this Atom represents. */
+        uint64_t                    m_iPosition;  /**< Cursor position, an index used to associate an Atom with an error. */
+        uint64_t                    m_cParams;    /**< Number of parameters if this is a Function Atom. */
+        std::string                 m_sVariable;  /**< Name of the variable if this is/might become a Variable Atom. */
         union
         {
-            /* Value of the number for a Number Atom. */
-            mpz_class               Value;
-            /* Pointer to the Operator for an Operator Atom. */
-            Operator               *pOperator;
-            /* Pointer to the Function for a Function Atom. */
-            Function               *pFunction;
-            /* Pointer to the Variable for a Variable Atom. */
-            Variable               *pVariable;
+            mpz_class               Value;        /**< Value of the number for a Number Atom. */
+            Operator               *pOperator;    /*< Pointer to the Operator for an Operator Atom. */
+            Function               *pFunction;    /*< Pointer to the Function for a Function Atom. */
+            Variable               *pVariable;    /*< Pointer to the Variable for a Variable Atom. */
         } u;
 };
 
-
-#endif
+#endif /* XANK_ATOM_H */
 
