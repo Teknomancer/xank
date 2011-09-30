@@ -31,12 +31,12 @@ typedef FNFUNCTION *PFNFUNCTION;
  * FunctionParameter: Function parameter types.
  * The types of parameters a Function can handle.
  */
-typedef enum Parameter
+typedef enum ParameterType
 {
     enmParameterInt = 0x44
     enmParameterUnsignedInt,
     enmParameterFloat
-} Parameter;
+} ParameterType;
 
 /**
  * A Function.
@@ -45,8 +45,8 @@ typedef enum Parameter
 class Function
 {
     public:
-        Function(std::string sName_, PFNFUNCTION pfnFunction_, Parameter ParameterType_, uint64_t cMinParams_,
-            uint64_t cMaxParams_, std::string sShortDesc_, std::string sLongDesc_);
+        Function(std::string sName_, ParameterType ParamType_, uint64_t cMinParams_,
+            uint64_t cMaxParams_,  PFNFUNCTION pfnFunction_, std::string sShortDesc_, std::string sLongDesc_);
         virtual ~Function();
 
         /**
@@ -102,13 +102,13 @@ class Function
         int                 InvokeFunction(Atoms *apAtoms_[], uint64_t cAtoms_);
 
     private:
-        std::string         m_sShortDesc;     /**< Short description of the Function (usually syntax). */
-        std::string         m_sLongDesc;      /**< Long description of the Function (additional documentation). */
-        std::string         m_sFunctor;       /**< Name of the Function as seen in the expression. */
-        ParameterType       m_ParameterType;  /**< Whether this Function casts all it's parameters to an Integer. */
+        std::string         m_sName;          /**< Name of the Function as seen in the expression. */
         uint64_t            m_cMinParams;     /**< Minimum parameters accepted by @a pfnFunctor. */
         uint64_t            m_cMaxParams;     /**< Maximum paramaters accepted by @a pfnFunctor. */
+        ParameterType       m_ParamType;      /**< Whether this Function casts all it's parameters to an Integer. */
         PFNFUNCTION         m_pfnFunction;    /**< Pointer to the Function evaluator function. */
+        std::string         m_sShortDesc;     /**< Short description of the Function (usually syntax). */
+        std::string         m_sLongDesc;      /**< Long description of the Function (additional documentation). */
 };
 
 #endif /* XANK_FUNCTION_H */

@@ -58,6 +58,7 @@ class Atom
         virtual ~Atom();
 
         /** Returns the type of Atom. */
+
         AtomType                    Type() const;
         /** Returns if this is a Number Atom.  */
         bool                        IsNumber() const;
