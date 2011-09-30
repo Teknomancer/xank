@@ -20,7 +20,7 @@
  */
 
 #include "Operator.h"
-
+#include "EvaluatorDefs.h"
 
 Operator::Operator(uint32_t Id_, int32_t Priority_, OperatorDirection Dir_, uint8_t cParams_, std::string sName_,
                     PFNOPERATOR pfnOperator_, std::string sShortDesc_, std::string sLongDesc_)
@@ -83,7 +83,7 @@ inline int32_t Operator::Priority() const
 }
 
 
-inline bool Operator::IsOpenParanthesis(() const
+inline bool Operator::IsOpenParanthesis() const
 {
     return (m_Id == XANK_OPEN_PARANTHESIS_OPERATOR_ID);
 }
@@ -101,7 +101,7 @@ inline bool Operator::IsParameterSeparator() const
 }
 
 
-inline bool Operator::IsAssignment() const;
+inline bool Operator::IsAssignment() const
 {
     return (m_Id == XANK_ASSIGNMENT_OPERATOR_ID);
 }

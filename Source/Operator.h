@@ -22,18 +22,22 @@
 #ifndef XANK_OPERATOR_H
 # define XANK_OPERATOR_H
 
+#include <stdint.h>
+
+#include <string>
+
 class Atom;
 
 /**
  * OperatorDirection: Operator direction.
  * The associativity associated with the Operator. hehe.
  */
-typedef enum OperatorDirection
+enum OperatorDirection
 {
     enmOperatorDirectionNone = 0x30,
     enmOperatorDirectionLeft,
     enmOperatorDirectionRight
-} OperatorDirection;
+};
 
 /** An Operator function. */
 typedef int FNOPERATOR(Atom *apAtoms_[]);
@@ -107,7 +111,7 @@ class Operator
          *
          * @return int: xank error code.
          */
-        int                     InvokeFunction(Atoms *apAtoms_[]);
+        int                     InvokeFunction(Atom *apAtoms_[]);
 
         /**
          * Returns if this Operator is the Open Paranthesis Operator.
@@ -140,13 +144,13 @@ class Operator
     private:
         uint32_t                m_Id;           /**< The operator Id, used to identify certain key Operators. */
         int32_t                 m_Priority;     /**< Operator priority, value is relative to Operators. */
-        OperatorDIr             m_Direction;    /**< Operator associativity. */
+        OperatorDirection       m_Direction;    /**< Operator associativity. */
         uint8_t                 m_cParams;      /**< Number of parameters to the operator (valid values: 0, 1 or 2) */
         std::string             m_sName;        /**< Name of the Operator as seen in the expression. */
         PFNOPERATOR             m_pfnOperator;  /**< Pointer to the Operator evaluator function. */
         std::string             m_sShortDesc;   /**< Short description of the Operator. */
         std::string             m_sLongDesc;    /**< Long description of the Operator. */
-}
+};
 
 #endif /* XANK_OPERATOR_H */
 

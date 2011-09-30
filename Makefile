@@ -7,14 +7,14 @@ OUT_DIR_PREFIX=_
 OUT_DIR_SUFFIX=
 
 # Output folders
-OUT_DIR_DEPS_DEBUG=$(OUT_DIR_PREFIX)deps.debug$(OUT_DIR_SUFFIX)
-OUT_DIR_DEPS_RELEASE=$(OUT_DIR_PREFIX)deps.release$(OUT_DIR_SUFFIX)
-OUT_DIR_OBJS_DEBUG=$(OUT_DIR_PREFIX)objs.debug$(OUT_DIR_SUFFIX)
-OUT_DIR_OBJS_RELEASE=$(OUT_DIR_PREFIX)objs.release$(OUT_DIR_SUFFIX)
-OUT_DIR_BIN_DEBUG=$(OUT_DIR_PREFIX)bin.debug$(OUT_DIR_SUFFIX)
-OUT_DIR_BIN_RELEASE=$(OUT_DIR_PREFIX)bin.release$(OUT_DIR_SUFFIX)
-OUT_DIR_GEN_DEBUG=$(OUT_DIR_PREFIX)gen.debug$(OUT_DIR_SUFFIX)
-OUT_DIR_GEN_RELEASE=$(OUT_DIR_PREFIX)gen.debug$(OUT_DIR_SUFFIX)
+OUT_DIR_DEPS_DEBUG=$(OUT_DIR_PREFIX)Deps.debug$(OUT_DIR_SUFFIX)
+OUT_DIR_DEPS_RELEASE=$(OUT_DIR_PREFIX)Deps.release$(OUT_DIR_SUFFIX)
+OUT_DIR_OBJS_DEBUG=$(OUT_DIR_PREFIX)Objs.debug$(OUT_DIR_SUFFIX)
+OUT_DIR_OBJS_RELEASE=$(OUT_DIR_PREFIX)Objs.release$(OUT_DIR_SUFFIX)
+OUT_DIR_BIN_DEBUG=$(OUT_DIR_PREFIX)Bin.debug$(OUT_DIR_SUFFIX)
+OUT_DIR_BIN_RELEASE=$(OUT_DIR_PREFIX)Bin.release$(OUT_DIR_SUFFIX)
+OUT_DIR_GEN_DEBUG=$(OUT_DIR_PREFIX)Gen.debug$(OUT_DIR_SUFFIX)
+OUT_DIR_GEN_RELEASE=$(OUT_DIR_PREFIX)Gen.debug$(OUT_DIR_SUFFIX)
 
 # Default build type
 ifeq ($(BUILD_TYPE),)
@@ -35,7 +35,10 @@ endif
 
 # List of sources (regardless of directories), located by VPATH
 Group0_SRC = \
-	Main.cpp
+	Atom.cpp \
+	Function.cpp \
+	Main.cpp \
+	Operator.cpp
 
 
 # Build a Dependency list and an Object list, by replacing the .cpp
@@ -49,22 +52,22 @@ TARGET = xank
 
 # What compiler to use for generating dependencies: 
 # it will be invoked with -MM -MP
-CCDEP = gcc
-CC = gcc
+CCDEP = g++
+CC = g++
 
 # What include flags to pass to the compiler
 INC_FLAGS = -I Source -I $(OUT_DIR_GEN)
 
-C_FLAGS_COMMON = -std=c99 -Wall -pedantic -Wshadow -Wunused-function -Wunused-label -Wunused-value -Wunused-variable
+C_FLAGS_COMMON = -Wall -pedantic -Wshadow -Wunused-function -Wunused-label -Wunused-value -Wunused-variable
 
 ifeq ($(BUILD_TYPE),debug)
 C_FLAGS += -g $(C_FLAGS_COMMON) -D_DEBUG -DBUILD_TYPE=debug ${INC_FLAGS}
 else
-C_FLAGS += -std=c99 -O2 -Wuninitialized $(C_FLAGS_COMMON) ${INC_FLAGS}
+C_FLAGS += -O2 -Wuninitialized $(C_FLAGS_COMMON) ${INC_FLAGS}
 endif
 
 # Common linker flags for all build types
-LD_FLAGS += -ltermcap -lreadline -lm
+LD_FLAGS += -ltermcap -lreadline -lstdc++ -lm
 
 all: begin $(OUT_DIR_BIN)/${TARGET} done
 
