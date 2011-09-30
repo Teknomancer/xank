@@ -22,16 +22,22 @@
 #ifndef XANK_ATOM_H
 # define XANK_ATOM_H
 
+#include <stdint.h>
 #include <gmpxx.h>
+
 #include <string>
 
 #include "EvaluatorDefs.h"
+
+class Operator;
+class Function;
+// class Variable;
 
 /**
  * The type of Atom.
  * An Atom has to be one of the following distinct types.
  */
-typedef enum AtomType
+enum AtomType
 {
     /** Empty/uninitialized Atom. */
     enmAtomTypeEmpty = 0x10,
@@ -43,7 +49,7 @@ typedef enum AtomType
     enmAtomTypeFunction,
     /** Atom represents a variable. */
     enmAtomTypeVariable
-}
+};
 
 /**
  * An Atom represents the smallest unit of parsing.
@@ -81,9 +87,16 @@ class Atom
         /**
          * Returns if this Atom is a variable.
          *
-         * @return bool: true if it's a variable, false otehrwise.
+         * @return bool: true if it's a variable, false otherwise.
          */
         bool                        IsVariable() const;
+
+        /**
+         * Returns if this Atom is an operator.
+         *
+         * @return bool: true if it's an operator, false otherwise.
+         */
+        bool                        IsOperator() const;
 
     private:
         /**
@@ -99,10 +112,10 @@ class Atom
         std::string                 m_sVariable;  /**< Name of the variable if this is/might become a Variable Atom. */
         union
         {
-            mpz_class               Value;        /**< Value of the number for a Number Atom. */
+            mpz_t                  Value;        /**< Value of the number for a Number Atom. */
             Operator               *pOperator;    /*< Pointer to the Operator for an Operator Atom. */
             Function               *pFunction;    /*< Pointer to the Function for a Function Atom. */
-            Variable               *pVariable;    /*< Pointer to the Variable for a Variable Atom. */
+            //Variable               *pVariable;    /*< Pointer to the Variable for a Variable Atom. */
         } m_u;
 };
 

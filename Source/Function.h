@@ -22,21 +22,27 @@
 #ifndef XANK_FUNCTION_H
 # define XANK_FUNCTION_H
 
+#include <stdint.h>
+
+#include <string>
+
+class Atom;
+
 /** A Functor function. */
-typedef int FNFUNCTION(Atoms *apAtoms_[], uint64_t cAtoms_);
-/** Pointe to a Functor function. */
+typedef int FNFUNCTION(Atom *apAtoms_[], uint64_t cAtoms_);
+/** Pointer to a Function function. */
 typedef FNFUNCTION *PFNFUNCTION;
 
 /**
  * FunctionParameter: Function parameter types.
  * The types of parameters a Function can handle.
  */
-typedef enum ParameterType
+enum ParameterType
 {
-    enmParameterInt = 0x44
+    enmParameterInt = 0x44,
     enmParameterUnsignedInt,
     enmParameterFloat
-} ParameterType;
+};
 
 /**
  * A Function.
@@ -45,8 +51,8 @@ typedef enum ParameterType
 class Function
 {
     public:
-        Function(std::string sName_, ParameterType ParamType_, uint64_t cMinParams_,
-            uint64_t cMaxParams_,  PFNFUNCTION pfnFunction_, std::string sShortDesc_, std::string sLongDesc_);
+        Function(std::string sName_, uint64_t cMinParams_, uint64_t cMaxParams_, ParameterType ParamType_,
+            PFNFUNCTION pfnFunction_, std::string sShortDesc_, std::string sLongDesc_);
         virtual ~Function();
 
         /**
@@ -61,7 +67,7 @@ class Function
          *
          * @return ParameterType
          */
-        Paramater           ParameterType() const;
+        ParameterType       ParamType() const;
 
         /**
          * Returns the minimum number of parameters accepted by this Function.
@@ -99,7 +105,7 @@ class Function
          *
          * @return int: xank error code..
          */
-        int                 InvokeFunction(Atoms *apAtoms_[], uint64_t cAtoms_);
+        int                 InvokeFunction(Atom *apAtoms_[], uint64_t cAtoms_);
 
     private:
         std::string         m_sName;          /**< Name of the Function as seen in the expression. */
