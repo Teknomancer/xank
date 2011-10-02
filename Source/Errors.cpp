@@ -30,12 +30,12 @@
 /*******************************************************************************
  *   Globals, Typedefs & Defines                                               *
  *******************************************************************************/
-const RCSTATUSMSG g_UnknownErrorMessage =
+const ErrorMessage g_UnknownErrorMessage =
 {
     "Unknown status.", 1
 };
 
-const RCSTATUSMSG g_aErrorMessages[] =
+const ErrorMessage g_aErrorMessages[] =
 {
 #include "GenErrorData.h"
     { NULL, 0 }
