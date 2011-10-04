@@ -51,8 +51,8 @@ enum ParameterType
 class Function
 {
     public:
-        Function(std::string sName_, uint64_t cMinParams_, uint64_t cMaxParams_, ParameterType ParamType_,
-            PFNFUNCTION pfnFunction_, std::string sShortDesc_, std::string sLongDesc_);
+        Function(std::string sName, uint64_t cMinParams, uint64_t cMaxParams, ParameterType enmParamType,
+            PFNFUNCTION pfnFunction, std::string sShortDesc, std::string sLongDesc);
         virtual ~Function();
 
         /**
@@ -111,7 +111,7 @@ class Function
         std::string         m_sName;          /**< Name of the Function as seen in the expression. */
         uint64_t            m_cMinParams;     /**< Minimum parameters accepted by @a pfnFunctor. */
         uint64_t            m_cMaxParams;     /**< Maximum paramaters accepted by @a pfnFunctor. */
-        ParameterType       m_ParamType;      /**< Whether this Function casts all it's parameters to an Integer. */
+        ParameterType       m_enmParamType;   /**< What parameter types does this Function accept. */
         PFNFUNCTION         m_pfnFunction;    /**< Pointer to the Function evaluator function. */
         std::string         m_sShortDesc;     /**< Short description of the Function (usually syntax). */
         std::string         m_sLongDesc;      /**< Long description of the Function (additional documentation). */

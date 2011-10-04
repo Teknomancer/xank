@@ -69,12 +69,12 @@ inline AtomType Atom::Type() const
 }
 
 
-void Atom::SetTo_(const Atom &a_Atom)
+void Atom::SetTo_(const Atom &atom)
 {
-    m_AtomType  = a_Atom.m_AtomType;
-    m_cParams   = a_Atom.m_cParams;
-    m_iPosition = a_Atom.m_iPosition;
-    m_sVariable = a_Atom.m_sVariable;
-    m_u         = a_Atom.m_u;
+    m_AtomType  = atom.m_AtomType;
+    m_cParams   = atom.m_cParams;
+    m_iPosition = atom.m_iPosition;
+    m_sVariable = atom.m_sVariable;
+    m_u         = atom.m_u;
 }
 

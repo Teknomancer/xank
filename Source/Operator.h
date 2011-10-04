@@ -51,7 +51,7 @@ typedef FNOPERATOR *PFNOPERATOR;
 class Operator
 {
     public:
-        Operator(uint32_t Id_, int32_t Priority_, OperatorDirection Dir_, uint8_t cParams_, std::string sName,
+        Operator(uint32_t uId, int32_t iPriority, OperatorDirection Dir, uint8_t cParams, std::string sName,
             PFNOPERATOR pfnOperator, std::string sShortDesc, std::string sLongDesc);
         virtual ~Operator();
 
@@ -111,7 +111,7 @@ class Operator
          *
          * @return int: xank error code.
          */
-        int                     InvokeFunction(Atom *apAtoms_[]);
+        int                     InvokeFunction(Atom *apAtoms[]);
 
         /**
          * Returns if this Operator is the Open Paranthesis Operator.
@@ -142,8 +142,8 @@ class Operator
         bool                    IsAssignment() const;
 
     private:
-        uint32_t                m_Id;           /**< The operator Id, used to identify certain key Operators. */
-        int32_t                 m_Priority;     /**< Operator priority, value is relative to Operators. */
+        uint32_t                m_uId;          /**< The operator Id, used to identify certain key Operators. */
+        int32_t                 m_iPriority;    /**< Operator priority, value is relative to Operators. */
         OperatorDirection       m_Direction;    /**< Operator associativity. */
         uint8_t                 m_cParams;      /**< Number of parameters to the operator (valid values: 0, 1 or 2) */
         std::string             m_sName;        /**< Name of the Operator as seen in the expression. */
