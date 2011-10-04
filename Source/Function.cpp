@@ -21,15 +21,15 @@
 
 #include "Function.h"
 
-Function::Function(std::string sName_, uint64_t cMinParams_, uint64_t cMaxParams_, ParameterType ParamType_,
-                    PFNFUNCTION pfnFunction_, std::string sShortDesc_, std::string sLongDesc_)
-    : m_sName(sName_),
-    m_cMinParams(cMinParams_),
-    m_cMaxParams(cMaxParams_),
-    m_ParamType(ParamType_),
-    m_pfnFunction(pfnFunction_),
-    m_sShortDesc(sShortDesc_),
-    m_sLongDesc(sLongDesc_)
+Function::Function(std::string sName, uint64_t cMinParams, uint64_t cMaxParams, ParameterType enmParamType,
+                    PFNFUNCTION pfnFunction, std::string sShortDesc, std::string sLongDesc)
+    : m_sName(sName),
+    m_cMinParams(cMinParams),
+    m_cMaxParams(cMaxParams),
+    m_enmParamType(enmParamType),
+    m_pfnFunction(pfnFunction),
+    m_sShortDesc(sShortDesc),
+    m_sLongDesc(sLongDesc)
 {
 }
 
@@ -71,12 +71,12 @@ inline uint64_t Function::MaxParams() const
 
 inline ParameterType Function::ParamType() const
 {
-    return m_ParamType;
+    return m_enmParamType;
 }
 
 
-inline int Function::InvokeFunction(Atom *apAtoms_[], uint64_t cAtoms_)
+inline int Function::InvokeFunction(Atom *apAtoms[], uint64_t cAtoms)
 {
-    return m_pfnFunction(apAtoms_, cAtoms_);
+    return m_pfnFunction(apAtoms, cAtoms);
 }
 

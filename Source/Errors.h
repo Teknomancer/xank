@@ -30,7 +30,7 @@
 /** Success! */
 #define INF_SUCCESS                                    0
 /** Warning, Output was truncated. */
-#define RWRN_TRUNCATED                               (100)
+#define WRN_TRUNCATED                               (100)
 /** Invalid bitmask combination of flags. */
 #define ERR_INVALID_FLAGS                           (-99)
 /** No data available. */

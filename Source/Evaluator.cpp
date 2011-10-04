@@ -22,6 +22,7 @@
 #include "Evaluator.h"
 #include "Atom.h"
 #include "Operator.h"
+#include "Errors.h"
 
 Evaluator::Evaluator()
 {
@@ -31,6 +32,19 @@ Evaluator::Evaluator()
 
 Evaluator::~Evaluator()
 {
+}
+
+
+int Evaluator::Parse(const char *pszExpr)
+{
+    return INF_SUCCESS;
+}
+
+
+Atom *Evaluator::ParseAtom(const char *pszExpr, const char **ppszEnd, const Atom *pPreviousAtom,
+                            int *prc)
+{
+    return INF_SUCCESS;
 }
 
 

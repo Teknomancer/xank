@@ -22,16 +22,16 @@
 #include "Operator.h"
 #include "EvaluatorDefs.h"
 
-Operator::Operator(uint32_t Id_, int32_t Priority_, OperatorDirection Dir_, uint8_t cParams_, std::string sName_,
-                    PFNOPERATOR pfnOperator_, std::string sShortDesc_, std::string sLongDesc_)
-    : m_Id(Id_),
-    m_Priority(Priority_),
-    m_Direction(Dir_),
-    m_cParams(cParams_),
-    m_sName(sName_),
-    m_pfnOperator(pfnOperator_),
-    m_sShortDesc(sShortDesc_),
-    m_sLongDesc(sLongDesc_)
+Operator::Operator(uint32_t uId, int32_t iPriority, OperatorDirection Dir, uint8_t cParams, std::string sName,
+                    PFNOPERATOR pfnOperator, std::string sShortDesc, std::string sLongDesc)
+    : m_uId(uId),
+    m_iPriority(iPriority),
+    m_Direction(Dir),
+    m_cParams(cParams),
+    m_sName(sName),
+    m_pfnOperator(pfnOperator),
+    m_sShortDesc(sShortDesc),
+    m_sLongDesc(sLongDesc)
 {
 }
 
@@ -43,7 +43,7 @@ Operator::~Operator()
 
 inline uint32_t Operator::Id() const
 {
-    return m_Id;
+    return m_uId;
 }
 
 
@@ -79,31 +79,31 @@ inline uint8_t Operator::Parameters() const
 
 inline int32_t Operator::Priority() const
 {
-    return m_Priority;
+    return m_iPriority;
 }
 
 
 inline bool Operator::IsOpenParanthesis() const
 {
-    return (m_Id == XANK_OPEN_PARANTHESIS_OPERATOR_ID);
+    return (m_uId == XANK_OPEN_PARANTHESIS_OPERATOR_ID);
 }
 
 
 inline bool Operator::IsCloseParanthesis() const
 {
-    return (m_Id == XANK_CLOSE_PARANTHESIS_OPERATOR_ID);
+    return (m_uId == XANK_CLOSE_PARANTHESIS_OPERATOR_ID);
 }
 
 
 inline bool Operator::IsParameterSeparator() const
 {
-    return (m_Id == XANK_PARAM_SEPARATOR_OPERATOR_ID);
+    return (m_uId == XANK_PARAM_SEPARATOR_OPERATOR_ID);
 }
 
 
 inline bool Operator::IsAssignment() const
 {
-    return (m_Id == XANK_ASSIGNMENT_OPERATOR_ID);
+    return (m_uId == XANK_ASSIGNMENT_OPERATOR_ID);
 }
 
 
