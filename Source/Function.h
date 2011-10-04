@@ -28,7 +28,7 @@
 
 class Atom;
 
-/** A Functor function. */
+/** A Function function. */
 typedef int FNFUNCTION(Atom *apAtoms_[], uint64_t cAtoms_);
 /** Pointer to a Function function. */
 typedef FNFUNCTION *PFNFUNCTION;
