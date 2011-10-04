@@ -22,6 +22,9 @@
 #ifndef XANK_EVALUATOR_H
 # define XANK_EVALUATOR_H
 
+#include <queue>
+#include <list>
+
 class Atom;
 
 class Evaluator
