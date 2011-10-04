@@ -23,7 +23,7 @@
 # define XANK_ATOM_H
 
 #include <stdint.h>
-#include <gmpxx.h>
+#include <gmp.h>
 
 #include <string>
 

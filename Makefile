@@ -39,6 +39,7 @@ endif
 Group0_SRC = \
 	Atom.cpp \
 	Errors.cpp \
+	Evaluator.cpp \
 	Function.cpp \
 	Main.cpp \
 	Operator.cpp
