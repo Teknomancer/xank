@@ -5,18 +5,18 @@ UNAME := $(shell uname)
 VPATH=Source
 
 # Output folder prefix, suffix
-OUT_DIR_PREFIX=_
+OUT_DIR_PREFIX=
 OUT_DIR_SUFFIX=
 
 # Output folders
-OUT_DIR_DEPS_DEBUG=$(OUT_DIR_PREFIX)Deps.debug$(OUT_DIR_SUFFIX)
-OUT_DIR_DEPS_RELEASE=$(OUT_DIR_PREFIX)Deps.release$(OUT_DIR_SUFFIX)
-OUT_DIR_OBJS_DEBUG=$(OUT_DIR_PREFIX)Objs.debug$(OUT_DIR_SUFFIX)
-OUT_DIR_OBJS_RELEASE=$(OUT_DIR_PREFIX)Objs.release$(OUT_DIR_SUFFIX)
-OUT_DIR_BIN_DEBUG=$(OUT_DIR_PREFIX)Bin.debug$(OUT_DIR_SUFFIX)
-OUT_DIR_BIN_RELEASE=$(OUT_DIR_PREFIX)Bin.release$(OUT_DIR_SUFFIX)
-OUT_DIR_GEN_DEBUG=$(OUT_DIR_PREFIX)Gen.debug$(OUT_DIR_SUFFIX)
-OUT_DIR_GEN_RELEASE=$(OUT_DIR_PREFIX)Gen.debug$(OUT_DIR_SUFFIX)
+OUT_DIR_DEPS_DEBUG=$(OUT_DIR_PREFIX)Debug/Dep$(OUT_DIR_SUFFIX)
+OUT_DIR_DEPS_RELEASE=$(OUT_DIR_PREFIX)Release/Dep$(OUT_DIR_SUFFIX)
+OUT_DIR_OBJS_DEBUG=$(OUT_DIR_PREFIX)Debug/Obj$(OUT_DIR_SUFFIX)
+OUT_DIR_OBJS_RELEASE=$(OUT_DIR_PREFIX)Release/Obj$(OUT_DIR_SUFFIX)
+OUT_DIR_BIN_DEBUG=$(OUT_DIR_PREFIX)Debug/Bin$(OUT_DIR_SUFFIX)
+OUT_DIR_BIN_RELEASE=$(OUT_DIR_PREFIX)Release/Bin$(OUT_DIR_SUFFIX)
+OUT_DIR_GEN_DEBUG=$(OUT_DIR_PREFIX)Debug/Gen$(OUT_DIR_SUFFIX)
+OUT_DIR_GEN_RELEASE=$(OUT_DIR_PREFIX)Release/Gen$(OUT_DIR_SUFFIX)
 
 # Default build type
 ifeq ($(BUILD_TYPE),)
@@ -38,6 +38,7 @@ endif
 # List of sources (regardless of directories), located by VPATH
 Group0_SRC = \
 	Atom.cpp \
+	Errors.cpp \
 	Function.cpp \
 	Main.cpp \
 	Operator.cpp
@@ -103,6 +104,7 @@ done:
 $(OUT_DIR_BIN)/${TARGET}: ${Group0_OBJ} | begin
 	@mkdir -p $(dir $@)
 	$(CC) -g -o $@ $^ ${LD_FLAGS}
+	ln -sf $(OUT_DIR_BIN) bin
 
 $(OUT_DIR_OBJS)/Group0_%.o: %.cpp
 	@mkdir -p $(dir $@)
@@ -118,7 +120,8 @@ $(OUT_DIR_DEPS)/Group0_%.d: %.cpp
 clean:
 	@rm -rf \
 	$(OUT_DIR_DEPS_DEBUG) $(OUT_DIR_OBJS_DEBUG) $(OUT_DIR_BIN_DEBUG) $(OUT_DIR_GEN_DEBUG) \
-	$(OUT_DIR_DEPS_RELEASE) $(OUT_DIR_OBJS_RELEASE) $(OUT_DIR_BIN_RELEASE) $(OUT_DIR_GEN_RELEASE)
+	$(OUT_DIR_DEPS_RELEASE) $(OUT_DIR_OBJS_RELEASE) $(OUT_DIR_BIN_RELEASE) $(OUT_DIR_GEN_RELEASE) \
+	bin
 
 # Unless "make clean" is called, include the dependency files
 # which are auto-generated. Don't fail if they are missing
