@@ -30,7 +30,7 @@ Atom::Atom()
 
 Atom::Atom(const Atom &a_Atom)
 {
-    SetTo_(a_Atom);
+    SetTo(a_Atom);
 }
 
 
@@ -69,7 +69,7 @@ inline AtomType Atom::Type() const
 }
 
 
-void Atom::SetTo_(const Atom &atom)
+void Atom::SetTo(const Atom &atom)
 {
     m_AtomType  = atom.m_AtomType;
     m_cParams   = atom.m_cParams;

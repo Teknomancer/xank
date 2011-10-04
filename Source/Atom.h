@@ -104,7 +104,7 @@ class Atom
          *
          * @param Atom          The source Atom.
          */
-        void                        SetTo_(const Atom &Atom);
+        void                        SetTo(const Atom &Atom);
 
         AtomType                    m_AtomType;   /**< The type this Atom represents. */
         uint64_t                    m_iPosition;  /**< Cursor position, an index used to associate an Atom with an error. */
