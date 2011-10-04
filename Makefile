@@ -42,7 +42,8 @@ Group0_SRC = \
 	Evaluator.cpp \
 	Function.cpp \
 	Main.cpp \
-	Operator.cpp
+	Operator.cpp \
+    Variable.cpp
 
 
 # Build a Dependency list and an Object list, by replacing the .cpp
