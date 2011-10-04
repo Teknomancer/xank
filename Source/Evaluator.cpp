@@ -41,10 +41,32 @@ int Evaluator::Parse(const char *pszExpr)
 }
 
 
-Atom *Evaluator::ParseAtom(const char *pszExpr, const char **ppszEnd, const Atom *pPreviousAtom,
-                            int *prc)
+Atom *Evaluator::ParseAtom(const char *pszExpr, const char **ppszEnd, const Atom *pPreviousAtom)
 {
-    return INF_SUCCESS;
+    return NULL;
 }
 
+
+Atom *Evaluator::ParseFunction(const char *pszexpr, const char **ppszEnd, const Atom *pPreviousAtom)
+{
+    return NULL;
+}
+
+
+Atom *Evaluator::ParseNumber(const char *pszexpr, const char **ppszEnd, const Atom *pPreviousAtom)
+{
+    return NULL;
+}
+
+
+Atom *Evaluator::ParseOperator(const char *pszexpr, const char **ppszEnd, const Atom *pPreviousAtom)
+{
+    return NULL;
+}
+
+
+Atom *Evaluator::ParseVariable(const char *pszexpr, const char **ppszEnd, const Atom *pPreviousAtom)
+{
+    return NULL;
+}
 
