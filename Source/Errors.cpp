@@ -43,12 +43,12 @@ const ErrorMessage g_aErrorMessages[] =
 
 
 /**
- * Finds the status message object for an error code.
+ * Finds the error message object for an error/return code.
  *
  * @param   rc          The error code to find.
  * @returns Pointer to the matching Status Message object.
  */
-const ErrorMessage *ErrorMessageForError(int rc)
+const ErrorMessage *ErrorMessageForRC(int rc)
 {
     for (unsigned i = 0; i < XANK_ARRAY_ELEMENTS(g_aErrorMessages); i++)
     {

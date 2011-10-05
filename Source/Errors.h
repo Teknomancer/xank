@@ -109,7 +109,7 @@ typedef struct ErrorMessage
 extern const ErrorMessage g_aErrorMessages[];
 extern const ErrorMessage g_UnknownErrorMessage;
 
-const ErrorMessage *ErrorMessageForError(int rc);
+const ErrorMessage *ErrorMessageForRC(int rc);
 
 #endif /* XANK_ERRORS_H___ */
 

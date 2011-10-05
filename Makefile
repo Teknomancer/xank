@@ -1,4 +1,4 @@
-UNAME := $(shell uname)
+OS=$(shell uname -s)
 
 # The directories containing the source files, separated by ':'
 # "VPATH" is a builtin by make, do not rename
@@ -39,6 +39,7 @@ endif
 Group0_SRC = \
 	Assert.cpp \
 	Atom.cpp \
+    ConsoleIO.cpp \
 	Errors.cpp \
 	Evaluator.cpp \
 	Function.cpp \
@@ -63,20 +64,31 @@ CC = g++
 
 # What include flags to pass to the compiler
 INC_FLAGS = -I Source -I $(OUT_DIR_GEN)
-ifeq ($(UNAME), SunOS)
- INC_FLAGS += -I /usr/include/gmp/
-endif
 
 C_FLAGS_COMMON = -Wall -pedantic -Wshadow -Wunused-function -Wunused-label -Wunused-value -Wunused-variable
 
 ifeq ($(BUILD_TYPE),debug)
-C_FLAGS += -g $(C_FLAGS_COMMON) -D_DEBUG -DBUILD_TYPE=debug ${INC_FLAGS}
+C_FLAGS += -g $(C_FLAGS_COMMON) -D_DEBUG -DXANK_DEBUG ${INC_FLAGS}
 else
 C_FLAGS += -O2 -Wuninitialized $(C_FLAGS_COMMON) ${INC_FLAGS}
 endif
 
 # Common linker flags for all build types
 LD_FLAGS += -ltermcap -lreadline -lgmp -lm
+
+# OS specifics
+ifeq ($(OS), SunOS)
+ OS_NAME=XANK_OS_SOLARIS
+ INC_FLAGS += -I /usr/include/gmp/
+else ifeq ($(OS), Linux)
+ OS_NAME= XANK_OS_LINUX
+else ifeq ($(OS), Darwin)
+ OS_NAME=XANK_OS_DARWIN
+else
+ $(error blah)
+endif
+
+C_FLAGS += -D${OS_NAME}
 
 all: begin $(OUT_DIR_BIN)/${TARGET} done
 
