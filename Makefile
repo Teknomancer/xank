@@ -37,6 +37,7 @@ endif
 
 # List of sources (regardless of directories), located by VPATH
 Group0_SRC = \
+	Assert.cpp \
 	Atom.cpp \
 	Errors.cpp \
 	Evaluator.cpp \
