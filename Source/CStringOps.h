@@ -1,5 +1,5 @@
 /** @file
- * xank - Function, implementation.
+ * xank - C string operations, header.
  */
 
 /*
@@ -19,11 +19,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ConsoleIO.h"
+#ifndef XANK_C_STRING_OPS_H
+# define XANK_C_STRING_OPS_H
 
-int main(int argc, char **argv)
-{
-    ColorPrintf(enmConsoleColorRed, "Hello\n");
-    return 0;
-}
+/**
+ * Strip a string of leading and trailing white spaces.
+ *
+ * @param   pszBuf    The string to be stripped.
+ * @return char *:Pointer to stripped string.
+ */
+char *StrStrip(char *pszBuf);
 
+
+/**
+ * Strip a string of trailing new line (\n)
+ *
+ * @param   pszBuf          The string to be stripped.
+ * @param   pfStripped      Where to store if the line was stripped or not, can be NULL.
+ * @returns char *: Pointer to stripped string.
+ */
+char *StrStripLF(char *pszBuf, bool *pfStripped);
+
+#endif /* XANK_C_STRING_OPS_H */

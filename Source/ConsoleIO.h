@@ -23,29 +23,52 @@
 # define XANK_CONSOLE_IO_H
 
 /**
+ * Console text foreground color codes.
+ */
+enum ConsoleColor
+{
+    enmConsoleColorReset = 0,
+    enmConsoleColorBlack,
+    enmConsoleColorRed,
+    enmConsoleColorGreen,
+    enmConsoleColorYellow,
+    enmConsoleColorBlue,
+    enmConsoleColorPurple,
+    enmConsoleColorCyan,
+    enmConsoleColorWhite,
+    enmConsoleColorBoldBlack,
+    enmConsoleColorBoldRed,
+    enmConsoleColorBoldGreen,
+    enmConsoleColorBoldYellow,
+    enmConsoleColorBoldBlue,
+    enmConsoleColorBoldPurple,
+    enmConsoleColorBoldCyan,
+    enmConsoleColorBoldWhite
+};
+
+/**
  * Prints an error with appropriate formatting to console (stdout).
  *
  * @param rc                    The error code.
  * @param pszError              Any additional message to accompany the error
  *                              code, va_args style.
  */
-void ErrorPrintf(int rc, char *pszError, ...);
+void ErrorPrintf(int rc, const char *pszError, ...);
 
 /**
  * Prints colored output to console (stdout)
  *
- * @param pszColorCode          The name of the colour (one of the valid colors
- *                              see CIOCOLOR_* macros).
+ * @param enmColor              The color code.
  * @param pszMsg                The message, va_args style.
  */
-void ColorPrintf(char *pszColorCode, char *pszMsg, ...);
+void ColorPrintf(ConsoleColor enmColor, const char *pszMsg, ...);
 
 /**
  * Prints debug message to console (stderr).
  *
  * @param pszMsg                The message, va_args style.
  */
-void DebugPrintf(char *pszMsg, ...);
+void DebugPrintf(const char *pszMsg, ...);
 
 #ifdef XANK_DEBUG
 /** Print debug message to console (stderr), NOP in release builds */

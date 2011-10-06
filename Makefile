@@ -42,6 +42,7 @@ Group0_SRC = \
 	Assert.cpp \
 	Atom.cpp \
     ConsoleIO.cpp \
+    CStringOps.cpp \
 	Errors.cpp \
 	Evaluator.cpp \
 	Function.cpp \
