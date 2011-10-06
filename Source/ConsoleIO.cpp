@@ -21,14 +21,36 @@
 
 #include "ConsoleIO.h"
 #include "ConsoleColors.h"
+#include "CStringOps.h"
 #include "Errors.h"
 
 #include <cstdio>
 #include <cstdarg>
 
-static bool g_fxTermColors = false;
+static const bool g_fxTermColors = true;
+static const char *const g_aszConsoleColors[] =
+{
+    "\033[0m",
+    "\033[0;30m",
+    "\033[0;31m",
+    "\033[0;32m",
+    "\033[0;33m",
+    "\033[0;34m",
+    "\033[0;35m",
+    "\033[0;36m",
+    "\033[0;37m",
+    "\033[1;30m",
+    "\033[1;31m",
+    "\033[1;32m",
+    "\033[1;33m",
+    "\033[1;34m",
+    "\033[1;35m",
+    "\033[1;36m",
+    "\033[1;37m"
+};
 
-void ErrorPrintf(int rc, char *pszError, ...)
+
+void ErrorPrintf(int rc, const char *pszError, ...)
 {
     va_list FmtArgs;
     char szBuf[2048];
@@ -37,10 +59,7 @@ void ErrorPrintf(int rc, char *pszError, ...)
     vsnprintf(szBuf, sizeof(szBuf) - 1, pszError, FmtArgs);
     va_end(FmtArgs);
 
-    /** @todo impl */
-//    char *pszBuf = StrStripLF(szBuf, NULL /* pfStripped */);
-    char *pszBuf = szBuf;
-
+    char *pszBuf = StrStripLF(szBuf, NULL /* pfStripped */);
     const ErrorMessage *pcErrorMsg = ErrorMessageForRC(rc);
     if (pcErrorMsg)
     {
@@ -52,7 +71,7 @@ void ErrorPrintf(int rc, char *pszError, ...)
 }
 
 
-void ColorPrintf(char *pszColorCode, char *pszMsg, ...)
+void ColorPrintf(ConsoleColor enmColor, const char *pszMsg, ...)
 {
     va_list FmtArgs;
     char szBuf[2048];
@@ -62,9 +81,9 @@ void ColorPrintf(char *pszColorCode, char *pszMsg, ...)
     va_end(FmtArgs);
 
     bool fNewLine = true;
-    /** @todo impl */
-//    char *pszBuf = StrStripLF(szBuf, &fNewLine);
-    char *pszBuf = szBuf;
+    char *pszBuf = StrStripLF(szBuf, &fNewLine);
+
+    const char *pszColorCode = g_aszConsoleColors[enmColor];
 
     fprintf(stdout, "%s%s%s%s",
             g_fxTermColors ? pszColorCode : "",
@@ -74,7 +93,7 @@ void ColorPrintf(char *pszColorCode, char *pszMsg, ...)
 }
 
 
-void DebugPrintf(char *pszMsg, ...)
+void DebugPrintf(const char *pszMsg, ...)
 {
     va_list FmtArgs;
     char szBuf[2048];
@@ -84,9 +103,7 @@ void DebugPrintf(char *pszMsg, ...)
     va_end(FmtArgs);
 
     bool fNewLine = true;
-    /** @todo impl */
-//    char *pszBuf = StrStripLF(szBuf, &fNewLine);
-    char *pszBuf = szBuf;
+    char *pszBuf = StrStripLF(szBuf, &fNewLine);
 
     fprintf(stderr, "%s%s%s", fNewLine ? "  dbg:" : "", pszBuf, fNewLine ? "\n" : "");
 }
