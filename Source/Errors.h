@@ -101,7 +101,7 @@
 typedef struct ErrorMessage
 {
     /** Symbolic name of error as a string. */
-    const char *pszName;
+    const char *pcszName;
     /** The error code. */
     int         rc;
 } ErrorMessage;

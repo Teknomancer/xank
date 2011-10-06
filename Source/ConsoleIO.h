@@ -47,28 +47,36 @@ enum ConsoleColor
 };
 
 /**
+ * Prints an assertion to console (stderr). Only to be used by Assert, do not
+ * use otherwise.
+ *
+ * @param pcszAssertMsg         The assertion message.
+ */
+void AssertPrintf(const char *pcszAssertMsg, ...);
+
+/**
  * Prints an error with appropriate formatting to console (stdout).
  *
  * @param rc                    The error code.
- * @param pszError              Any additional message to accompany the error
+ * @param pcszError             Any additional message to accompany the error
  *                              code, va_args style.
  */
-void ErrorPrintf(int rc, const char *pszError, ...);
+void ErrorPrintf(int rc, const char *pcszError, ...);
 
 /**
  * Prints colored output to console (stdout)
  *
  * @param enmColor              The color code.
- * @param pszMsg                The message, va_args style.
+ * @param pcszMsg               The message, va_args style.
  */
-void ColorPrintf(ConsoleColor enmColor, const char *pszMsg, ...);
+void ColorPrintf(ConsoleColor enmColor, const char *pcszMsg, ...);
 
 /**
  * Prints debug message to console (stderr).
  *
- * @param pszMsg                The message, va_args style.
+ * @param pcszMsg               The message, va_args style.
  */
-void DebugPrintf(const char *pszMsg, ...);
+void DebugPrintf(const char *pcszMsg, ...);
 
 #ifdef XANK_DEBUG
 /** Print debug message to console (stderr), NOP in release builds */
