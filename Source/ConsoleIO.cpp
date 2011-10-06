@@ -50,56 +50,72 @@ static const char *const g_aszConsoleColors[] =
 };
 
 
-void ErrorPrintf(int rc, const char *pszError, ...)
+void AssertPrintf(const char *pcszAssertMsg, ...)
 {
     va_list FmtArgs;
     char szBuf[2048];
 
-    va_start(FmtArgs, pszError);
-    vsnprintf(szBuf, sizeof(szBuf) - 1, pszError, FmtArgs);
+    va_start(FmtArgs, pcszAssertMsg);
+    vsnprintf(szBuf, sizeof(szBuf) - 1, pcszAssertMsg, FmtArgs);
+    va_end(FmtArgs);
+
+    char *pszBuf = szBuf;
+    fprintf(stderr, "Assertion Failed!\n%s\n", pszBuf);
+}
+
+
+void ErrorPrintf(int rc, const char *pcszError, ...)
+{
+    va_list FmtArgs;
+    char szBuf[2048];
+
+    va_start(FmtArgs, pcszError);
+    vsnprintf(szBuf, sizeof(szBuf) - 1, pcszError, FmtArgs);
     va_end(FmtArgs);
 
     char *pszBuf = StrStripLF(szBuf, NULL /* pfStripped */);
     const ErrorMessage *pcErrorMsg = ErrorMessageForRC(rc);
     if (pcErrorMsg)
     {
-        fprintf(stderr, "%sError!%s %s rc=%s%s%s (%d)\n\n", CIOCOLOR_BOLD_RED, CIOCOLOR_RESET, pszBuf,
-                    CIOCOLOR_RED, pcErrorMsg->pszName, CIOCOLOR_RESET, rc);
+        fprintf(stderr, "%sError!%s %s rc=%s%s%s (%d)\n\n", g_aszConsoleColors[enmConsoleColorBoldRed],
+                    g_aszConsoleColors[enmConsoleColorReset], pszBuf,
+                    g_aszConsoleColors[enmConsoleColorRed], pcErrorMsg->pcszName,
+                    g_aszConsoleColors[enmConsoleColorReset], rc);
     }
     else
-        fprintf(stderr, "Extreme error! Missing pErrorMsg!\n");
+        fprintf(stderr, "Extreme error! Missing pcErrorMsg!\n");
 }
 
 
-void ColorPrintf(ConsoleColor enmColor, const char *pszMsg, ...)
+void ColorPrintf(ConsoleColor enmColor, const char *pcszMsg, ...)
 {
     va_list FmtArgs;
     char szBuf[2048];
 
-    va_start(FmtArgs, pszMsg);
-    vsnprintf(szBuf, sizeof(szBuf) - 1, pszMsg, FmtArgs);
+    va_start(FmtArgs, pcszMsg);
+    vsnprintf(szBuf, sizeof(szBuf) - 1, pcszMsg, FmtArgs);
     va_end(FmtArgs);
 
     bool fNewLine = true;
     char *pszBuf = StrStripLF(szBuf, &fNewLine);
 
-    const char *pszColorCode = g_aszConsoleColors[enmColor];
+    const char *pcszColorCode = g_aszConsoleColors[enmColor];
 
     fprintf(stdout, "%s%s%s%s",
-            g_fxTermColors ? pszColorCode : "",
+            g_fxTermColors ? pcszColorCode : "",
             pszBuf,
             CIOCOLOR_RESET,
             fNewLine ? "\n" : "");
 }
 
 
-void DebugPrintf(const char *pszMsg, ...)
+void DebugPrintf(const char *pcszMsg, ...)
 {
     va_list FmtArgs;
     char szBuf[2048];
 
-    va_start(FmtArgs, pszMsg);
-    vsnprintf(szBuf, sizeof(szBuf) - 1, pszMsg, FmtArgs);
+    va_start(FmtArgs, pcszMsg);
+    vsnprintf(szBuf, sizeof(szBuf) - 1, pcszMsg, FmtArgs);
     va_end(FmtArgs);
 
     bool fNewLine = true;

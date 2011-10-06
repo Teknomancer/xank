@@ -20,12 +20,11 @@
  */
 
 #include "Assert.h"
+#include "ConsoleIO.h"
 #include <iostream>
 
-void AssertMsg(char *pszExpr, unsigned uLine, char *pszFile, const char *pszFunction)
+void AssertMsg(char *pcszExpr, unsigned uLine, char *pcszFile, const char *pcszFunction)
 {
-    std::cerr << "\n!!Assertion Failed!!\n"
-            "Expression: " << pszExpr << "\n"
-            "Location:   " << pszFile << ":" << uLine << " " << pszFunction;
+    AssertPrintf("Expression: %s\nLocation  : %s:%u %s\n", pcszExpr, pcszFile, uLine, pcszFunction);
 }
 

@@ -37,77 +37,79 @@ class Evaluator
         /**
          * Parses an expression.
          *
-         * @param pszExr            The expression to parse.
+         * @param pcszExr           The expression to parse.
          *
          * @return int: xank error code.
          */
-        int                         Parse(const char *pszExr);
+        int                         Parse(const char *pcszExr);
 
     private:
         /**
          * Parses the expression for an Atom.
          *
-         * @param pszExpr           The expression to parse.
-         * @param ppszEnd           Where to store till-what-point @a pszExpr was
+         * @param pcszExpr          The expression to parse.
+         * @param ppcszEnd          Where to store till-what-point @a pcszExpr was
          *                          parsed.
-         * @param pPreviousAtom     Pointer to the previously parsed Atom, must be NULL
+         * @param pcPreviousAtom    Pointer to the previously parsed Atom, must be NULL
          *                          on first call of an expression.
          *
          * @return Atom*: A newly allocated Atom or NULL if no atoms were parsed.
          */
-        Atom                       *ParseAtom(const char *pszExpr, const char **ppszEnd, const Atom *pPreviousAtom);
+        Atom                       *ParseAtom(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom);
 
         /**
          * Parses the expression for a function.
          *
-         * @param pszexpr           The expression to parse.
-         * @param ppszEnd           Where to store till-what-point @a pszExpr was
+         * @param pcszexpr          The expression to parse.
+         * @param ppcszEnd          Where to store till-what-point @a pcszExpr was
          *                          parsed.
-         * @param pPreviousAtom     Pointer to the previously parsed Atom, must be NULL
+         * @param pcPreviousAtom    Pointer to the previously parsed Atom, must be NULL
          *                          on the first call of an expression.
          *
          * @return Atom*: A newly allocated Atom or NULL if no functions were parsed.
          */
-        Atom                       *ParseFunction(const char *pszexpr, const char **ppszEnd, const Atom *pPreviousAtom);
+        Atom                       *ParseFunction(const char *pcszexpr, const char **ppcszEnd, const Atom *pcPreviousAtom);
 
         /**
          * Parses the expression for a number.
          *
-         * @param pszexpr           The expression to parse.
-         * @param ppszEnd           Where to store till-what-point @a pszExpr was
+         * @param pcszexpr          The expression to parse.
+         * @param ppcszEnd          Where to store till-what-point @a pcszExpr was
          *                          parsed.
-         * @param pPreviousAtom     Pointer to the previously parsed Atom, must be NULL
+         * @param pcPreviousAtom    Pointer to the previously parsed Atom, must be NULL
          *                          on the first call of an expression.
          *
          * @return Atom*: A newly allocated Atom or NULL if no numbers were parsed.
          */
-        Atom                       *ParseNumber(const char *pszexpr, const char **ppszEnd, const Atom *pPreviousAtom);
+        Atom                       *ParseNumber(const char *pcszExpr, const char **ppcszEnd, const Atom *cpPreviousAtom);
 
         /**
          * Parses the expression for an operator.
          *
-         * @param pszexpr           The expression to parse.
-         * @param ppszEnd           Where to store till-what-point @a pszExpr was
+         * @param pcszExpr          The expression to parse.
+         * @param ppcszEnd          Where to store till-what-point @a pcszExpr was
          *                          parsed.
-         * @param pPreviousAtom     Pointer to the previously parsed Atom, must be NULL
+         * @param pcPreviousAtom    Pointer to the previously parsed Atom, must be NULL
          *                          on the first call of an expression.
          *
          * @return Atom*: A newly allocated Atom or NULL if no operators were parsed.
          */
-        Atom                       *ParseOperator(const char *pszexpr, const char **ppszEnd, const Atom *pPreviousAtom);
+        Atom                       *ParseOperator(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom);
 
         /**
          * Parses the expression for a variable.
          *
-         * @param pszexpr           The expression to parse.
-         * @param ppszEnd           Where to store till-what-point @a pszExpr was
+         * @param pcszExpr          The expression to parse.
+         * @param ppcszEnd          Where to store till-what-point @a pcszExpr was
          *                          parsed.
-         * @param pPreviousAtom     Pointer to the previously parsed Atom, must be NULL
+         * @param pcPreviousAtom    Pointer to the previously parsed Atom, must be NULL
          *                          on the first call of an expression.
          *
          * @return Atom*: A newly allocated Atom or NULL if no variables were parsed.
          */
-        Atom                       *ParseVariable(const char *pszexpr, const char **ppszEnd, const Atom *pPreviousAtom);
+        Atom                       *ParseVariable(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom);
+
+        Atom                       *ParseCommand(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom);
 
         std::string                 m_sExpr;    /**< The full, unmodified expression */
         std::queue<Atom*>           m_RPNQueue; /**< Internal RPN representation done at the parsing stage. */

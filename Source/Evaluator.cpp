@@ -24,6 +24,10 @@
 #include "Operator.h"
 #include "Errors.h"
 
+#ifdef XANK_DEBUG
+# include "ConsoleIO.h"
+#endif
+
 Evaluator::Evaluator()
 {
     /** @todo add parameters to accept settings */
@@ -35,38 +39,78 @@ Evaluator::~Evaluator()
 }
 
 
-int Evaluator::Parse(const char *pszExpr)
+int Evaluator::Parse(const char *pcszExpr)
 {
     return INF_SUCCESS;
 }
 
 
-Atom *Evaluator::ParseAtom(const char *pszExpr, const char **ppszEnd, const Atom *pPreviousAtom)
+Atom *Evaluator::ParseAtom(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom)
+{
+    DEBUGPRINTF(("ParseAtom\n"));
+    Atom *pAtom = NULL;
+    while (*pcszExpr)
+    {
+        if (isspace(*pcszExpr))
+        {
+            pcszExpr++;
+            continue;
+        }
+
+        pAtom = ParseNumber(pcszExpr, ppcszEnd, pcPreviousAtom);
+        if (pAtom)
+            break;
+
+        pAtom = ParseOperator(pcszExpr, ppcszEnd, pcPreviousAtom);
+        if (pAtom)
+            break;
+
+        pAtom = ParseFunction(pcszExpr, ppcszEnd, pcPreviousAtom);
+        if (pAtom)
+            break;
+
+        pAtom = ParseVariable(pcszExpr, ppcszEnd, pcPreviousAtom);
+        if (pAtom)
+            break;
+
+        pAtom = ParseCommand(pcszExpr, ppcszEnd, pcPreviousAtom);
+        if (pAtom)
+            break;
+
+        /** @todo hmm, think about this!? */
+        *ppcszEnd = pcszExpr;
+        break;
+    }
+
+    return pAtom;
+}
+
+
+Atom *Evaluator::ParseFunction(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom)
 {
     return NULL;
 }
 
 
-Atom *Evaluator::ParseFunction(const char *pszexpr, const char **ppszEnd, const Atom *pPreviousAtom)
+Atom *Evaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom)
 {
     return NULL;
 }
 
 
-Atom *Evaluator::ParseNumber(const char *pszexpr, const char **ppszEnd, const Atom *pPreviousAtom)
+Atom *Evaluator::ParseOperator(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom)
 {
     return NULL;
 }
 
 
-Atom *Evaluator::ParseOperator(const char *pszexpr, const char **ppszEnd, const Atom *pPreviousAtom)
+Atom *Evaluator::ParseVariable(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom)
 {
     return NULL;
 }
 
 
-Atom *Evaluator::ParseVariable(const char *pszexpr, const char **ppszEnd, const Atom *pPreviousAtom)
+Atom *Evaluator::ParseCommand(const char *pcszExpr,  const char **ppcszEnd,  const Atom *pcPreviousAtom)
 {
     return NULL;
 }
-
