@@ -128,6 +128,7 @@ class Evaluator
         std::queue<Atom*>           m_RPNQueue;     /**< Internal RPN representation done at the parsing stage. */
         std::list<Atom*>            m_VarList;      /**< List of variables being evaulated, used for circular dependency checks. */
         static const Function       m_sFunctions[]; /**< Static array of Function objects. */
+        static const Operator       m_sOperators[]; /**< Static array of Operator objects. */
 };
 
 #endif /* XANK_EVALUATOR_H */
