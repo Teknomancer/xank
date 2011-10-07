@@ -59,9 +59,20 @@ inline bool Atom::IsVariable() const
 
 inline bool Atom::IsNumber() const
 {
-    return m_AtomType == enmAtomTypeNumber;
+    return m_AtomType == enmAtomTypeInteger || m_AtomType == enmAtomTypeFloat;
 }
 
+
+inline bool Atom::IsInteger() const
+{
+    return m_AtomType == enmAtomTypeInteger;
+}
+
+
+inline bool Atom::IsFloat() const
+{
+    return m_AtomType == enmAtomTypeFloat;
+}
 
 inline AtomType Atom::Type() const
 {

@@ -34,25 +34,28 @@ typedef int FNFUNCTION(Atom *apAtoms_[], uint64_t cAtoms_);
 typedef FNFUNCTION *PFNFUNCTION;
 
 /**
- * FunctionParameter: Function parameter types.
- * The types of parameters a Function can handle.
- */
-enum ParameterType
-{
-    enmParameterInt = 0x44,
-    enmParameterUnsignedInt,
-    enmParameterFloat
-};
-
-/**
  * A Function.
  * A Function accepts zero or more parameters and outputs one value.
  */
 class Function
 {
     public:
-        Function(std::string sName, uint64_t cMinParams, uint64_t cMaxParams, ParameterType enmParamType,
-            PFNFUNCTION pfnFunction, std::string sShortDesc, std::string sLongDesc);
+        /**
+         * Function constructor.
+         *
+         * @param cMinParams        Minimum number of parameters, can be 0 to
+         *                          UINT64_MAX.
+         * @param cMaxParams        Maximum number of parameters, can be 0 to
+         *                          UINT64_MAX.
+         * @param sName             The name of the function.
+         * @param pfnFunction       Pointer to the function that works on the expression
+         *                          parameters.
+         * @param sShortDesc        Short description of this function.
+         * @param sLongDesc         Long description of this function.
+         */
+        Function(uint64_t cMinParams, uint64_t cMaxParams, std::string sName, PFNFUNCTION pfnFunction,
+                    std::string sShortDesc, std::string sLongDesc);
+
         virtual ~Function();
 
         /**
@@ -61,13 +64,6 @@ class Function
          * @return std::string
          */
         std::string         Name() const;
-
-        /**
-         * Returns the parameter type accepted by this Function.
-         *
-         * @return ParameterType
-         */
-        ParameterType       ParamType() const;
 
         /**
          * Returns the minimum number of parameters accepted by this Function.
@@ -100,18 +96,17 @@ class Function
         /**
          * Invokes the function associated with this Function.
          *
-         * @param apAtoms_      An array of pointers to Atoms.
-         * @param cAtoms_       Number of elements in the array apAtoms_.
+         * @param apAtoms_          An array of pointers to Atoms.
+         * @param cAtoms_           Number of elements in the array apAtoms_.
          *
          * @return int: xank error code..
          */
         int                 InvokeFunction(Atom *apAtoms_[], uint64_t cAtoms_);
 
     private:
-        std::string         m_sName;          /**< Name of the Function as seen in the expression. */
         uint64_t            m_cMinParams;     /**< Minimum parameters accepted by @a pfnFunctor. */
         uint64_t            m_cMaxParams;     /**< Maximum paramaters accepted by @a pfnFunctor. */
-        ParameterType       m_enmParamType;   /**< What parameter types does this Function accept. */
+        std::string         m_sName;          /**< Name of the Function as seen in the expression. */
         PFNFUNCTION         m_pfnFunction;    /**< Pointer to the Function evaluator function. */
         std::string         m_sShortDesc;     /**< Short description of the Function (usually syntax). */
         std::string         m_sLongDesc;      /**< Long description of the Function (additional documentation). */

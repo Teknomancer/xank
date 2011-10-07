@@ -69,6 +69,7 @@ CC = g++
 INC_FLAGS = -I Source -I $(OUT_DIR_GEN)
 
 C_FLAGS_COMMON = -Wall -pedantic -Wshadow -Wunused-function -Wunused-label -Wunused-value -Wunused-variable
+C_FLAGS_COMMON += -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS
 
 ifeq ($(BUILD_TYPE),debug)
 C_FLAGS += -g $(C_FLAGS_COMMON) -D_DEBUG -DXANK_DEBUG ${INC_FLAGS}

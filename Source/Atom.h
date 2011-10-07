@@ -31,7 +31,7 @@
 
 class Operator;
 class Function;
-// class Variable;
+class Variable;
 
 /**
  * The type of Atom.
@@ -41,8 +41,10 @@ enum AtomType
 {
     /** Empty/uninitialized Atom. */
     enmAtomTypeEmpty = 0x10,
-    /** Atom represents a number. */
-    enmAtomTypeNumber,
+    /** Atom represents an integer. */
+    enmAtomTypeInteger,
+    /** Atom represents a float. */
+    enmAtomTypeFloat,
     /** Atom represents an operator. */
     enmAtomTypeOperator,
     /** Atom represents a function. */
@@ -76,6 +78,20 @@ class Atom
          * @return bool: true if it's a number, false otherwise.
          */
         bool                        IsNumber() const;
+
+        /**
+         * Returns if this Atom is an integer number.
+         *
+         * @return bool: true if it's an integer number, false otherwise.
+         */
+        bool                        IsInteger() const;
+
+        /**
+         * Returns if this Atom is a floating point number.
+         *
+         * @return bool: true if it's a floating point number, false otherwise.
+         */
+        bool                        IsFloat() const;
 
         /**
          * Returns if this Atom is a function.
@@ -112,10 +128,11 @@ class Atom
         std::string                 m_sVariable;  /**< Name of the variable if this is/might become a Variable Atom. */
         union
         {
-            mpz_t                  Value;        /**< Value of the number for a Number Atom. */
+            mpz_t                   Integer;      /**< Integer value for a Number Atom. */
+            mpf_t                   Float;        /**< Floatint point value for a Number Atom. */
             Operator               *pOperator;    /*< Pointer to the Operator for an Operator Atom. */
             Function               *pFunction;    /*< Pointer to the Function for a Function Atom. */
-            //Variable               *pVariable;    /*< Pointer to the Variable for a Variable Atom. */
+            Variable               *pVariable;    /*< Pointer to the Variable for a Variable Atom. */
         } m_u;
 };
 

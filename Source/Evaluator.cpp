@@ -28,6 +28,22 @@
 # include "ConsoleIO.h"
 #endif
 
+#include <stdint.h>
+
+static int FxAdd (Atom *apAtoms_[], uint64_t cAtoms_)
+{
+    return INF_SUCCESS;
+}
+
+const Function Evaluator::m_sFunctions[] =
+{
+#define FNX Function
+    FNX(1, UINT64_MAX, "avg",       FxAdd, "Average", "Returns the arithmetic average."),
+    FNX(1, UINT64_MAX, "fact",      FxAdd, "Factorial", "Returns the factorial."),
+#undef FNX
+};
+
+
 Evaluator::Evaluator()
 {
     /** @todo add parameters to accept settings */
