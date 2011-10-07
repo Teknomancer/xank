@@ -26,6 +26,8 @@
 #include <list>
 #include <string>
 
+#include "Function.h"
+
 class Atom;
 
 class Evaluator
@@ -109,11 +111,23 @@ class Evaluator
          */
         Atom                       *ParseVariable(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom);
 
+        /**
+         * Parses the expression for a command.
+         *
+         * @param pcszExpr          The expression to parse.
+         * @param ppcszEnd          Where to store till-what-point @a pcszExpr was
+         *                          parsed.
+         * @param pcPreviousAtom    Pointer to the previously parsed Atom, must be NULL
+         *                          on the first call of an expression.
+         *
+         * @return Atom*: A newly allocated Atom or NULL if no commands were parsed.
+         */
         Atom                       *ParseCommand(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom);
 
-        std::string                 m_sExpr;    /**< The full, unmodified expression */
-        std::queue<Atom*>           m_RPNQueue; /**< Internal RPN representation done at the parsing stage. */
-        std::list<Atom*>            m_VarList;  /**< List of variables being evaulated, used for circular dependency checks. */
+        std::string                 m_sExpr;        /**< The full, unmodified expression */
+        std::queue<Atom*>           m_RPNQueue;     /**< Internal RPN representation done at the parsing stage. */
+        std::list<Atom*>            m_VarList;      /**< List of variables being evaulated, used for circular dependency checks. */
+        static const Function       m_sFunctions[]; /**< Static array of Function objects. */
 };
 
 #endif /* XANK_EVALUATOR_H */

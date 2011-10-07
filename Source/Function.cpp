@@ -21,12 +21,11 @@
 
 #include "Function.h"
 
-Function::Function(std::string sName, uint64_t cMinParams, uint64_t cMaxParams, ParameterType enmParamType,
-                    PFNFUNCTION pfnFunction, std::string sShortDesc, std::string sLongDesc)
-    : m_sName(sName),
-    m_cMinParams(cMinParams),
+Function::Function(uint64_t cMinParams, uint64_t cMaxParams, std::string sName, PFNFUNCTION pfnFunction,
+                    std::string sShortDesc, std::string sLongDesc)
+    : m_cMinParams(cMinParams),
     m_cMaxParams(cMaxParams),
-    m_enmParamType(enmParamType),
+    m_sName(sName),
     m_pfnFunction(pfnFunction),
     m_sShortDesc(sShortDesc),
     m_sLongDesc(sLongDesc)
@@ -67,13 +66,6 @@ inline uint64_t Function::MaxParams() const
 {
     return m_cMaxParams;
 }
-
-
-inline ParameterType Function::ParamType() const
-{
-    return m_enmParamType;
-}
-
 
 inline int Function::InvokeFunction(Atom *apAtoms[], uint64_t cAtoms)
 {
