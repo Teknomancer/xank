@@ -20,6 +20,7 @@
  */
 
 #include "Function.h"
+#include "Errors.h"
 
 Function::Function(uint64_t cMinParams, uint64_t cMaxParams, std::string sName, PFNFUNCTION pfnFunction,
                     std::string sShortDesc, std::string sLongDesc)
@@ -33,6 +34,11 @@ Function::Function(uint64_t cMinParams, uint64_t cMaxParams, std::string sName, 
 }
 
 
+Function::Function(const Function &Fn)
+{
+    SetTo(Fn);
+}
+
 Function::~Function()
 {
 }
@@ -44,9 +50,23 @@ inline std::string Function::Name() const
 }
 
 
+inline int Function::SetName(const std::string &scName)
+{
+    m_sName = scName;
+    return INF_SUCCESS;
+}
+
+
 inline std::string Function::ShortDesc() const
 {
     return m_sShortDesc;
+}
+
+
+inline int Function::SetShortDesc(const std::string &scDesc)
+{
+    m_sShortDesc = scDesc;
+    return INF_SUCCESS;
 }
 
 
@@ -56,9 +76,23 @@ inline std::string Function::LongDesc() const
 }
 
 
+inline int Function::SetLongDesc(const std::string &scDesc)
+{
+    m_sLongDesc = scDesc;
+    return INF_SUCCESS;
+}
+
+
 inline uint64_t Function::MinParams() const
 {
     return m_cMinParams;
+}
+
+
+inline int Function::SetMinParams(uint64_t cMinParams)
+{
+    m_cMinParams = cMinParams;
+    return INF_SUCCESS;
 }
 
 
@@ -67,8 +101,47 @@ inline uint64_t Function::MaxParams() const
     return m_cMaxParams;
 }
 
-inline int Function::InvokeFunction(Atom *apAtoms[], uint64_t cAtoms)
+
+inline int Function::SetMaxParams(uint64_t cMaxParams)
+{
+    m_cMaxParams = cMaxParams;
+    return INF_SUCCESS;
+}
+
+
+inline PFNFUNCTION Function::FunctionPtr() const
+{
+    return m_pfnFunction;
+}
+
+
+inline int Function::SetFunctionPtr(PFNFUNCTION pfnFunction)
+{
+    m_pfnFunction = pfnFunction;
+    return INF_SUCCESS;
+}
+
+
+inline int Function::Invoke(Atom *apAtoms[], uint64_t cAtoms)
 {
     return m_pfnFunction(apAtoms, cAtoms);
+}
+
+
+const Function &Function::operator =(const Function &Fn)
+{
+    SetTo(Fn);
+    return *this;
+}
+
+
+void Function::SetTo(const Function &Fn)
+{
+    m_cMinParams     = Fn.m_cMinParams;
+    m_cMaxParams     = Fn.m_cMaxParams;
+    m_sName          = Fn.m_sName;
+    m_pfnFunction    = Fn.m_pfnFunction;
+    m_sShortDesc     = Fn.m_sShortDesc;
+    m_sLongDesc      = Fn.m_sLongDesc;
 }
 

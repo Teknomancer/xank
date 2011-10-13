@@ -20,6 +20,7 @@
  */
 
 #include "Evaluator.h"
+#include "EvaluatorDefs.h"
 #include "Atom.h"
 #include "Operator.h"
 #include "Errors.h"
@@ -38,17 +39,16 @@ static int FxAdd (Atom *apAtoms_[], uint64_t cAtoms_)
 const Operator Evaluator::m_sOperators[] =
 {
     /*     Id        Pri    Associativity            cParams  Name   pfn    ShortHelp      LongHelp */
-
     /* Special Operators*/
     Operator(XANK_OPEN_PARANTHESIS_OPERATOR_ID,
-                      99, enmOperatorDirectionNone,   0,      "(",   NULL,  "(<expr>",        "Begin subexpresion or function." },
+                      99, enmOperatorDirectionNone,   0,      "(",   NULL,  "(<expr>",        "Begin subexpresion or function."),
     Operator(XANK_CLOSE_PARANTHESIS_OPERATOR_ID,
-                      99,  enmOperatorDirectionNone,  0,      ")",   NULL,  "<expr>)",        "End subexpression or function." },
+                      99,  enmOperatorDirectionNone,  0,      ")",   NULL,  "<expr>)",        "End subexpression or function."),
     Operator(XANK_PARAM_SEPARATOR_OPERATOR_ID,
-                       0,  enmOperatorDirectionLeft,  2,      ",",   NULL,  "<expr>, <expr>", "Function Parameter separator." },
+                       0,  enmOperatorDirectionLeft,  2,      ",",   NULL,  "<expr>, <expr>", "Function Parameter separator."),
     Operator(XANK_ASSIGNMENT_OPERATOR_ID,
-                       0,  enmOperatorDirectionLeft,  2,      "=",   NULL, "<lval>=<rval>",   "Assignment operator." },
-}
+                       0,  enmOperatorDirectionLeft,  2,      "=",   NULL, "<lval>=<rval>",   "Assignment operator."),
+};
 
 const Function Evaluator::m_sFunctions[] =
 {
@@ -124,24 +124,24 @@ Atom *Evaluator::ParseFunction(const char *pcszExpr, const char **ppcszEnd, cons
 Atom *Evaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom)
 {
     std::string sNum;
-    const char *pszStart = pszExpr;
+    const char *pszStart = pcszExpr;
     int iRadix = 0;
     uint64_t i = 0;
 
     /*
      * Octal prefix ("0")
      */
-    if (*pszExpr == '0')
+    if (*pcszExpr == '0')
     {
-        ++pszExpr;
-        while (*pszExpr)
+        ++pcszExpr;
+        while (*pcszExpr)
         {
-            if (*pszExpr >= '0' && *pszExpr < '8')
-                szNum[i++] = *pszExpr;
-            else if (!isspace(*pszExpr))
+            if (*pcszExpr >= '0' && *pcszExpr < '8')
+                sNum[i++] = *pcszExpr;
+            else if (!isspace(*pcszExpr))
                 break;
 
-            pszExpr++;
+            pcszExpr++;
         }
         iRadix = 8;
 
@@ -150,34 +150,34 @@ Atom *Evaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, const 
          */
         if (i == 0)
         {
-            if (*pszExpr == 'x' || *pszExpr == 'X')
+            if (*pcszExpr == 'x' || *pcszExpr == 'X')
             {
-                ++pszExpr;
-                while (*pszExpr)
+                ++pcszExpr;
+                while (*pcszExpr)
                 {
-                    if (   (*pszExpr >= '0' && *pszExpr <= 'F')
-                        || (*pszExpr >= 'a' && *pszExpr <= 'f'))
+                    if (   (*pcszExpr >= '0' && *pcszExpr <= 'F')
+                        || (*pcszExpr >= 'a' && *pcszExpr <= 'f'))
                     {
-                        szNum[i++] = *pszExpr;
+                        sNum[i++] = *pcszExpr;
                     }
-                    else if (!isspace(*pszExpr))
+                    else if (!isspace(*pcszExpr))
                         break;
 
-                    pszExpr++;
+                    pcszExpr++;
                 }
                 iRadix = 16;
             }
-            else if (*pszExpr == 'b' || *pszExpr == 'B')
+            else if (*pcszExpr == 'b' || *pcszExpr == 'B')
             {
-                ++pszExpr;
-                while (*pszExpr)
+                ++pcszExpr;
+                while (*pcszExpr)
                 {
-                    if (*pszExpr == '1' || *pszExpr == '0')
-                        sNum[i++] = *pszExpr;
-                    else if (!isspace(*pszExpr))
+                    if (*pcszExpr == '1' || *pcszExpr == '0')
+                        sNum[i++] = *pcszExpr;
+                    else if (!isspace(*pcszExpr))
                         break;
 
-                    pszExpr++;
+                    pcszExpr++;
                 }
                 iRadix = 2;
             }
@@ -191,23 +191,23 @@ Atom *Evaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, const 
      */
     if (i == 0)
     {
-        pszExpr = pszStart;
+        pcszExpr = pszStart;
         iRadix = 0;
 
         /*
          * Hexadecimal sans prefix, or Decimal.
          */
-        while (*pszExpr)
+        while (*pcszExpr)
         {
-            if (isdigit(*pszExpr))
+            if (isdigit(*pcszExpr))
             {
-                szNum[i++] = *pszExpr;
+                sNum[i++] = *pcszExpr;
             }
-            else if (*pszExpr == '.')
+            else if (*pcszExpr == '.')
             {
                 if (iRadix == 0)    /* eg:  ".5" */
                 {
-                    szNum[i++] = *pszExpr;
+                    sNum[i++] = *pcszExpr;
                     iRadix = 10;
                 }
                 else                /* eg: "fa.5" or "10.5.5" */
@@ -216,8 +216,8 @@ Atom *Evaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, const 
                     break;
                 }
             }
-            else if (   (*pszExpr >= 'A' && *pszExpr <= 'F')
-                     || (*pszExpr >= 'a' && *pszExpr <= 'f'))
+            else if (   (*pcszExpr >= 'A' && *pcszExpr <= 'F')
+                     || (*pcszExpr >= 'a' && *pcszExpr <= 'f'))
             {
                 if (iRadix != 10)   /* eg: "af" or "53a"  */
                     iRadix = 16;
@@ -226,14 +226,12 @@ Atom *Evaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, const 
                     iRadix = -1;
                     break;
                 }
-                szNum[i++] = *pszExpr;
+                sNum[i++] = *pcszExpr;
             }
-            else if (!isspace(*pszExpr))
+            else if (!isspace(*pcszExpr))
                 break;
 
-            pszExpr++;
-            if (i >= sizeof(szNum) - 1)
-                break;
+            pcszExpr++;
         }
 
         if (i > 0 && iRadix == 0)
@@ -243,7 +241,7 @@ Atom *Evaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, const 
     if (   i == 0
         || iRadix == 0)
     {
-        pszExpr = pszStart;
+        pcszExpr = pszStart;
         return NULL;
     }
 
@@ -252,7 +250,7 @@ Atom *Evaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, const 
      * the number, if so we don't interpret it as a hexadecimal number because numbers are
      * never suffixed.
      */
-    if (isalpha(*pszExpr))
+    if (isalpha(*pcszExpr))
         return NULL;
 
     return NULL;
@@ -261,31 +259,30 @@ Atom *Evaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, const 
 
 Atom *Evaluator::ParseOperator(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom)
 {
-    for (uint64_t i = 0; i < g_cOperators; i++)
+    static uint64_t cOperators = sizeof(m_sOperators / sizeof(Operator));
+    for (uint64_t i = 0; i < cOperators; i++)
     {
-        size_t cbOperator =
-
-            StrLen(g_aOperators[i].pszOperator);
-        if (!StrNCmp(g_aOperators[i].pszOperator, pszExpr, cbOperator))
+        size_t cbOperator = strlen(m_sOperators[i].Name().c_str());
+        if (!strncmp(m_sOperators[i].Name().c_str(), pcszExpr, cbOperator))
         {
             /*
              * Verify if there are enough parameters on the queue for left associative operators.
              * e.g for binary '-', the previous atom must exist and must not be an open parenthesis or any
              * other operator.
              */
-            if (g_aOperators[i].Direction == enmDirLeft)
+            if (m_sOperators[i].Direction() == enmOperatorDirectionLeft)
             {
                 /* e.g: "-4" */
-                if (!pPreviousAtom)
+                if (!pcPreviousAtom)
                     continue;
 
                 /* e.g: "(-4"  and "(expr)-4" */
-                if (   AtomIsOperator(pPreviousAtom)
-                    && AtomIsOpenParenthesis(pPreviousAtom))
+                if (   pcPreviousAtom->Operator()
+                    && pcPreviousAtom->Operator()->IsOpenParanthesis())
                     continue;
             }
 
-            PATOM pAtom = MemAlloc(sizeof(ATOM));
+            Atom *pAtom = new Atom;
             if (!pAtom)
                 return NULL;
             pAtom->Type = enmAtomOperator;

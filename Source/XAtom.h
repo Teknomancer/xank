@@ -28,16 +28,15 @@
 #include <string>
 
 #include "EvaluatorDefs.h"
-
-class Operator;
-class Function;
-class Variable;
+#include "Operator.h"
+#include "Function.h"
+#include "Variable.h"
 
 /**
  * The type of Atom.
  * An Atom has to be one of the following distinct types.
  */
-enum AtomType
+enum XAtomType
 {
     /** Empty/uninitialized Atom. */
     enmAtomTypeEmpty = 0x10,
@@ -58,22 +57,22 @@ enum AtomType
  * The Atom class represents a token of the unit parsing stage
  * of the Evaluator class.
  */
-class Atom
+class XAtom
 {
     public:
-        Atom();
-        Atom(const Atom &a_Atom);
-        virtual ~Atom();
+        XAtom();
+        XAtom(const Atom &a_Atom);
+        virtual ~XAtom();
 
         /**
          * Returns the type of this Atom.
          *
          * @return AtomType
          */
-        AtomType                    Type() const;
+        XAtomType                   Type() const;
 
         /**
-         * Returns if this Atom is a number.
+         * Returns if this Atom is a number (i.e. either Integer or Float Atom).
          *
          * @return bool: true if it's a number, false otherwise.
          */
@@ -114,6 +113,46 @@ class Atom
          */
         bool                        IsOperator() const;
 
+        /**
+         * Returns pointer to the Operator Atom.
+         *
+         * @return Operator*: Pointer to the operator for this Operator Atom, or NULL if
+         *         this is not an Operator Atom.
+         */
+        XOperator                  *Operator() const;
+
+        /**
+         * Returns pointer to the Function Atom.
+         *
+         * @return Function*: Pointer to the function for this Function Atom, or NULL if
+         *         this is not a Function Atom.
+         */
+        XFunction                  *Function() const;
+
+        /**
+         * Returns pointer to the Variable Atom.
+         *
+         * @return Variable*: Pointer to the variable for this Variable Atom, or NULL if
+         *         this is not a Variable Atom.
+         */
+        XVariable                  *Variable() const;
+
+        /**
+         * Returns pointer to the Integer Atom.
+         *
+         * @return mpz_t*: Pointer to the integer for this Integer Atom, or NULL if this
+         *         is not an Integer Atom.
+         */
+        mpz_t                      *Integer() const;
+
+        /**
+         * Returns pointer to this Float Atom.
+         *
+         * @return mpf_t*: Pointer to the float for this Float Atom, or NULL if this is
+         *         not a Float Atom.
+         */
+        mpf_t                      *Float() const;
+
     private:
         /**
          * Sets this Atom to be identical to the passed in Atom.
@@ -122,17 +161,17 @@ class Atom
          */
         void                        SetTo(const Atom &Atom);
 
-        AtomType                    m_AtomType;   /**< The type this Atom represents. */
+        XAtomType                   m_AtomType;   /**< The type this Atom represents. */
         uint64_t                    m_iPosition;  /**< Cursor position, an index used to associate an Atom with an error. */
         uint64_t                    m_cParams;    /**< Number of parameters if this is a Function Atom. */
         std::string                 m_sVariable;  /**< Name of the variable if this is/might become a Variable Atom. */
         union
         {
-            mpz_t                   Integer;      /**< Integer value for a Number Atom. */
-            mpf_t                   Float;        /**< Floatint point value for a Number Atom. */
-            Operator               *pOperator;    /*< Pointer to the Operator for an Operator Atom. */
-            Function               *pFunction;    /*< Pointer to the Function for a Function Atom. */
-            Variable               *pVariable;    /*< Pointer to the Variable for a Variable Atom. */
+            mpz_t                   Integer;     /**< Pointer to the Integer value for a Number Atom. */
+            mpf_t                   Float;       /**< Pointer to the Float point value for a Number Atom. */
+            XOperator               Operator;    /*< Pointer to the Operator for an Operator Atom. */
+            XFunction               Function;    /*< Pointer to the Function for a Function Atom. */
+            XVariable               Variable;    /*< Pointer to the Variable for a Variable Atom. */
         } m_u;
 };
 
