@@ -40,15 +40,15 @@ endif
 # List of sources (regardless of directories), located by VPATH
 Group0_SRC = \
 	Assert.cpp \
-	Atom.cpp \
-    ConsoleIO.cpp \
-    CStringOps.cpp \
-	Errors.cpp \
-	Evaluator.cpp \
-	Function.cpp \
+	ConsoleIO.cpp \
+	CStringOps.cpp \
 	Main.cpp \
-	Operator.cpp \
-    Variable.cpp
+	XAtom.cpp \
+	XErrors.cpp \
+	XEvaluator.cpp \
+	XFunction.cpp \
+	XOperator.cpp \
+	XVariable.cpp
 
 
 # Build a Dependency list and an Object list, by replacing the .cpp
@@ -98,7 +98,7 @@ all: begin $(OUT_DIR_BIN)/${TARGET} done
 
 # This is fugly, I don't know how to have a dependency on Errors.cpp before "all" rule
 # Ugh, right now it works so meh.
-Source/Errors.cpp : $(OUT_DIR_GEN)/GenErrorData.h
+Source/XErrors.cpp : $(OUT_DIR_GEN)/GenErrorData.h
 
 begin:
 ifneq ($(BUILD_TYPE),release)
@@ -112,10 +112,10 @@ ifneq ($(BUILD_TYPE),debug)
 endif
 endif
 
-$(OUT_DIR_GEN)/GenErrorData.h: Source/Errors.h
+$(OUT_DIR_GEN)/GenErrorData.h: Source/XErrors.h
 	@mkdir -p $(OUT_DIR_GEN)
 	@echo "Generating error codes into $@"
-	@sed -f Source/ErrorData.sed Source/Errors.h > $@
+	@sed -f Source/ErrorData.sed Source/XErrors.h > $@
 
 done:
 	@echo "Done."

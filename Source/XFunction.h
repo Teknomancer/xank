@@ -26,10 +26,10 @@
 
 #include <string>
 
-class Atom;
+class XAtom;
 
 /** A Function function. */
-typedef int FNFUNCTION(Atom *apAtoms_[], uint64_t cAtoms_);
+typedef int FNFUNCTION(XAtom *apAtoms_[], uint64_t cAtoms_);
 /** Pointer to a Function function. */
 typedef FNFUNCTION *PFNFUNCTION;
 
@@ -37,7 +37,7 @@ typedef FNFUNCTION *PFNFUNCTION;
  * A Function.
  * A Function accepts zero or more parameters and outputs one value.
  */
-class Function
+class XFunction
 {
     public:
         /**
@@ -53,7 +53,7 @@ class Function
          * @param sShortDesc        Short description of this function.
          * @param sLongDesc         Long description of this function.
          */
-        Function(uint64_t cMinParams, uint64_t cMaxParams, std::string sName, PFNFUNCTION pfnFunction,
+        XFunction(uint64_t cMinParams, uint64_t cMaxParams, std::string sName, PFNFUNCTION pfnFunction,
                     std::string sShortDesc, std::string sLongDesc);
 
         /**
@@ -61,9 +61,9 @@ class Function
          *
          * @param Fn                Function object to copy.
          */
-        Function(const Function& Fn);
+        XFunction(const XFunction& Function);
 
-        virtual ~Function();
+        virtual ~XFunction();
 
         /**
          * Returns a copy of the name of this Function.
@@ -150,9 +150,9 @@ class Function
         /**
          * Returns a pointer to the function of this Function.
          *
-         * @return PFNFUNCTION*
+         * @return PFNFUNCTION
          */
-        PFNFUNCTION        *FunctionPtr() const;
+        PFNFUNCTION         Function() const;
 
         /**
          * Sets the function for this Function.
@@ -161,7 +161,7 @@ class Function
          *
          * @return int: xank error code.
          */
-        int                 SetFunctionPtr(PFNFUNCTION pfnFunction);
+        int                 SetFunction(PFNFUNCTION pfnFunction);
 
         /**
          * Invokes the function associated with this Function.
@@ -171,7 +171,7 @@ class Function
          *
          * @return int: xank error code..
          */
-        int                 Invoke(Atom *apAtoms_[], uint64_t cAtoms_);
+        int                 Invoke(XAtom *apAtoms[], uint64_t cAtoms);
 
         /**
          * Assignment operator.
@@ -180,7 +180,7 @@ class Function
          *
          * @return Function&: Reference to this Function.
          */
-        Function& operator  =(const Function &Fn);
+        const XFunction& operator  =(const XFunction &Fn);
 
     private:
         /**
@@ -188,7 +188,7 @@ class Function
          *
          * @param Fn                The source Function.
          */
-        void                SetTo(const Function &Fn);
+        void                SetTo(const XFunction &Fn);
 
         uint64_t            m_cMinParams;     /**< Minimum parameters accepted by @a pfnFunctor. */
         uint64_t            m_cMaxParams;     /**< Maximum paramaters accepted by @a pfnFunctor. */

@@ -1,5 +1,5 @@
 /** @file
- * xank - Variable, implementation.
+ * xank - Number, header.
  */
 
 /*
@@ -19,15 +19,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Variable.h"
+#ifndef XANK_NUMBER_H
+# define XANK_NUMBER_H
 
-Variable::Variable()
-{
-}
+#include <gmp.h>
 
+typedef mpz_t   XInteger;
+typedef mpf_t   XFloat;
+typedef mpq_t   XRational;
 
-Variable::~Variable()
-{
-}
-
+#endif /* XANK_NUMBER_H */
 
