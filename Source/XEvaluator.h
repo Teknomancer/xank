@@ -26,16 +26,15 @@
 #include <list>
 #include <string>
 
-#include "Function.h"
-#include "Operator.h"
+class XAtom;
+class XFunction;
+class XOperator;
 
-class Atom;
-
-class Evaluator
+class XEvaluator
 {
     public:
-        Evaluator();
-        virtual ~Evaluator();
+        XEvaluator();
+        virtual ~XEvaluator();
 
         /**
          * Parses an expression.
@@ -58,7 +57,7 @@ class Evaluator
          *
          * @return Atom*: A newly allocated Atom or NULL if no atoms were parsed.
          */
-        Atom                       *ParseAtom(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom);
+        XAtom                      *ParseAtom(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom);
 
         /**
          * Parses the expression for a function.
@@ -71,7 +70,7 @@ class Evaluator
          *
          * @return Atom*: A newly allocated Atom or NULL if no functions were parsed.
          */
-        Atom                       *ParseFunction(const char *pcszexpr, const char **ppcszEnd, const Atom *pcPreviousAtom);
+        XAtom                      *ParseFunction(const char *pcszexpr, const char **ppcszEnd, const XAtom *pcPreviousAtom);
 
         /**
          * Parses the expression for a number.
@@ -84,7 +83,7 @@ class Evaluator
          *
          * @return Atom*: A newly allocated Atom or NULL if no numbers were parsed.
          */
-        Atom                       *ParseNumber(const char *pcszExpr, const char **ppcszEnd, const Atom *cpPreviousAtom);
+        XAtom                      *ParseNumber(const char *pcszExpr, const char **ppcszEnd, const XAtom *cpPreviousAtom);
 
         /**
          * Parses the expression for an operator.
@@ -97,7 +96,7 @@ class Evaluator
          *
          * @return Atom*: A newly allocated Atom or NULL if no operators were parsed.
          */
-        Atom                       *ParseOperator(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom);
+        XAtom                      *ParseOperator(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom);
 
         /**
          * Parses the expression for a variable.
@@ -110,7 +109,7 @@ class Evaluator
          *
          * @return Atom*: A newly allocated Atom or NULL if no variables were parsed.
          */
-        Atom                       *ParseVariable(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom);
+        XAtom                      *ParseVariable(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom);
 
         /**
          * Parses the expression for a command.
@@ -123,13 +122,13 @@ class Evaluator
          *
          * @return Atom*: A newly allocated Atom or NULL if no commands were parsed.
          */
-        Atom                       *ParseCommand(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom);
+        XAtom                      *ParseCommand(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom);
 
         std::string                 m_sExpr;        /**< The full, unmodified expression */
-        std::queue<Atom*>           m_RPNQueue;     /**< Internal RPN representation done at the parsing stage. */
-        std::list<Atom*>            m_VarList;      /**< List of variables being evaulated, used for circular dependency checks. */
-        static const Function       m_sFunctions[]; /**< Static array of Function objects. */
-        static const Operator       m_sOperators[]; /**< Static array of Operator objects. */
+        std::queue<XAtom*>          m_RPNQueue;     /**< Internal RPN representation done at the parsing stage. */
+        std::list<XAtom*>           m_VarList;      /**< List of variables being evaulated, used for circular dependency checks. */
+        static const XFunction      m_sFunctions[]; /**< Static array of Function objects. */
+        static const XOperator      m_sOperators[]; /**< Static array of Operator objects. */
 };
 
 #endif /* XANK_EVALUATOR_H */

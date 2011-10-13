@@ -27,10 +27,13 @@
 
 #include <string>
 
-#include "EvaluatorDefs.h"
-#include "Operator.h"
-#include "Function.h"
-#include "Variable.h"
+#include "XEvaluatorDefs.h"
+#include "XNumber.h"
+
+class XOperator;
+class XFunction;
+class XVariable;
+
 
 /**
  * The type of Atom.
@@ -61,7 +64,7 @@ class XAtom
 {
     public:
         XAtom();
-        XAtom(const Atom &a_Atom);
+        XAtom(const XAtom &a_Atom);
         virtual ~XAtom();
 
         /**
@@ -114,36 +117,21 @@ class XAtom
         bool                        IsOperator() const;
 
         /**
-         * Returns pointer to the Operator Atom.
-         *
-         * @return Operator*: Pointer to the operator for this Operator Atom, or NULL if
-         *         this is not an Operator Atom.
-         */
-        XOperator                  *Operator() const;
-
-        /**
-         * Returns pointer to the Function Atom.
-         *
-         * @return Function*: Pointer to the function for this Function Atom, or NULL if
-         *         this is not a Function Atom.
-         */
-        XFunction                  *Function() const;
-
-        /**
-         * Returns pointer to the Variable Atom.
-         *
-         * @return Variable*: Pointer to the variable for this Variable Atom, or NULL if
-         *         this is not a Variable Atom.
-         */
-        XVariable                  *Variable() const;
-
-        /**
          * Returns pointer to the Integer Atom.
          *
          * @return mpz_t*: Pointer to the integer for this Integer Atom, or NULL if this
          *         is not an Integer Atom.
          */
-        mpz_t                      *Integer() const;
+        const XInteger             *Integer() const;
+
+        /**
+         * Sets the integer and makes this an Integer Atom.
+         *
+         * @param pInteger          Pointer to the integer.
+         *
+         * @return int: xank error code.
+         */
+        int                         SetInteger(XInteger *pInteger);
 
         /**
          * Returns pointer to this Float Atom.
@@ -151,7 +139,67 @@ class XAtom
          * @return mpf_t*: Pointer to the float for this Float Atom, or NULL if this is
          *         not a Float Atom.
          */
-        mpf_t                      *Float() const;
+        const XFloat               *Float() const;
+
+        /**
+         * Sets the float and makes this a Float Atom.
+         *
+         * @param pFloat            Pointer to the Float.
+         *
+         * @return int: xank error code.
+         */
+        int                         SetFloat(XFloat *pFloat);
+
+        /**
+         * Returns pointer to the Operator Atom.
+         *
+         * @return Operator*: Pointer to the operator for this Operator Atom, or NULL if
+         *         this is not an Operator Atom.
+         */
+        const XOperator            *Operator() const;
+
+        /**
+         * Sets thee operator and makes this an Operator Atom.
+         *
+         * @param pOperator         Pointer to the Operator.
+         *
+         * @return int: xank error code.
+         */
+        int                         SetOperator(XOperator *pOperator);
+
+        /**
+         * Returns pointer to the Function Atom.
+         *
+         * @return Function*: Pointer to the function for this Function Atom, or NULL if
+         *         this is not a Function Atom.
+         */
+        const XFunction            *Function() const;
+
+        /**
+         * Sets the function and makes it a Function Atom.
+         *
+         * @param pFunction         Pointer to the Function.
+         *
+         * @return int: xank error code.
+         */
+        int                         SetFunction(XFunction *pFunction);
+
+        /**
+         * Returns pointer to the Variable Atom.
+         *
+         * @return Variable*: Pointer to the variable for this Variable Atom, or NULL if
+         *         this is not a Variable Atom.
+         */
+        const XVariable            *Variable() const;
+
+        /**
+         * Sets the variable and makes this a Variable Atom.
+         *
+         * @param pVariable         Pointer to the Variable.
+         *
+         * @return int: xank error code.
+         */
+        int                         SetVariable(XVariable *pVariable);
 
     private:
         /**
@@ -159,7 +207,12 @@ class XAtom
          *
          * @param Atom          The source Atom.
          */
-        void                        SetTo(const Atom &Atom);
+        void                        SetTo(const XAtom &Atom);
+
+        /**
+         * Destroys this object and reinitializes it to empty state.
+         */
+        void                        Destroy();
 
         XAtomType                   m_AtomType;   /**< The type this Atom represents. */
         uint64_t                    m_iPosition;  /**< Cursor position, an index used to associate an Atom with an error. */
@@ -167,11 +220,11 @@ class XAtom
         std::string                 m_sVariable;  /**< Name of the variable if this is/might become a Variable Atom. */
         union
         {
-            mpz_t                   Integer;     /**< Pointer to the Integer value for a Number Atom. */
-            mpf_t                   Float;       /**< Pointer to the Float point value for a Number Atom. */
-            XOperator               Operator;    /*< Pointer to the Operator for an Operator Atom. */
-            XFunction               Function;    /*< Pointer to the Function for a Function Atom. */
-            XVariable               Variable;    /*< Pointer to the Variable for a Variable Atom. */
+            XInteger               *pInteger;     /**< Pointer to the Integer value for a Number Atom. */
+            XFloat                 *pFloat;       /**< Pointer to the Float point value for a Number Atom. */
+            XOperator              *pOperator;    /*< Pointer to the Operator for an Operator Atom. */
+            XFunction              *pFunction;    /*< Pointer to the Function for a Function Atom. */
+            XVariable              *pVariable;    /*< Pointer to the Variable for a Variable Atom. */
         } m_u;
 };
 

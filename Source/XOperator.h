@@ -26,21 +26,21 @@
 
 #include <string>
 
-class Atom;
+class XAtom;
 
 /**
  * OperatorDirection: Operator direction.
  * The associativity associated with the Operator. hehe.
  */
-enum OperatorDirection
+enum XOperatorDir
 {
-    enmOperatorDirectionNone = 0x30,
-    enmOperatorDirectionLeft,
-    enmOperatorDirectionRight
+    enmOperatorDirNone = 0x30,
+    enmOperatorDirLeft,
+    enmOperatorDirRight
 };
 
 /** An Operator function. */
-typedef int FNOPERATOR(Atom *apAtoms_[]);
+typedef int FNOPERATOR(XAtom *apAtoms_[]);
 /** Pointer to an Operator function. */
 typedef FNOPERATOR *PFNOPERATOR;
 
@@ -48,12 +48,13 @@ typedef FNOPERATOR *PFNOPERATOR;
  * An Operator.
  * An Operator performs an operation on one or more operands.
  */
-class Operator
+class XOperator
 {
     public:
-        Operator(uint32_t uId, int32_t iPriority, OperatorDirection Dir, uint8_t cParams, std::string sName,
+        XOperator();
+        XOperator(uint32_t uId, int32_t iPriority, XOperatorDir Dir, uint8_t cParams, std::string sName,
             PFNOPERATOR pfnOperator, std::string sShortDesc, std::string sLongDesc);
-        virtual ~Operator();
+        virtual ~XOperator();
 
         /**
          * Returns the Id of this Operator.
@@ -74,14 +75,14 @@ class Operator
          *
          * @return OperatorDirection
          */
-        OperatorDirection       Direction() const;
+        XOperatorDir            Dir() const;
 
         /**
          * Returns the number of parameters taken by the Operator function.
          *
          * @return uint8_t
          */
-        uint8_t                 Parameters() const;
+        uint8_t                 Params() const;
 
         /**
          * Returns a copy of the name of this Operator.
@@ -111,7 +112,7 @@ class Operator
          *
          * @return int: xank error code.
          */
-        int                     InvokeFunction(Atom *apAtoms[]);
+        int                     Invoke(XAtom *apAtoms[]);
 
         /**
          * Returns if this Operator is the Open Paranthesis Operator.
@@ -144,7 +145,7 @@ class Operator
     private:
         uint32_t                m_uId;          /**< The operator Id, used to identify certain key Operators. */
         int32_t                 m_iPriority;    /**< Operator priority, value is relative to Operators. */
-        OperatorDirection       m_Direction;    /**< Operator associativity. */
+        XOperatorDir            m_Dir;          /**< Operator associativity direction. */
         uint8_t                 m_cParams;      /**< Number of parameters to the operator (valid values: 0, 1 or 2) */
         std::string             m_sName;        /**< Name of the Operator as seen in the expression. */
         PFNOPERATOR             m_pfnOperator;  /**< Pointer to the Operator evaluator function. */

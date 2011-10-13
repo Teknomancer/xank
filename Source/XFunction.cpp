@@ -19,123 +19,122 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Function.h"
-#include "Errors.h"
+#include "XFunction.h"
+#include "XErrors.h"
 
-Function::Function(uint64_t cMinParams, uint64_t cMaxParams, std::string sName, PFNFUNCTION pfnFunction,
+XFunction::XFunction(uint64_t cMinParams, uint64_t cMaxParams, std::string sName, PFNFUNCTION pfnFunction,
                     std::string sShortDesc, std::string sLongDesc)
     : m_cMinParams(cMinParams),
     m_cMaxParams(cMaxParams),
     m_sName(sName),
-    m_pfnFunction(pfnFunction),
     m_sShortDesc(sShortDesc),
     m_sLongDesc(sLongDesc)
 {
 }
 
 
-Function::Function(const Function &Fn)
+XFunction::XFunction(const XFunction &Fn)
 {
     SetTo(Fn);
 }
 
-Function::~Function()
+XFunction::~XFunction()
 {
 }
 
-
-inline std::string Function::Name() const
+inline std::string XFunction::Name() const
 {
     return m_sName;
 }
 
 
-inline int Function::SetName(const std::string &scName)
+inline int XFunction::SetName(const std::string &scName)
 {
     m_sName = scName;
     return INF_SUCCESS;
 }
 
 
-inline std::string Function::ShortDesc() const
+inline std::string XFunction::ShortDesc() const
 {
     return m_sShortDesc;
 }
 
 
-inline int Function::SetShortDesc(const std::string &scDesc)
+inline int XFunction::SetShortDesc(const std::string &scDesc)
 {
     m_sShortDesc = scDesc;
     return INF_SUCCESS;
 }
 
 
-inline std::string Function::LongDesc() const
+inline std::string XFunction::LongDesc() const
 {
     return m_sLongDesc;
 }
 
 
-inline int Function::SetLongDesc(const std::string &scDesc)
+inline int XFunction::SetLongDesc(const std::string &scDesc)
 {
     m_sLongDesc = scDesc;
     return INF_SUCCESS;
 }
 
 
-inline uint64_t Function::MinParams() const
+inline uint64_t XFunction::MinParams() const
 {
     return m_cMinParams;
 }
 
 
-inline int Function::SetMinParams(uint64_t cMinParams)
+inline int XFunction::SetMinParams(uint64_t cMinParams)
 {
     m_cMinParams = cMinParams;
     return INF_SUCCESS;
 }
 
 
-inline uint64_t Function::MaxParams() const
+inline uint64_t XFunction::MaxParams() const
 {
     return m_cMaxParams;
 }
 
 
-inline int Function::SetMaxParams(uint64_t cMaxParams)
+inline int XFunction::SetMaxParams(uint64_t cMaxParams)
 {
     m_cMaxParams = cMaxParams;
     return INF_SUCCESS;
 }
 
 
-inline PFNFUNCTION Function::FunctionPtr() const
+inline PFNFUNCTION XFunction::Function() const
 {
     return m_pfnFunction;
 }
 
 
-inline int Function::SetFunctionPtr(PFNFUNCTION pfnFunction)
+inline int XFunction::SetFunction(PFNFUNCTION pfnFunction)
 {
     m_pfnFunction = pfnFunction;
     return INF_SUCCESS;
 }
 
 
-inline int Function::Invoke(Atom *apAtoms[], uint64_t cAtoms)
+int XFunction::Invoke(XAtom *apAtoms[], uint64_t cAtoms)
 {
-    return m_pfnFunction(apAtoms, cAtoms);
+    int rc = (*m_pfnFunction)(apAtoms, cAtoms);
+    return rc;
 }
 
 
-const Function &Function::operator =(const Function &Fn)
+const XFunction &XFunction::operator =(const XFunction &Fn)
 {
     SetTo(Fn);
     return *this;
 }
 
 
-void Function::SetTo(const Function &Fn)
+void XFunction::SetTo(const XFunction &Fn)
 {
     m_cMinParams     = Fn.m_cMinParams;
     m_cMaxParams     = Fn.m_cMaxParams;

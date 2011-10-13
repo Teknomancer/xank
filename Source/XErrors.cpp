@@ -22,8 +22,8 @@
 /*******************************************************************************
  *   Header Files                                                              *
  *******************************************************************************/
-#include "Errors.h"
-#include "GenericDefs.h"
+#include "XErrors.h"
+#include "XGenericDefs.h"
 
 #include <stdlib.h>
 

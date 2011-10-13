@@ -25,22 +25,22 @@
 #include <queue>
 #include <string>
 
-class Atom;
+class XAtom;
 
 /**
  * A Variable.
  * A variable represents a substitutable entity in a parsed expression.
  */
-class Variable
+class XVariable
 {
     public:
-        Variable();
-        virtual ~Variable();
+        XVariable();
+        virtual ~XVariable();
 
     private:
         std::string             m_sVariable;    /**< Name of the Variable as seen in the expression. */
         std::string             m_sExpr;        /**< The expression assigned to the variable. */
-        std::queue<Atom*>       m_RPNQueue;     /** The RPN Queue. */
+        std::queue<XAtom*>      m_RPNQueue;     /** The RPN Queue. */
 };
 
 #endif /* XANK_VARIABLE_H */

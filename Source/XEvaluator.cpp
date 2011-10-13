@@ -19,65 +19,68 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Evaluator.h"
-#include "EvaluatorDefs.h"
-#include "Atom.h"
-#include "Operator.h"
-#include "Errors.h"
+#include "XEvaluator.h"
+#include "XEvaluatorDefs.h"
+#include "XAtom.h"
+#include "XFunction.h"
+#include "XGenericDefs.h"
+#include "XOperator.h"
+#include "XErrors.h"
 
 #ifdef XANK_DEBUG
 # include "ConsoleIO.h"
 #endif
 
+#include <cstring>
 #include <stdint.h>
 
-static int FxAdd (Atom *apAtoms_[], uint64_t cAtoms_)
+static int FxAdd (XAtom *apAtoms_[], uint64_t cAtoms_)
 {
     return INF_SUCCESS;
 }
 
-const Operator Evaluator::m_sOperators[] =
+const XOperator XEvaluator::m_sOperators[] =
 {
-    /*     Id        Pri    Associativity            cParams  Name   pfn    ShortHelp      LongHelp */
+    /*     Id        Pri    Associativity          cParams  Name   pfn    ShortHelp      LongHelp */
     /* Special Operators*/
-    Operator(XANK_OPEN_PARANTHESIS_OPERATOR_ID,
-                      99, enmOperatorDirectionNone,   0,      "(",   NULL,  "(<expr>",        "Begin subexpresion or function."),
-    Operator(XANK_CLOSE_PARANTHESIS_OPERATOR_ID,
-                      99,  enmOperatorDirectionNone,  0,      ")",   NULL,  "<expr>)",        "End subexpression or function."),
-    Operator(XANK_PARAM_SEPARATOR_OPERATOR_ID,
-                       0,  enmOperatorDirectionLeft,  2,      ",",   NULL,  "<expr>, <expr>", "Function Parameter separator."),
-    Operator(XANK_ASSIGNMENT_OPERATOR_ID,
-                       0,  enmOperatorDirectionLeft,  2,      "=",   NULL, "<lval>=<rval>",   "Assignment operator."),
+    XOperator(XANK_OPEN_PARANTHESIS_OPERATOR_ID,
+                      99, enmOperatorDirNone,        0,      "(",   NULL,  "(<expr>",        "Begin subexpresion or function."),
+    XOperator(XANK_CLOSE_PARANTHESIS_OPERATOR_ID,
+                      99,  enmOperatorDirNone,       0,      ")",   NULL,  "<expr>)",        "End subexpression or function."),
+    XOperator(XANK_PARAM_SEPARATOR_OPERATOR_ID,
+                       0,  enmOperatorDirLeft,       2,      ",",   NULL,  "<expr>, <expr>", "Function Parameter separator."),
+    XOperator(XANK_ASSIGNMENT_OPERATOR_ID,
+                       0,  enmOperatorDirLeft,       2,      "=",   NULL, "<lval>=<rval>",   "Assignment operator."),
 };
 
-const Function Evaluator::m_sFunctions[] =
+const XFunction XEvaluator::m_sFunctions[] =
 {
-    Function(1, UINT64_MAX, "avg",       FxAdd, "Average", "Returns the arithmetic average."),
-    Function(1, UINT64_MAX, "fact",      FxAdd, "Factorial", "Returns the factorial."),
+    XFunction(1, UINT64_MAX, "avg",       FxAdd, "Average", "Returns the arithmetic average."),
+    XFunction(1, UINT64_MAX, "fact",      FxAdd, "Factorial", "Returns the factorial."),
 };
 
 
-Evaluator::Evaluator()
+XEvaluator::XEvaluator()
 {
     /** @todo add parameters to accept settings */
 }
 
 
-Evaluator::~Evaluator()
+XEvaluator::~XEvaluator()
 {
 }
 
 
-int Evaluator::Parse(const char *pcszExpr)
+int XEvaluator::Parse(const char *pcszExpr)
 {
     return INF_SUCCESS;
 }
 
 
-Atom *Evaluator::ParseAtom(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom)
+XAtom *XEvaluator::ParseAtom(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom)
 {
     DEBUGPRINTF(("ParseAtom\n"));
-    Atom *pAtom = NULL;
+    XAtom *pAtom = NULL;
     while (*pcszExpr)
     {
         if (isspace(*pcszExpr))
@@ -115,13 +118,13 @@ Atom *Evaluator::ParseAtom(const char *pcszExpr, const char **ppcszEnd, const At
 }
 
 
-Atom *Evaluator::ParseFunction(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom)
+XAtom *XEvaluator::ParseFunction(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom)
 {
     return NULL;
 }
 
 
-Atom *Evaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom)
+XAtom *XEvaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom)
 {
     std::string sNum;
     const char *pszStart = pcszExpr;
@@ -257,20 +260,20 @@ Atom *Evaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, const 
 }
 
 
-Atom *Evaluator::ParseOperator(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom)
+XAtom *XEvaluator::ParseOperator(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom)
 {
-    static uint64_t cOperators = sizeof(m_sOperators / sizeof(Operator));
+    static uint64_t cOperators = XANK_ARRAY_ELEMENTS(m_sOperators);
     for (uint64_t i = 0; i < cOperators; i++)
     {
-        size_t cbOperator = strlen(m_sOperators[i].Name().c_str());
-        if (!strncmp(m_sOperators[i].Name().c_str(), pcszExpr, cbOperator))
+        size_t cbOperator = std::strlen(m_sOperators[i].Name().c_str());
+        if (!std::strncmp(m_sOperators[i].Name().c_str(), pcszExpr, cbOperator))
         {
             /*
              * Verify if there are enough parameters on the queue for left associative operators.
              * e.g for binary '-', the previous atom must exist and must not be an open parenthesis or any
              * other operator.
              */
-            if (m_sOperators[i].Direction() == enmOperatorDirectionLeft)
+            if (m_sOperators[i].Dir() == enmOperatorDirLeft)
             {
                 /* e.g: "-4" */
                 if (!pcPreviousAtom)
@@ -282,14 +285,18 @@ Atom *Evaluator::ParseOperator(const char *pcszExpr, const char **ppcszEnd, cons
                     continue;
             }
 
-            Atom *pAtom = new Atom;
+            /** @todo ugh, ownership semantics are screwed. rethink this shit.  */
+#if 0
+            XAtom *pAtom = new XAtom();
             if (!pAtom)
                 return NULL;
+            pAtom->SetOperator(
             pAtom->Type = enmAtomOperator;
             pAtom->u.pOperator = &g_aOperators[i];
             pszExpr += cbOperator;
             *ppszEnd = pszExpr;
             return pAtom;
+#endif
         }
     }
     return NULL;
@@ -297,13 +304,13 @@ Atom *Evaluator::ParseOperator(const char *pcszExpr, const char **ppcszEnd, cons
 }
 
 
-Atom *Evaluator::ParseVariable(const char *pcszExpr, const char **ppcszEnd, const Atom *pcPreviousAtom)
+XAtom *XEvaluator::ParseVariable(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom)
 {
     return NULL;
 }
 
 
-Atom *Evaluator::ParseCommand(const char *pcszExpr,  const char **ppcszEnd,  const Atom *pcPreviousAtom)
+XAtom *XEvaluator::ParseCommand(const char *pcszExpr,  const char **ppcszEnd,  const XAtom *pcPreviousAtom)
 {
     return NULL;
 }

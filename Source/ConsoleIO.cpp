@@ -22,7 +22,7 @@
 #include "ConsoleIO.h"
 #include "ConsoleColors.h"
 #include "CStringOps.h"
-#include "Errors.h"
+#include "XErrors.h"
 
 #include <cstdio>
 #include <cstdarg>

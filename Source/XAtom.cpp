@@ -20,89 +20,75 @@
  */
 
 
-#include "Atom.h"
+#include "XAtom.h"
+#include "XFunction.h"
+#include "XOperator.h"
+#include "XVariable.h"
+#include "XErrors.h"
 
-XAtom::Atom()
+#include <cstring>
+
+XAtom::XAtom()
     : m_AtomType(enmAtomTypeEmpty)
 {
+    std::memset(&m_u, 0, sizeof(m_u));
 }
 
 
-XAtom::Atom(const Atom &a_Atom)
+XAtom::XAtom(const XAtom &Atom)
 {
-    SetTo(a_Atom);
+    SetTo(Atom);
 }
 
 
-XAtom::~Atom()
+XAtom::~XAtom()
 {
-}
-
-inline XAtom::SetFunction(Function *pFunction)
-{
-
+    Destroy();
 }
 
 
-inline bool XAtom::IsFunction() const
+bool XAtom::IsFunction() const
 {
     return m_AtomType == enmAtomTypeFunction;
 }
 
 
-inline bool XAtom::IsOperator() const
+bool XAtom::IsOperator() const
 {
     return m_AtomType == enmAtomTypeOperator;
 }
 
 
-inline bool XAtom::IsVariable() const
+bool XAtom::IsVariable() const
 {
     return m_AtomType == enmAtomTypeVariable;
 }
 
 
-inline bool XAtom::IsNumber() const
+bool XAtom::IsNumber() const
 {
     return m_AtomType == enmAtomTypeInteger || m_AtomType == enmAtomTypeFloat;
 }
 
 
-inline bool XAtom::IsInteger() const
+bool XAtom::IsInteger() const
 {
     return m_AtomType == enmAtomTypeInteger;
 }
 
-
-inline bool XAtom::IsFloat() const
+bool XAtom::IsFloat() const
 {
     return m_AtomType == enmAtomTypeFloat;
 }
 
 
-inline XAtomType XAtom::Type() const
+XAtomType XAtom::Type() const
 {
     return m_AtomType;
 }
 
 
-inline XOperator *XAtom::Operator() const
-{
-    if (m_AtomType == enmAtomTypeOperator)
-        return m_u.pOperator;
-    return NULL;
-}
-
-
-inline XFunction *XAtom::Function() const
-{
-    if (m_AtomType == enmAtomTypeFunction)
-        return m_u.pFunction;
-    return NULL;
-}
-
-
-inline mpz_t *XAtom::Integer() const
+const XInteger *XAtom::Integer() const
 {
     if (m_AtomType == enmAtomTypeInteger)
         return m_u.pInteger;
@@ -110,7 +96,16 @@ inline mpz_t *XAtom::Integer() const
 }
 
 
-inline mpq_t *XAtom::Float() const
+int XAtom::SetInteger(mpz_t *pInteger)
+{
+    Destroy();
+    m_u.pInteger = pInteger;
+    m_AtomType = enmAtomTypeInteger;
+    return INF_SUCCESS;
+}
+
+
+const XFloat *XAtom::Float() const
 {
     if (m_AtomType == enmAtomTypeFloat)
         return m_u.pFloat;
@@ -118,12 +113,89 @@ inline mpq_t *XAtom::Float() const
 }
 
 
-void XAtom::SetTo(const Atom &atom)
+int XAtom::SetFloat(XFloat *pFloat)
+{
+    Destroy();
+    m_u.pFloat = pFloat;
+    m_AtomType = enmAtomTypeFloat;
+    return INF_SUCCESS;
+}
+
+
+const XOperator *XAtom::Operator() const
+{
+    if (m_AtomType == enmAtomTypeOperator)
+        return m_u.pOperator;
+    return NULL;
+}
+
+
+int XAtom::SetOperator(XOperator *pOperator)
+{
+    Destroy();
+    m_u.pOperator = pOperator;
+    m_AtomType = enmAtomTypeOperator;
+    return INF_SUCCESS;
+}
+
+
+const XFunction *XAtom::Function() const
+{
+    if (m_AtomType == enmAtomTypeFunction)
+        return m_u.pFunction;
+    return NULL;
+}
+
+
+int XAtom::SetFunction(XFunction *pFunction)
+{
+    Destroy();
+    m_u.pFunction = pFunction;
+    m_AtomType = enmAtomTypeFunction;
+    return INF_SUCCESS;
+}
+
+
+const XVariable *XAtom::Variable() const
+{
+    if (m_AtomType == enmAtomTypeVariable)
+        return m_u.pVariable;
+    return NULL;
+}
+
+
+int XAtom::SetVariable(XVariable *pVariable)
+{
+    Destroy();
+    m_u.pVariable = pVariable;
+    m_AtomType = enmAtomTypeVariable;
+    return INF_SUCCESS;
+}
+
+
+void XAtom::SetTo(const XAtom &atom)
 {
     m_AtomType  = atom.m_AtomType;
     m_cParams   = atom.m_cParams;
     m_iPosition = atom.m_iPosition;
     m_sVariable = atom.m_sVariable;
     m_u         = atom.m_u;
+}
+
+
+void XAtom::Destroy()
+{
+    if (m_u.pInteger)
+        delete m_u.pInteger;
+    else if (m_u.pFloat)
+        delete m_u.pFloat;
+    else if (m_u.pFunction)
+        delete m_u.pFunction;
+    else if (m_u.pOperator)
+        delete m_u.pOperator;
+    else if (m_u.pVariable)
+        delete m_u.pVariable;
+    std::memset(&m_u, 0, sizeof(m_u));
+    m_AtomType = enmAtomTypeEmpty;
 }
 
