@@ -22,65 +22,103 @@
 
 #include "Atom.h"
 
-Atom::Atom()
+XAtom::Atom()
     : m_AtomType(enmAtomTypeEmpty)
 {
 }
 
 
-Atom::Atom(const Atom &a_Atom)
+XAtom::Atom(const Atom &a_Atom)
 {
     SetTo(a_Atom);
 }
 
 
-Atom::~Atom()
+XAtom::~Atom()
 {
 }
 
+inline XAtom::SetFunction(Function *pFunction)
+{
 
-inline bool Atom::IsFunction() const
+}
+
+
+inline bool XAtom::IsFunction() const
 {
     return m_AtomType == enmAtomTypeFunction;
 }
 
 
-inline bool Atom::IsOperator() const
+inline bool XAtom::IsOperator() const
 {
     return m_AtomType == enmAtomTypeOperator;
 }
 
 
-inline bool Atom::IsVariable() const
+inline bool XAtom::IsVariable() const
 {
     return m_AtomType == enmAtomTypeVariable;
 }
 
 
-inline bool Atom::IsNumber() const
+inline bool XAtom::IsNumber() const
 {
     return m_AtomType == enmAtomTypeInteger || m_AtomType == enmAtomTypeFloat;
 }
 
 
-inline bool Atom::IsInteger() const
+inline bool XAtom::IsInteger() const
 {
     return m_AtomType == enmAtomTypeInteger;
 }
 
 
-inline bool Atom::IsFloat() const
+inline bool XAtom::IsFloat() const
 {
     return m_AtomType == enmAtomTypeFloat;
 }
 
-inline AtomType Atom::Type() const
+
+inline XAtomType XAtom::Type() const
 {
     return m_AtomType;
 }
 
 
-void Atom::SetTo(const Atom &atom)
+inline XOperator *XAtom::Operator() const
+{
+    if (m_AtomType == enmAtomTypeOperator)
+        return m_u.pOperator;
+    return NULL;
+}
+
+
+inline XFunction *XAtom::Function() const
+{
+    if (m_AtomType == enmAtomTypeFunction)
+        return m_u.pFunction;
+    return NULL;
+}
+
+
+inline mpz_t *XAtom::Integer() const
+{
+    if (m_AtomType == enmAtomTypeInteger)
+        return m_u.pInteger;
+    return NULL;
+}
+
+
+inline mpq_t *XAtom::Float() const
+{
+    if (m_AtomType == enmAtomTypeFloat)
+        return m_u.pFloat;
+    return NULL;
+}
+
+
+void XAtom::SetTo(const Atom &atom)
 {
     m_AtomType  = atom.m_AtomType;
     m_cParams   = atom.m_cParams;

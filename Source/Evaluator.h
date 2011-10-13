@@ -27,6 +27,7 @@
 #include <string>
 
 #include "Function.h"
+#include "Operator.h"
 
 class Atom;
 

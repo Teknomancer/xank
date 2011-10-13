@@ -56,6 +56,13 @@ class Function
         Function(uint64_t cMinParams, uint64_t cMaxParams, std::string sName, PFNFUNCTION pfnFunction,
                     std::string sShortDesc, std::string sLongDesc);
 
+        /**
+         * Copy constructor.
+         *
+         * @param Fn                Function object to copy.
+         */
+        Function(const Function& Fn);
+
         virtual ~Function();
 
         /**
@@ -66,11 +73,30 @@ class Function
         std::string         Name() const;
 
         /**
+         * Sets the name of this Function.
+         *
+         * @param scName            The name of this Function.
+         *
+         * @return int: xank error code.
+         */
+        int                 SetName(const std::string &scName);
+
+        /**
          * Returns the minimum number of parameters accepted by this Function.
          *
          * @return uint64_t
          */
         uint64_t            MinParams() const;
+
+
+        /**
+         * Sets the minimum number of parameters accepted by this Function.
+         *
+         * @param cMinParams        The minimum number of parameters.
+         *
+         * @return int: xank error code.
+         */
+        int                 SetMinParams(uint64_t cMinParams);
 
         /**
          * Returns the maximum number of parameters accepted by this Function.
@@ -80,11 +106,29 @@ class Function
         uint64_t            MaxParams() const;
 
         /**
+         * Sets the maximum number of parameters accepted by this Function.
+         *
+         * @param cMaxParams        The maximum number of parameters.
+         *
+         * @return int: xank error code.
+         */
+        int                 SetMaxParams(uint64_t cMaxParams);
+
+        /**
          * Returns a copy of the short description of this Function.
          *
          * @return std::string
          */
         std::string         ShortDesc() const;
+
+        /**
+         * Sets the short description for this Function.
+         *
+         * @param scDesc            The short description.
+         *
+         * @return int: xank error code.
+         */
+        int                 SetShortDesc(const std::string &scDesc);
 
         /**
          * Returns a copy of the long description of this Function.
@@ -94,6 +138,32 @@ class Function
         std::string         LongDesc() const;
 
         /**
+         * Sets the long description for this Function.
+         *
+         * @param scDesc            The long description.
+         *
+         * @return int: xank error code.
+         */
+        int                 SetLongDesc(const std::string &scDesc);
+
+
+        /**
+         * Returns a pointer to the function of this Function.
+         *
+         * @return PFNFUNCTION*
+         */
+        PFNFUNCTION        *FunctionPtr() const;
+
+        /**
+         * Sets the function for this Function.
+         *
+         * @param pfnFunction       Pointer to the function.
+         *
+         * @return int: xank error code.
+         */
+        int                 SetFunctionPtr(PFNFUNCTION pfnFunction);
+
+        /**
          * Invokes the function associated with this Function.
          *
          * @param apAtoms_          An array of pointers to Atoms.
@@ -101,9 +171,25 @@ class Function
          *
          * @return int: xank error code..
          */
-        int                 InvokeFunction(Atom *apAtoms_[], uint64_t cAtoms_);
+        int                 Invoke(Atom *apAtoms_[], uint64_t cAtoms_);
+
+        /**
+         * Assignment operator.
+         *
+         * @param Fn                Function object to copy.
+         *
+         * @return Function&: Reference to this Function.
+         */
+        Function& operator  =(const Function &Fn);
 
     private:
+        /**
+         * Sets this Function to be identical to the passed Function.
+         *
+         * @param Fn                The source Function.
+         */
+        void                SetTo(const Function &Fn);
+
         uint64_t            m_cMinParams;     /**< Minimum parameters accepted by @a pfnFunctor. */
         uint64_t            m_cMaxParams;     /**< Maximum paramaters accepted by @a pfnFunctor. */
         std::string         m_sName;          /**< Name of the Function as seen in the expression. */
