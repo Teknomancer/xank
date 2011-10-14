@@ -21,6 +21,8 @@
 
 
 #include "XAtom.h"
+
+#include "Assert.h"
 #include "XFunction.h"
 #include "XOperator.h"
 #include "XVariable.h"
@@ -88,35 +90,37 @@ XAtomType XAtom::Type() const
 }
 
 
-const XInteger *XAtom::Integer() const
+const mpz_t *XAtom::Integer() const
 {
     if (m_AtomType == enmAtomTypeInteger)
-        return m_u.pInteger;
+        return &m_u.Integer;
     return NULL;
 }
 
 
-int XAtom::SetInteger(mpz_t *pInteger)
+int XAtom::SetInteger(mpz_t *pVal)
 {
+    Assert(pVal != NULL);
     Destroy();
-    m_u.pInteger = pInteger;
+    mpz_set(m_u.Integer, *pVal);
     m_AtomType = enmAtomTypeInteger;
     return INF_SUCCESS;
 }
 
 
-const XFloat *XAtom::Float() const
+const mpf_t *XAtom::Float() const
 {
     if (m_AtomType == enmAtomTypeFloat)
-        return m_u.pFloat;
+        return &m_u.Float;
     return NULL;
 }
 
 
-int XAtom::SetFloat(XFloat *pFloat)
+int XAtom::SetFloat(mpf_t *pVal)
 {
+    Assert(pVal);
     Destroy();
-    m_u.pFloat = pFloat;
+    mpf_set(m_u.Float, *pVal);
     m_AtomType = enmAtomTypeFloat;
     return INF_SUCCESS;
 }
@@ -185,16 +189,6 @@ void XAtom::SetTo(const XAtom &atom)
 
 void XAtom::Destroy()
 {
-    if (m_u.pInteger)
-        delete m_u.pInteger;
-    else if (m_u.pFloat)
-        delete m_u.pFloat;
-    else if (m_u.pFunction)
-        delete m_u.pFunction;
-    else if (m_u.pOperator)
-        delete m_u.pOperator;
-    else if (m_u.pVariable)
-        delete m_u.pVariable;
     std::memset(&m_u, 0, sizeof(m_u));
     m_AtomType = enmAtomTypeEmpty;
 }

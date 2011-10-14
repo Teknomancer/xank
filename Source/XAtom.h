@@ -28,7 +28,6 @@
 #include <string>
 
 #include "XEvaluatorDefs.h"
-#include "XNumber.h"
 
 class XOperator;
 class XFunction;
@@ -119,19 +118,19 @@ class XAtom
         /**
          * Returns pointer to the Integer Atom.
          *
-         * @return mpz_t*: Pointer to the integer for this Integer Atom, or NULL if this
-         *         is not an Integer Atom.
+         * @return mpz_t*: Pointer to the the integer for this Integer Atom, or NULL
+         *         if this is not an Integer Atom.
          */
-        const XInteger             *Integer() const;
+        const mpz_t                *Integer() const;
 
         /**
          * Sets the integer and makes this an Integer Atom.
          *
-         * @param pInteger          Pointer to the integer.
+         * @param pVal              Pointer to the integer value to set.
          *
          * @return int: xank error code.
          */
-        int                         SetInteger(XInteger *pInteger);
+        int                         SetInteger(mpz_t *pVal);
 
         /**
          * Returns pointer to this Float Atom.
@@ -139,16 +138,16 @@ class XAtom
          * @return mpf_t*: Pointer to the float for this Float Atom, or NULL if this is
          *         not a Float Atom.
          */
-        const XFloat               *Float() const;
+        const mpf_t                *Float() const;
 
         /**
          * Sets the float and makes this a Float Atom.
          *
-         * @param pFloat            Pointer to the Float.
+         * @param pVal              Pointer to the float value to set.
          *
          * @return int: xank error code.
          */
-        int                         SetFloat(XFloat *pFloat);
+        int                         SetFloat(mpf_t *pVal);
 
         /**
          * Returns pointer to the Operator Atom.
@@ -220,8 +219,8 @@ class XAtom
         std::string                 m_sVariable;  /**< Name of the variable if this is/might become a Variable Atom. */
         union
         {
-            XInteger               *pInteger;     /**< Pointer to the Integer value for a Number Atom. */
-            XFloat                 *pFloat;       /**< Pointer to the Float point value for a Number Atom. */
+            mpz_t                   Integer;     /**< Integer value for a Number Atom. */
+            mpf_t                   Float;       /**< Float point value for a Number Atom. */
             XOperator              *pOperator;    /*< Pointer to the Operator for an Operator Atom. */
             XFunction              *pFunction;    /*< Pointer to the Function for a Function Atom. */
             XVariable              *pVariable;    /*< Pointer to the Variable for a Variable Atom. */
