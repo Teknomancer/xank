@@ -61,7 +61,7 @@
        ____compileTimeAssertFailed[0]=0; \
     }
 
-extern void AssertMsg(char *pcszExpr, unsigned uLine, char *pcszFile, const char *pcszFunction);
+extern void AssertMsg(const char *pcszExpr, unsigned uLine, const char *pcszFile, const char *pcszFunction);
 
 #endif /* XANK_ASSERT_H */
 

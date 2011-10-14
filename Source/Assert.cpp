@@ -23,7 +23,7 @@
 #include "ConsoleIO.h"
 #include <iostream>
 
-void AssertMsg(char *pcszExpr, unsigned uLine, char *pcszFile, const char *pcszFunction)
+void AssertMsg(const char *pcszExpr, unsigned uLine, const char *pcszFile, const char *pcszFunction)
 {
     AssertPrintf("Expression: %s\nLocation  : %s:%u %s\n", pcszExpr, pcszFile, uLine, pcszFunction);
 }
