@@ -89,15 +89,15 @@ XAtom *XEvaluator::ParseAtom(const char *pcszExpr, const char **ppcszEnd, const 
             continue;
         }
 
-        pAtom = ParseNumber(pcszExpr, ppcszEnd, pcPreviousAtom);
-        if (pAtom)
-            break;
-
         pAtom = ParseOperator(pcszExpr, ppcszEnd, pcPreviousAtom);
         if (pAtom)
             break;
 
         pAtom = ParseFunction(pcszExpr, ppcszEnd, pcPreviousAtom);
+        if (pAtom)
+            break;
+
+        pAtom = ParseNumber(pcszExpr, ppcszEnd, pcPreviousAtom);
         if (pAtom)
             break;
 
@@ -127,20 +127,37 @@ XAtom *XEvaluator::ParseFunction(const char *pcszExpr, const char **ppcszEnd, co
 XAtom *XEvaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom)
 {
     std::string sNum;
-    const char *pszStart = pcszExpr;
+    const char *pcszStart = pcszExpr;
     int iRadix = 0;
     uint64_t i = 0;
 
     /*
-     * Octal prefix ("0")
+     * Binary prefix.
      */
-    if (*pcszExpr == '0')
+    if (*pcszExpr == 'b' || *pcszExpr == 'B')
     {
         ++pcszExpr;
         while (*pcszExpr)
         {
-            if (*pcszExpr >= '0' && *pcszExpr < '8')
+            if (*pcszExpr == '1' || *pcszExpr == '0')
                 sNum[i++] = *pcszExpr;
+            else if (!isspace(*pcszExpr))
+                break;
+
+            pcszExpr++;
+        }
+        iRadix = 2;
+    }
+    else if (*pcszExpr == '0')
+    {
+        /*
+         * Octal prefix.
+         */
+        ++pcszExpr;
+        while (*pcszExpr)
+        {
+            if (*pcszExpr >= '0' && *pcszExpr < '8')
+                sNum[i++] = *ppcszExprszExpr;
             else if (!isspace(*pcszExpr))
                 break;
 
@@ -149,68 +166,53 @@ XAtom *XEvaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, cons
         iRadix = 8;
 
         /*
-         * Hexadecimal prefix ("0x" or "0X") or binary prefix ("0b" or "0B")
+         * Hexadecimal prefix.
          */
-        if (i == 0)
+        if (   i == 0
+            && (*pcszExpr == 'x' || *pcszExpr == 'X'))
         {
-            if (*pcszExpr == 'x' || *pcszExpr == 'X')
+            ++pcszExpr;
+            while (*pcszExpr)
             {
-                ++pcszExpr;
-                while (*pcszExpr)
+                if (   isdigit(*pcszExpr)
+                    || (*pcszExpr >= 'a' && *pcszExpr <= 'f')
+                    || (*pcszExpr >= 'A' && *pcszExpr <= 'F'))
                 {
-                    if (   (*pcszExpr >= '0' && *pcszExpr <= 'F')
-                        || (*pcszExpr >= 'a' && *pcszExpr <= 'f'))
-                    {
-                        sNum[i++] = *pcszExpr;
-                    }
-                    else if (!isspace(*pcszExpr))
-                        break;
-
-                    pcszExpr++;
+                    sNum[i++] = *pcszExpr;
                 }
-                iRadix = 16;
-            }
-            else if (*pcszExpr == 'b' || *pcszExpr == 'B')
-            {
-                ++pcszExpr;
-                while (*pcszExpr)
-                {
-                    if (*pcszExpr == '1' || *pcszExpr == '0')
-                        sNum[i++] = *pcszExpr;
-                    else if (!isspace(*pcszExpr))
-                        break;
+                else if (!isspace(*pcszExpr))
+                    break;
 
-                    pcszExpr++;
-                }
-                iRadix = 2;
+                pcszExpr++;
             }
+            iRadix = 16;
         }
     }
 
     /*
-     * If nothing has been accumulated in "sNum", we've not got any recognized
-     * numeric under whatever radices we've checked. Reset pointer to the original &
-     * try parsing without any prefix.
+     * If nothing has been accumulated in our 'szNum' array, we've not
+     * got any recognized numeric under whatever radices we've checked.
+     * Reset pointer to the original & try parsing without any prefix.
      */
     if (i == 0)
     {
-        pcszExpr = pszStart;
+        pcszExpr = pcszStart;
         iRadix = 0;
 
         /*
          * Hexadecimal sans prefix, or Decimal.
          */
-        while (*pcszExpr)
+        while (*pszExpr)
         {
-            if (isdigit(*pcszExpr))
+            if (isdigit(*pszExpr))
             {
-                sNum[i++] = *pcszExpr;
+                szNum[i++] = *pszExpr;
             }
-            else if (*pcszExpr == '.')
+            else if (*pszExpr == '.')
             {
                 if (iRadix == 0)    /* eg:  ".5" */
                 {
-                    sNum[i++] = *pcszExpr;
+                    szNum[i++] = *pszExpr;
                     iRadix = 10;
                 }
                 else                /* eg: "fa.5" or "10.5.5" */
@@ -219,8 +221,8 @@ XAtom *XEvaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, cons
                     break;
                 }
             }
-            else if (   (*pcszExpr >= 'A' && *pcszExpr <= 'F')
-                     || (*pcszExpr >= 'a' && *pcszExpr <= 'f'))
+            else if (   (*pszExpr >= 'A' && *pszExpr <= 'F')
+                     || (*pszExpr >= 'a' && *pszExpr <= 'f'))
             {
                 if (iRadix != 10)   /* eg: "af" or "53a"  */
                     iRadix = 16;
@@ -229,12 +231,14 @@ XAtom *XEvaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, cons
                     iRadix = -1;
                     break;
                 }
-                sNum[i++] = *pcszExpr;
+                szNum[i++] = *pszExpr;
             }
-            else if (!isspace(*pcszExpr))
+            else if (!isspace(*pszExpr))
                 break;
 
-            pcszExpr++;
+            pszExpr++;
+            if (i >= sizeof(szNum) - 1)
+                break;
         }
 
         if (i > 0 && iRadix == 0)
@@ -244,7 +248,7 @@ XAtom *XEvaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, cons
     if (   i == 0
         || iRadix == 0)
     {
-        pcszExpr = pszStart;
+        pszExpr = pszStart;
         return NULL;
     }
 
@@ -253,10 +257,38 @@ XAtom *XEvaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, cons
      * the number, if so we don't interpret it as a hexadecimal number because numbers are
      * never suffixed.
      */
-    if (isalpha(*pcszExpr))
+    if (isalpha(*pszExpr))
         return NULL;
 
-    return NULL;
+    /*
+     * We've got a number. Terminate our string buffer, and convert it.
+     */
+    szNum[i] = '\0';
+    char *pszEndTmp = NULL;
+    FLOAT dValue = 0;
+    errno = 0;
+    if (iRadix != 10)
+        dValue = (FLOAT)strtoull(szNum, &pszEndTmp, iRadix);
+    else
+        dValue = (FLOAT)strtold(szNum, &pszEndTmp);
+
+    /*
+     * An error while converting the number.
+     */
+    if (errno)
+    {
+        DEBUGPRINTF(("Error while string to unsigned conversion of %s\n", szNum));
+        return NULL;
+    }
+
+    PATOM pAtom = MemAlloc(sizeof(ATOM));
+    if (!pAtom)
+        return NULL;
+    pAtom->Type = enmAtomNumber;
+    pAtom->u.dValue = dValue;
+    *ppszEnd = pszExpr;
+    return pAtom;
+
 }
 
 
