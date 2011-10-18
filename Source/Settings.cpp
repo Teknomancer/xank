@@ -109,78 +109,98 @@ SettingsValueParamType SettingsValue::Type() const
 }
 
 
+/* ============================================================================================================================ */
+
 Settings::Settings()
 {
 }
+
 
 Settings::~Settings()
 {
 }
 
+#define SETTINGS_SETTYPE(typedesc, type) \
+int Settings::Set##typedesc(std::string sKey, type Val) \
+{ \
+    m_Map.insert(KeyValue(sKey, SettingsValue(Val))); \
+    return INF_SUCCESS; \
+} \
 
-int Settings::SetUInt64(std::string sKey, uint64_t u64Val)
-{
-    m_Map.insert(KeyValue(sKey, SettingsValue(u64Val)));
-    return INF_SUCCESS;
-}
+SETTINGS_SETTYPE(UInt64, uint64_t)
+SETTINGS_SETTYPE(UInt32, uint32_t)
+SETTINGS_SETTYPE(UInt16, uint16_t)
+SETTINGS_SETTYPE(UInt8, uint8_t)
+SETTINGS_SETTYPE(Int64, int64_t)
+SETTINGS_SETTYPE(Int32, int32_t)
+SETTINGS_SETTYPE(Int16, int16_t)
+SETTINGS_SETTYPE(Int8, int8_t)
+SETTINGS_SETTYPE(Bool, bool)
+SETTINGS_SETTYPE(String, std::string)
+SETTINGS_SETTYPE(Float, float)
+#undef SETTINGS_SETTYPE
 
-int Settings::SetUInt32(std::string sKey, uint32_t u32Val)
-{
-    m_Map.insert(KeyValue(sKey, SettingsValue(u32Val)));
-    return INF_SUCCESS;
-}
+#define SETTINGS_GETTYPE(typedesc, type, svalfield) \
+bool Settings::Get##typedesc(std::string sKey, type *pVal) \
+{ \
+    std::map<std::string, SettingsValue>::iterator iterMap = m_Map.find(sKey); \
+    if (iterMap == m_Map.end()) \
+        return false; \
+    *pVal = iterMap->second.m_u.svalfield; \
+    return true; \
+} \
 
-int Settings::SetUInt16(std::string sKey, uint16_t u16Val)
-{
-    m_Map.insert(KeyValue(sKey, SettingsValue(u16Val)));
-    return INF_SUCCESS;
-}
+SETTINGS_GETTYPE(UInt64, uint64_t, u64Val)
+SETTINGS_GETTYPE(UInt32, uint32_t, u32Val)
+SETTINGS_GETTYPE(UInt16, uint16_t, u16Val)
+SETTINGS_GETTYPE(UInt8, uint8_t, u8Val)
+SETTINGS_GETTYPE(Int64, int64_t, i64Val)
+SETTINGS_GETTYPE(Int32, int32_t, i32Val)
+SETTINGS_GETTYPE(Int16, int16_t, i16Val)
+SETTINGS_GETTYPE(Int8, int8_t, i8Val)
+SETTINGS_GETTYPE(Bool, bool, fVal)
+SETTINGS_GETTYPE(Float, float, gVal)
+#undef SETTINGS_GETTYPE
 
-int Settings::SetUInt8(std::string sKey, uint8_t u8Val)
-{
-    m_Map.insert(KeyValue(sKey, SettingsValue(u8Val)));
-    return INF_SUCCESS;
-}
+#define SETTINGS_GETTYPE_DEF(typedesc, type, svalfield) \
+void Settings::Get##typedesc##Def(std::string sKey, type *pVal, type Val) \
+{ \
+    std::map<std::string, SettingsValue>::iterator iterMap = m_Map.find(sKey); \
+    if (iterMap == m_Map.end()) \
+        *pVal = Val; \
+    else \
+        *pVal = iterMap->second.m_u.svalfield; \
+} \
 
-int Settings::SetInt64(std::string sKey, int64_t i64Val)
-{
-    m_Map.insert(KeyValue(sKey, SettingsValue(i64Val)));
-    return INF_SUCCESS;
-}
+SETTINGS_GETTYPE_DEF(UInt64, uint64_t, u64Val)
+SETTINGS_GETTYPE_DEF(UInt32, uint32_t, u32Val)
+SETTINGS_GETTYPE_DEF(UInt16, uint16_t, u16Val)
+SETTINGS_GETTYPE_DEF(UInt8, uint8_t, u8Val)
+SETTINGS_GETTYPE_DEF(Int64, int64_t, i64Val)
+SETTINGS_GETTYPE_DEF(Int32, int32_t, i32Val)
+SETTINGS_GETTYPE_DEF(Int16, int16_t, i16Val)
+SETTINGS_GETTYPE_DEF(Int8, int8_t, i8Val)
+SETTINGS_GETTYPE_DEF(Bool, bool, fVal)
+SETTINGS_GETTYPE_DEF(Float, float, gVal)
+#undef SETTINGS_GETTYPE_DEF
 
-int Settings::SetInt32(std::string sKey, int32_t i32Val)
-{
-    m_Map.insert(KeyValue(sKey, SettingsValue(i32Val)));
-    return INF_SUCCESS;
-}
+//void Settings::GetUInt64Def(std::string sKey, uint64_t *pu64Val, uint64_t u64Val)
+//{
+//    std::map<std::string, SettingsValue>::iterator iterMap = m_Map.find(sKey);
+//    if (iterMap == m_Map.end())
+//        *pu64Val = u64Val;
+//    else
+//        *pu64Val = iterMap->second.m_u.u64Val;
+//}
 
-int Settings::SetInt16(std::string sKey, int16_t i16Val)
-{
-    m_Map.insert(KeyValue(sKey, SettingsValue(i16Val)));
-    return INF_SUCCESS;
-}
-
-int Settings::SetInt8(std::string sKey, int8_t i8Val)
-{
-    m_Map.insert(KeyValue(sKey, SettingsValue(i8Val)));
-    return INF_SUCCESS;
-}
-
-int Settings::SetBool(std::string sKey, bool fVal)
-{
-    m_Map.insert(KeyValue(sKey, SettingsValue(fVal)));
-    return INF_SUCCESS;
-}
-
-int Settings::SetString(std::string sKey, std::string sVal)
-{
-    m_Map.insert(KeyValue(sKey, SettingsValue(sVal)));
-    return INF_SUCCESS;
-}
-
-int Settings::SetFloat(std::string sKey, float gVal)
-{
-    m_Map.insert(KeyValue(sKey, SettingsValue(gVal)));
-    return INF_SUCCESS;
-}
+//
+//bool Settings::GetUInt64(std::string sKey, uint64_t *pu64Val)
+//{
+//    std::map<std::string, SettingsValue>::iterator iterMap = m_Map.find(sKey);
+//    if (iterMap == m_Map.end())
+//        return false;
+//    *pu64Val = iterMap->second.m_u.u64Val;
+//    return true;
+//}
+//
 

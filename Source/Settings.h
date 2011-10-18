@@ -103,6 +103,7 @@ class SettingsValue
             float               gVal;
         } m_u;                                    /**< The type of this Settings Value. */
         std::string             m_sVal;           /**< String value, cannot be part of union (non-trivial ctor) */
+        friend class            Settings;
 };
 
 
@@ -226,6 +227,30 @@ class Settings
          * @return int: xank error code.
          */
         int                     SetFloat(std::string sKey, float gVal);
+
+        bool                    GetUInt64(std::string sKey, uint64_t *pu64Val);
+        bool                    GetUInt32(std::string sKey, uint32_t *pu32Val);
+        bool                    GetUInt16(std::string sKey, uint16_t *pu16Val);
+        bool                    GetUInt8(std::string sKey, uint8_t *pu8Val);
+        bool                    GetInt64(std::string sKey, int64_t *pi64Val);
+        bool                    GetInt32(std::string sKey, int32_t *pi32Val);
+        bool                    GetInt16(std::string sKey, int16_t *pi16Val);
+        bool                    GetInt8(std::string sKey, int8_t *pi8Val);
+        bool                    GetBool(std::string sKey, bool *pfVal);
+        //bool                    GetString(std::string sKey, std::string *psVal);
+        bool                    GetFloat(std::string sKey, float *pgVal);
+
+        void                    GetUInt64Def(std::string sKey, uint64_t *pu64Val, uint64_t u64Def);
+        void                    GetUInt32Def(std::string sKey, uint32_t *pu32Val, uint32_t u32Def);
+        void                    GetUInt16Def(std::string sKey, uint16_t *pu16Val, uint16_t u16Def);
+        void                    GetUInt8Def(std::string sKey, uint8_t *pu8Val, uint8_t u8Def);
+        void                    GetInt64Def(std::string sKey, int64_t *pi64Val, int64_t i64Def);
+        void                    GetInt32Def(std::string sKey, int32_t *pi32Val, int32_t i32Def);
+        void                    GetInt16Def(std::string sKey, int16_t *pi16Val, int16_t i16Def);
+        void                    GetInt8Def(std::string sKey, int8_t *pi8Val, int8_t i8Def);
+        void                    GetBoolDef(std::string sKey, bool *pfVal, bool fVal);
+        //void                    GetStringDef(std::string sKey, std::string *psVal, std::string sVal);
+        void                    GetFloatDef(std::string sKey, float *pgVal, float gVal);
 
     private:
         typedef std::pair<std::string, SettingsValue> KeyValue;
