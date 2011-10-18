@@ -237,7 +237,7 @@ class Settings
         bool                    GetInt16(std::string sKey, int16_t *pi16Val);
         bool                    GetInt8(std::string sKey, int8_t *pi8Val);
         bool                    GetBool(std::string sKey, bool *pfVal);
-        //bool                    GetString(std::string sKey, std::string *psVal);
+        bool                    GetString(std::string sKey, std::string *psVal);
         bool                    GetFloat(std::string sKey, float *pgVal);
 
         void                    GetUInt64Def(std::string sKey, uint64_t *pu64Val, uint64_t u64Def);
@@ -249,7 +249,7 @@ class Settings
         void                    GetInt16Def(std::string sKey, int16_t *pi16Val, int16_t i16Def);
         void                    GetInt8Def(std::string sKey, int8_t *pi8Val, int8_t i8Def);
         void                    GetBoolDef(std::string sKey, bool *pfVal, bool fVal);
-        //void                    GetStringDef(std::string sKey, std::string *psVal, std::string sVal);
+        void                    GetStringDef(std::string sKey, std::string *psVal, std::string sVal);
         void                    GetFloatDef(std::string sKey, float *pgVal, float gVal);
 
     private:

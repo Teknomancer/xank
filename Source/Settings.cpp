@@ -111,6 +111,16 @@ SETTINGS_GETTYPE(Bool, bool, fVal)
 SETTINGS_GETTYPE(Float, float, gVal)
 #undef SETTINGS_GETTYPE
 
+bool Settings::GetString(std::string sKey, std::string *psVal)
+{
+    std::map<std::string, SettingsValue>::iterator iterMap = m_Map.find(sKey);
+    if (iterMap == m_Map.end())
+        return false;
+    *psVal = iterMap->second.m_sVal;
+    return true;
+}
+
+
 #define SETTINGS_GETTYPE_DEF(typedesc, type, svalfield) \
 void Settings::Get##typedesc##Def(std::string sKey, type *pVal, type Val) \
 { \
@@ -132,4 +142,14 @@ SETTINGS_GETTYPE_DEF(Int8, int8_t, i8Val)
 SETTINGS_GETTYPE_DEF(Bool, bool, fVal)
 SETTINGS_GETTYPE_DEF(Float, float, gVal)
 #undef SETTINGS_GETTYPE_DEF
+
+void Settings::GetStringDef(std::string sKey, std::string *psVal, std::string sVal)
+{
+    std::map<std::string, SettingsValue>::iterator iterMap = m_Map.find(sKey);
+    if (iterMap == m_Map.end())
+        *psVal = sVal;
+    else
+        *psVal = iterMap->second.m_sVal;
+}
+
 
