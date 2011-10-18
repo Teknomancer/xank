@@ -42,6 +42,7 @@ Group0_SRC = \
 	Assert.cpp \
 	ConsoleIO.cpp \
 	CStringOps.cpp \
+    Settings.cpp \
 	Main.cpp \
 	XAtom.cpp \
 	XErrors.cpp \

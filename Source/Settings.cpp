@@ -20,6 +20,7 @@
  */
 
 #include "Settings.h"
+#include "XErrors.h"
 
 SettingsValue::SettingsValue()
     : m_ParamType(enmSettingsValueParamTypeEmpty)
@@ -92,6 +93,12 @@ SettingsValue::SettingsValue(bool fVal)
     m_u.fVal = fVal;
 }
 
+SettingsValue::SettingsValue(float gVal)
+{
+    m_ParamType = enmSettingsValueParamTypeFloat;
+    m_u.fVal = gVal;
+}
+
 SettingsValue::~SettingsValue()
 {
 }
@@ -100,8 +107,6 @@ SettingsValueParamType SettingsValue::Type() const
 {
         return m_ParamType;
 }
-
-
 
 
 Settings::Settings()
@@ -113,15 +118,69 @@ Settings::~Settings()
 }
 
 
-int Settings::AddUInt64(std::string sKey, uint64_t u64Val)
+int Settings::SetUInt64(std::string sKey, uint64_t u64Val)
 {
+    m_Map.insert(KeyValue(sKey, SettingsValue(u64Val)));
+    return INF_SUCCESS;
 }
 
-int Settings::AddUInt32(std::string sKey, uint32_t u64Val)
+int Settings::SetUInt32(std::string sKey, uint32_t u32Val)
 {
+    m_Map.insert(KeyValue(sKey, SettingsValue(u32Val)));
+    return INF_SUCCESS;
 }
 
-int Settings::AddString(std::string sKey, std::string sVal)
+int Settings::SetUInt16(std::string sKey, uint16_t u16Val)
 {
+    m_Map.insert(KeyValue(sKey, SettingsValue(u16Val)));
+    return INF_SUCCESS;
+}
+
+int Settings::SetUInt8(std::string sKey, uint8_t u8Val)
+{
+    m_Map.insert(KeyValue(sKey, SettingsValue(u8Val)));
+    return INF_SUCCESS;
+}
+
+int Settings::SetInt64(std::string sKey, int64_t i64Val)
+{
+    m_Map.insert(KeyValue(sKey, SettingsValue(i64Val)));
+    return INF_SUCCESS;
+}
+
+int Settings::SetInt32(std::string sKey, int32_t i32Val)
+{
+    m_Map.insert(KeyValue(sKey, SettingsValue(i32Val)));
+    return INF_SUCCESS;
+}
+
+int Settings::SetInt16(std::string sKey, int16_t i16Val)
+{
+    m_Map.insert(KeyValue(sKey, SettingsValue(i16Val)));
+    return INF_SUCCESS;
+}
+
+int Settings::SetInt8(std::string sKey, int8_t i8Val)
+{
+    m_Map.insert(KeyValue(sKey, SettingsValue(i8Val)));
+    return INF_SUCCESS;
+}
+
+int Settings::SetBool(std::string sKey, bool fVal)
+{
+    m_Map.insert(KeyValue(sKey, SettingsValue(fVal)));
+    return INF_SUCCESS;
+}
+
+int Settings::SetString(std::string sKey, std::string sVal)
+{
+    m_Map.insert(KeyValue(sKey, SettingsValue(sVal)));
+    return INF_SUCCESS;
+}
+
+int Settings::SetFloat(std::string sKey, float gVal)
+{
+    m_Map.insert(KeyValue(sKey, SettingsValue(gVal)));
+    return INF_SUCCESS;
 }
 
