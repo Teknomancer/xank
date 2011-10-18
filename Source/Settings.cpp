@@ -27,77 +27,26 @@ SettingsValue::SettingsValue()
 {
 }
 
-SettingsValue::SettingsValue(const char *pcszVal)
-{
-    m_ParamType = enmSettingsValueParamTypeString;
-    m_sVal = pcszVal;
-}
+#define SETTINGSVALUE_CTOR(type, svalfield, paramt) \
+SettingsValue::SettingsValue(type Val) \
+{ \
+    m_ParamType = enmSettingsValueParamType##paramt; \
+    svalfield = Val; \
+} \
 
-SettingsValue::SettingsValue(std::string sVal)
-{
-    m_ParamType = enmSettingsValueParamTypeString;
-    m_sVal = sVal;
-}
-
-SettingsValue::SettingsValue(uint64_t u64Val)
-{
-    m_ParamType = enmSettingsValueParamTypeUInt64;
-    m_u.u64Val = u64Val;
-}
-
-SettingsValue::SettingsValue(uint32_t u32Val)
-{
-    m_ParamType = enmSettingsValueParamTypeUInt32;
-    m_u.u32Val = u32Val;
-}
-
-SettingsValue::SettingsValue(uint16_t u16Val)
-{
-    m_ParamType = enmSettingsValueParamTypeUInt16;
-    m_u.u16Val = u16Val;
-}
-
-SettingsValue::SettingsValue(uint8_t u8Val)
-{
-    m_ParamType = enmSettingsValueParamTypeUInt8;
-    m_u.u8Val = u8Val;
-}
-
-SettingsValue::SettingsValue(int64_t i64Val)
-{
-    m_ParamType = enmSettingsValueParamTypeInt64;
-    m_u.i64Val = i64Val;
-}
-
-SettingsValue::SettingsValue(int32_t i64Val)
-{
-    m_ParamType = enmSettingsValueParamTypeInt64;
-    m_u.i64Val = i64Val;
-}
-
-SettingsValue::SettingsValue(int16_t i32Val)
-{
-    m_ParamType = enmSettingsValueParamTypeInt32;
-    m_u.i32Val = i32Val;
-}
-
-SettingsValue::SettingsValue(int8_t i16Val)
-{
-    m_ParamType = enmSettingsValueParamTypeInt16;
-    m_u.i16Val = i16Val;
-}
-
-SettingsValue::SettingsValue(bool fVal)
-{
-    m_ParamType = enmSettingsValueParamTypeBool;
-    m_u.fVal = fVal;
-}
-
-SettingsValue::SettingsValue(float gVal)
-{
-    m_ParamType = enmSettingsValueParamTypeFloat;
-    m_u.fVal = gVal;
-}
+SETTINGSVALUE_CTOR(const char *, m_sVal, String)
+SETTINGSVALUE_CTOR(std::string, m_sVal, String)
+SETTINGSVALUE_CTOR(uint64_t, m_u.u64Val, UInt64)
+SETTINGSVALUE_CTOR(uint32_t, m_u.u32Val, UInt32)
+SETTINGSVALUE_CTOR(uint16_t, m_u.u16Val, UInt16)
+SETTINGSVALUE_CTOR(uint8_t, m_u.u8Val, UInt8)
+SETTINGSVALUE_CTOR(int64_t, m_u.i64Val, Int64)
+SETTINGSVALUE_CTOR(int32_t, m_u.i32Val, Int32)
+SETTINGSVALUE_CTOR(int16_t, m_u.i16Val, Int16)
+SETTINGSVALUE_CTOR(int8_t, m_u.i8Val, Int8)
+SETTINGSVALUE_CTOR(bool, m_u.fVal, Bool)
+SETTINGSVALUE_CTOR(float, m_u.gVal, Float)
+#undef SETTINGSVALUE_CTOR
 
 SettingsValue::~SettingsValue()
 {
@@ -183,24 +132,4 @@ SETTINGS_GETTYPE_DEF(Int8, int8_t, i8Val)
 SETTINGS_GETTYPE_DEF(Bool, bool, fVal)
 SETTINGS_GETTYPE_DEF(Float, float, gVal)
 #undef SETTINGS_GETTYPE_DEF
-
-//void Settings::GetUInt64Def(std::string sKey, uint64_t *pu64Val, uint64_t u64Val)
-//{
-//    std::map<std::string, SettingsValue>::iterator iterMap = m_Map.find(sKey);
-//    if (iterMap == m_Map.end())
-//        *pu64Val = u64Val;
-//    else
-//        *pu64Val = iterMap->second.m_u.u64Val;
-//}
-
-//
-//bool Settings::GetUInt64(std::string sKey, uint64_t *pu64Val)
-//{
-//    std::map<std::string, SettingsValue>::iterator iterMap = m_Map.find(sKey);
-//    if (iterMap == m_Map.end())
-//        return false;
-//    *pu64Val = iterMap->second.m_u.u64Val;
-//    return true;
-//}
-//
 
