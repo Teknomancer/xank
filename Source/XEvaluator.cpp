@@ -291,27 +291,26 @@ XAtom *XEvaluator::ParseOperator(const char *pcszExpr, const char **ppcszEnd, co
                 if (!pcPreviousAtom)
                     continue;
 
+                /*
+                 * pPreviousAtom should never be close parantheis as it's deleted in Parse(),
+                 * but included in here for the logical completeness.
+                 */
+
                 /* e.g: "(-4"  and "(expr)-4" */
                 if (   pcPreviousAtom->Operator()
-                    && pcPreviousAtom->Operator()->IsOpenParanthesis())
+                    && pcPreviousAtom->Operator()->IsCloseParanthesis() == false)
                     continue;
             }
 
-            /** @todo ugh, ownership semantics are screwed. rethink this shit.  */
-#if 0
             XAtom *pAtom = new(std::nothrow) XAtom;
             if (!pAtom)
                 return NULL;
-            pAtom->SetOperator(
-            pAtom->Type = enmAtomOperator;
-            pAtom->u.pOperator = &g_aOperators[i];
-            pszExpr += cbOperator;
-            *ppszEnd = pszExpr;
+            pAtom->SetOperator(&m_sOperators[i]);
+            pcszExpr += cbOperator;
+            *ppcszEnd = pcszExpr;
             return pAtom;
-#endif
         }
     }
-    return NULL;
     return NULL;
 }
 
