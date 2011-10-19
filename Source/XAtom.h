@@ -169,7 +169,7 @@ class XAtom
          *
          * @return int: xank error code.
          */
-        int                         SetOperator(XOperator *pOperator);
+        int                         SetOperator(const XOperator *pOperator);
 
         /**
          * Returns pointer to the Function Atom.
@@ -186,7 +186,7 @@ class XAtom
          *
          * @return int: xank error code.
          */
-        int                         SetFunction(XFunction *pFunction);
+        int                         SetFunction(const XFunction *pFunction);
 
         /**
          * Returns pointer to the Variable Atom.
@@ -226,9 +226,9 @@ class XAtom
         {
             mpz_t                   Integer;     /**< Integer value for a Number Atom. */
             mpf_t                   Float;       /**< Float point value for a Number Atom. */
-            XOperator              *pOperator;    /*< Pointer to the Operator for an Operator Atom. */
-            XFunction              *pFunction;    /*< Pointer to the Function for a Function Atom. */
-            XVariable              *pVariable;    /*< Pointer to the Variable for a Variable Atom. */
+            const XOperator        *pOperator;    /*< Pointer to the Operator for an Operator Atom. */
+            const XFunction        *pFunction;    /*< Pointer to the Function for a Function Atom. */
+            const XVariable        *pVariable;    /*< Pointer to the Variable for a Variable Atom. */
         } m_u;
 };
 

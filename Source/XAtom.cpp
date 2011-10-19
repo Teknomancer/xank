@@ -138,7 +138,7 @@ const XOperator *XAtom::Operator() const
 }
 
 
-int XAtom::SetOperator(XOperator *pOperator)
+int XAtom::SetOperator(const XOperator *pOperator)
 {
     Destroy();
     m_u.pOperator = pOperator;
@@ -155,7 +155,7 @@ const XFunction *XAtom::Function() const
 }
 
 
-int XAtom::SetFunction(XFunction *pFunction)
+int XAtom::SetFunction(const XFunction *pFunction)
 {
     Destroy();
     m_u.pFunction = pFunction;
