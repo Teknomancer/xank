@@ -259,15 +259,13 @@ XAtom *XEvaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, cons
      * We've parsed a number in a known radix, construct a number Atom for it.
      */
     XAtom *pAtom = new(std::nothrow) XAtom;
-    if (pAtom)
-    {
-        if (fFloat)
-            pAtom->SetFloatFromStr(sNum.c_str(), iRadix);
-        else
-            pAtom->SetIntegerFromStr(sNum.c_str(), iRadix);
-
-        *ppcszEnd = pcszExpr;
-    }
+    if (!pAtom)
+        return NULL;
+    if (fFloat)
+        pAtom->SetFloatFromStr(sNum.c_str(), iRadix);
+    else
+        pAtom->SetIntegerFromStr(sNum.c_str(), iRadix);
+    *ppcszEnd = pcszExpr;
     return pAtom;
 }
 
