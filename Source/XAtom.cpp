@@ -90,37 +90,41 @@ XAtomType XAtom::Type() const
 }
 
 
-const mpz_t *XAtom::Integer() const
+int XAtom::GetInteger(mpz_t Result) const
 {
     if (m_AtomType == enmAtomTypeInteger)
-        return &m_u.Integer;
-    return NULL;
+    {
+        mpz_set(Result, m_u.Integer);
+        return INF_SUCCESS;
+    }
+    return ERR_INVALID_ATOM_TYPE_FOR_OPERATION;
 }
 
 
-int XAtom::SetInteger(mpz_t *pVal)
+int XAtom::SetIntegerFromStr(const char *pcszStr, int iRadix)
 {
-    Assert(pVal != NULL);
     Destroy();
-    mpz_set(m_u.Integer, *pVal);
+    mpz_init_set_str(m_u.Integer, pcszStr, iRadix);
     m_AtomType = enmAtomTypeInteger;
     return INF_SUCCESS;
 }
 
 
-const mpf_t *XAtom::Float() const
+int XAtom::GetFloat(mpf_t Result) const
 {
     if (m_AtomType == enmAtomTypeFloat)
-        return &m_u.Float;
-    return NULL;
+    {
+        mpf_set(Result, m_u.Float);
+        return INF_SUCCESS;
+    }
+    return ERR_INVALID_ATOM_TYPE_FOR_OPERATION;
 }
 
 
-int XAtom::SetFloat(mpf_t *pVal)
+int XAtom::SetFloatFromStr(const char *pcszStr, int iRadix)
 {
-    Assert(pVal);
     Destroy();
-    mpf_set(m_u.Float, *pVal);
+    mpf_init_set_str(m_u.Float, pcszStr, iRadix);
     m_AtomType = enmAtomTypeFloat;
     return INF_SUCCESS;
 }
@@ -189,6 +193,11 @@ void XAtom::SetTo(const XAtom &atom)
 
 void XAtom::Destroy()
 {
+    if (m_AtomType == enmAtomTypeFloat)
+        mpf_clear(m_u.Float);
+    else if (m_AtomType == enmAtomTypeInteger)
+        mpz_clear(m_u.Integer);
+
     std::memset(&m_u, 0, sizeof(m_u));
     m_AtomType = enmAtomTypeEmpty;
 }

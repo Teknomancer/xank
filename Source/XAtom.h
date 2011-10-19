@@ -116,38 +116,43 @@ class XAtom
         bool                        IsOperator() const;
 
         /**
-         * Returns pointer to the Integer Atom.
+         * Gets the integer value for an Integer Atom.
          *
-         * @return mpz_t*: Pointer to the the integer for this Integer Atom, or NULL
-         *         if this is not an Integer Atom.
-         */
-        const mpz_t                *Integer() const;
-
-        /**
-         * Sets the integer and makes this an Integer Atom.
-         *
-         * @param pVal              Pointer to the integer value to set.
+         * @param Result            Where to set the integer value.
          *
          * @return int: xank error code.
          */
-        int                         SetInteger(mpz_t *pVal);
+        int                         GetInteger(mpz_t Result) const;
 
         /**
-         * Returns pointer to this Float Atom.
+         * Sets the integer value from a string.
          *
-         * @return mpf_t*: Pointer to the float for this Float Atom, or NULL if this is
-         *         not a Float Atom.
-         */
-        const mpf_t                *Float() const;
-
-        /**
-         * Sets the float and makes this a Float Atom.
-         *
-         * @param pVal              Pointer to the float value to set.
+         * @param pcszStr           The string representation of the itneger value.
+         * @param iRadix            The radix of the integer value in @a pcszStr.
          *
          * @return int: xank error code.
          */
-        int                         SetFloat(mpf_t *pVal);
+        int                         SetIntegerFromStr(const char *pcszStr, int iRadix);
+
+        /**
+         * Gets the floating point value for this Float Atom.
+         *
+         * @param Result            Where to set the floating point value.
+         *
+         * @return int: xank error code.
+         */
+        int                         GetFloat(mpf_t Result) const;
+
+        /**
+         * Sets the floating point value from a string.
+         *
+         * @param pcszStr           The string representation of the floating point
+         *                          value.
+         * @param iRadix            The radix of the floating point value in @a pcszStr.
+         *
+         * @return int: xank error code.
+         */
+        int                         SetFloatFromStr(const char *pcszStr, int iRadix);
 
         /**
          * Returns pointer to the Operator Atom.
@@ -158,7 +163,7 @@ class XAtom
         const XOperator            *Operator() const;
 
         /**
-         * Sets thee operator and makes this an Operator Atom.
+         * Sets the operator and makes this an Operator Atom.
          *
          * @param pOperator         Pointer to the Operator.
          *

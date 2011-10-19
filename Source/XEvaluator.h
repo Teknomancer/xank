@@ -26,10 +26,16 @@
 #include <list>
 #include <string>
 
+#include "Settings.h"
+
 class XAtom;
 class XFunction;
 class XOperator;
 
+/**
+ * Expression evaluator.
+ * The evaluator class parses, stores and evaluates expressions.
+ */
 class XEvaluator
 {
     public:
@@ -129,6 +135,7 @@ class XEvaluator
         std::list<XAtom*>           m_VarList;      /**< List of variables being evaulated, used for circular dependency checks. */
         static const XFunction      m_sFunctions[]; /**< Static array of Function objects. */
         static const XOperator      m_sOperators[]; /**< Static array of Operator objects. */
+        Settings                    m_Setttings;    /**< Settings for evaluator. */
 };
 
 #endif /* XANK_EVALUATOR_H */
