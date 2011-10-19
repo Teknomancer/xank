@@ -228,29 +228,225 @@ class Settings
          */
         int                     SetFloat(std::string sKey, float gVal);
 
+        /**
+         * Get an unsigned 64-bit value for a key.
+         *
+         * @param sKey          The key.
+         * @param pu64Val       Where to store the found value.
+         *
+         * @return bool: true if found, false otherwise.
+         */
         bool                    GetUInt64(std::string sKey, uint64_t *pu64Val);
+
+        /**
+         * Get an unsigned 32-bit value for a key.
+         *
+         * @param sKey          The key.
+         * @param pu32Val       Where to store the found value.
+         *
+         * @return bool: true if found, false otherwise.
+         */
         bool                    GetUInt32(std::string sKey, uint32_t *pu32Val);
+
+        /**
+         * Get an unsigned 16-bit value for a key.
+         *
+         * @param sKey          The key.
+         * @param pu16Val       Where to store the found value.
+         *
+         * @return bool: true if found, false otherwise.
+         */
         bool                    GetUInt16(std::string sKey, uint16_t *pu16Val);
+
+        /**
+         * Get an unsigned 8-bit value for a key.
+         *
+         * @param sKey          The key.
+         * @param pu8Val        Where to store the found value.
+         *
+         * @return bool: true if found, false otherwise.
+         */
         bool                    GetUInt8(std::string sKey, uint8_t *pu8Val);
+
+        /**
+         * Get a signed 64-bit value for a key.
+         *
+         * @param sKey          The key.
+         * @param pi64Val       Where to store the found value.
+         *
+         * @return bool: true if found, false otherwise.
+         */
         bool                    GetInt64(std::string sKey, int64_t *pi64Val);
+
+        /**
+         * Get a signed 32-bit value for a key.
+         *
+         * @param sKey          The key.
+         * @param pi32Val       Where to store the found value.
+         *
+         * @return bool: true if found, false otherwise.
+         */
         bool                    GetInt32(std::string sKey, int32_t *pi32Val);
+
+        /**
+         * Get a signed 16-bit value for a key.
+         *
+         * @param sKey          The key.
+         * @param pi16Val       Where to store the found value.
+         *
+         * @return bool: true if found, false otherwise.
+         */
         bool                    GetInt16(std::string sKey, int16_t *pi16Val);
+
+        /**
+         * Get a signed 8-bit value for a key.
+         *
+         * @param sKey          The key.
+         * @param pi8Val        Where to store the found value.
+         *
+         * @return bool: true if found, false otherwise.
+         */
         bool                    GetInt8(std::string sKey, int8_t *pi8Val);
+
+        /**
+         * Get a boolean value for a key.
+         *
+         * @param sKey          The key.
+         * @param pfVal         Where to store the found value.
+         *
+         * @return bool: true if found, false otherwise.
+         */
         bool                    GetBool(std::string sKey, bool *pfVal);
+
+        /**
+         * Get a string value for a key.
+         *
+         * @param sKey          The key.
+         * @param psVal        Where to store the found value.
+         *
+         * @return bool: true if found, false otherwise.
+         */
         bool                    GetString(std::string sKey, std::string *psVal);
+
+        /**
+         * Get a floating point value for a key.
+         *
+         * @param sKey          The key.
+         * @param pgVal         Where to store the found value.
+         *
+         * @return bool: true if found, false otherwise.
+         */
         bool                    GetFloat(std::string sKey, float *pgVal);
 
+        /**
+         * Get an unsigned 64-bit value for a key, if the key is not found get a
+         * supplied default value.
+         *
+         * @param sKey          The key.
+         * @param pu64Val       Where to store the found value.
+         * @param u64Def        The default value to store if the key isn't found.
+         */
         void                    GetUInt64Def(std::string sKey, uint64_t *pu64Val, uint64_t u64Def);
+
+        /**
+         * Get an unsigned 32-bit value for a key, if the key is not found get a
+         * supplied default value.
+         *
+         * @param sKey          The key.
+         * @param pu32Val       Where to store the found value.
+         * @param u32Def        The default value to store if the key isn't found.
+         */
         void                    GetUInt32Def(std::string sKey, uint32_t *pu32Val, uint32_t u32Def);
+
+        /**
+         * Get an unsigned 16-bit value for a key, if the key is not found get a
+         * supplied default value.
+         *
+         * @param sKey          The key.
+         * @param pu16Val       Where to store the found value.
+         * @param u16ef         The default value to store if the key isn't found.
+         */
         void                    GetUInt16Def(std::string sKey, uint16_t *pu16Val, uint16_t u16Def);
+
+        /**
+         * Get an unsigned 8-bit value for a key, if the key is not found get a
+         * supplied default value.
+         *
+         * @param sKey          The key.
+         * @param pu8Val        Where to store the found value.
+         * @param u8Def         The default value to store if the key isn't found.
+         */
         void                    GetUInt8Def(std::string sKey, uint8_t *pu8Val, uint8_t u8Def);
+
+        /**
+         * Get a signed 64-bit value for a key, if the key is not found get a supplied
+         * default value.
+         *
+         * @param sKey          The key.
+         * @param pi64Val       Where to store the found value.
+         * @param i64Def        The default value to store if the key isn't found.
+         */
         void                    GetInt64Def(std::string sKey, int64_t *pi64Val, int64_t i64Def);
+
+        /**
+         * Get a signed 32-bit value for a key, if the key is not found get a supplied
+         * default value.
+         *
+         * @param sKey          The key.
+         * @param pi32Val       Where to store the found value.
+         * @param i32Def        The default value to store if the key isn't found.
+         */
         void                    GetInt32Def(std::string sKey, int32_t *pi32Val, int32_t i32Def);
+
+        /**
+         * Get a signed 16-bit value for a key, if the key is not found get a supplied
+         * default value.
+         *
+         * @param sKey          The key.
+         * @param p16Val        Where to store the found value.
+         * @param i16Def        The default value to store if the key isn't found.
+         */
         void                    GetInt16Def(std::string sKey, int16_t *pi16Val, int16_t i16Def);
+
+        /**
+         * Get a signed 8-bit value for a key, if the key is not found get a supplied
+         * default value.
+         *
+         * @param sKey          The key.
+         * @param pi8Val        Where to store the found value.
+         * @param i8Def         The default value to store if the key isn't found.
+         */
         void                    GetInt8Def(std::string sKey, int8_t *pi8Val, int8_t i8Def);
-        void                    GetBoolDef(std::string sKey, bool *pfVal, bool fVal);
-        void                    GetStringDef(std::string sKey, std::string *psVal, std::string sVal);
-        void                    GetFloatDef(std::string sKey, float *pgVal, float gVal);
+
+        /**
+         * Get a boolean value for a key, if the key is not found get a supplied default
+         * value.
+         *
+         * @param sKey          The key.
+         * @param pfVal         Where to store the found value.
+         * @param fDef          The default value to store if the key isn't found.
+         */
+        void                    GetBoolDef(std::string sKey, bool *pfVal, bool fDef);
+
+        /**
+         * Get a string value for a key, if the key is not found get a supplied default
+         * value.
+         *
+         * @param sKey          The key.
+         * @param psVal         Where to store the found value.
+         * @param sDef          The default value to store if the key isn't found.
+         */
+        void                    GetStringDef(std::string sKey, std::string *psVal, std::string sDef);
+
+        /**
+         * Get a floating point value for a key, if the key is not found get a supplied
+         * default value.
+         *
+         * @param sKey          The key.
+         * @param pgVal         Where to store the found value.
+         * @param gDef          The default value to store if the key isn't found.
+         */
+        void                    GetFloatDef(std::string sKey, float *pgVal, float gDef);
 
     private:
         typedef std::pair<std::string, SettingsValue> KeyValue;
