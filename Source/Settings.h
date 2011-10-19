@@ -449,6 +449,8 @@ class Settings
         void                    GetFloatDef(std::string sKey, float *pgVal, float gDef);
 
     private:
+        std::string             m_sFilePath;            /**< Path to a settings file. */
+
         typedef std::pair<std::string, SettingsValue> KeyValue;
         std::map<std::string, SettingsValue> m_Map;     /**< Map of all key-value pairs in this Settings. */
 };
