@@ -136,6 +136,7 @@ class XEvaluator
         static const XFunction      m_sFunctions[]; /**< Static array of Function objects. */
         static const XOperator      m_sOperators[]; /**< Static array of Operator objects. */
         Settings                    m_Setttings;    /**< Settings for evaluator. */
+        const XOperator            *m_pOpenParenthesisOperator;  /**< Pointer to open parenthesis operator. */
 };
 
 #endif /* XANK_EVALUATOR_H */
