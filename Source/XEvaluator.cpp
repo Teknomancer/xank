@@ -45,9 +45,9 @@ const XOperator XEvaluator::m_sOperators[] =
 {
     /*     Id        Pri    Associativity          cParams  Name   pfn    ShortHelp      LongHelp */
     /* Special Operators*/
-    XOperator(XANK_OPEN_PARANTHESIS_OPERATOR_ID,
+    XOperator(XANK_OPEN_PARENTHESIS_OPERATOR_ID,
                       99, enmOperatorDirNone,        0,      "(",   NULL,  "(<expr>",        "Begin subexpresion or function."),
-    XOperator(XANK_CLOSE_PARANTHESIS_OPERATOR_ID,
+    XOperator(XANK_CLOSE_PARENTHESIS_OPERATOR_ID,
                       99,  enmOperatorDirNone,       0,      ")",   NULL,  "<expr>)",        "End subexpression or function."),
     XOperator(XANK_PARAM_SEPARATOR_OPERATOR_ID,
                        0,  enmOperatorDirLeft,       2,      ",",   NULL,  "<expr>, <expr>", "Function Parameter separator."),
@@ -65,6 +65,7 @@ const XFunction XEvaluator::m_sFunctions[] =
 XEvaluator::XEvaluator()
 {
     /** @todo add parameters to accept settings */
+    m_pOpenParenthesisOperator = &m_sOperators[0];   /* for now, later set this while verifying list of Operators */
 }
 
 
@@ -122,6 +123,31 @@ XAtom *XEvaluator::ParseAtom(const char *pcszExpr, const char **ppcszEnd, const 
 
 XAtom *XEvaluator::ParseFunction(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom)
 {
+    static uint64_t cFunctions = XANK_ARRAY_ELEMENTS(m_sFunctions);
+    for (uint64_t i = 0; i < cFunctions; i++)
+    {
+        size_t cbFunction = std::strlen(m_sFunctions[i].Name().c_str());
+        if (!std::strncmp(m_sFunctions[i].Name().c_str(), pcszExpr, cbFunction))
+        {
+            /*
+             * Skip over whitespaces till we encounter an open parenthesis.
+             */
+            pcszExpr += cbFunction;
+            while (isspace(*pcszExpr))
+                pcszExpr++;
+
+            if (!std::strncmp(pcszExpr, m_pOpenParenthesisOperator->Name().c_str(),
+                            std::strlen(m_pOpenParenthesisOperator->Name().c_str())))
+            {
+                XAtom *pAtom = new(std::nothrow) XAtom;
+                if (!pAtom)
+                    return NULL;
+                pAtom->SetFunction(&m_sFunctions[i]);
+                *ppcszEnd = pcszExpr;
+                return pAtom;
+            }
+        }
+    }
     return NULL;
 }
 
@@ -290,13 +316,13 @@ XAtom *XEvaluator::ParseOperator(const char *pcszExpr, const char **ppcszEnd, co
                     continue;
 
                 /*
-                 * pPreviousAtom should never be close parantheis as it's deleted in Parse(),
+                 * pPreviousAtom should never be close parentheis as it's deleted in Parse(),
                  * but included in here for the logical completeness.
                  */
 
                 /* e.g: "(-4"  and "(expr)-4" */
                 if (   pcPreviousAtom->Operator()
-                    && pcPreviousAtom->Operator()->IsCloseParanthesis() == false)
+                    && pcPreviousAtom->Operator()->IsCloseParenthesis() == false)
                     continue;
             }
 

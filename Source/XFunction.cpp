@@ -42,78 +42,78 @@ XFunction::~XFunction()
 {
 }
 
-inline std::string XFunction::Name() const
+std::string XFunction::Name() const
 {
     return m_sName;
 }
 
 
-inline int XFunction::SetName(const std::string &scName)
+int XFunction::SetName(const std::string &scName)
 {
     m_sName = scName;
     return INF_SUCCESS;
 }
 
 
-inline std::string XFunction::ShortDesc() const
+std::string XFunction::ShortDesc() const
 {
     return m_sShortDesc;
 }
 
 
-inline int XFunction::SetShortDesc(const std::string &scDesc)
+int XFunction::SetShortDesc(const std::string &scDesc)
 {
     m_sShortDesc = scDesc;
     return INF_SUCCESS;
 }
 
 
-inline std::string XFunction::LongDesc() const
+std::string XFunction::LongDesc() const
 {
     return m_sLongDesc;
 }
 
 
-inline int XFunction::SetLongDesc(const std::string &scDesc)
+int XFunction::SetLongDesc(const std::string &scDesc)
 {
     m_sLongDesc = scDesc;
     return INF_SUCCESS;
 }
 
 
-inline uint64_t XFunction::MinParams() const
+uint64_t XFunction::MinParams() const
 {
     return m_cMinParams;
 }
 
 
-inline int XFunction::SetMinParams(uint64_t cMinParams)
+int XFunction::SetMinParams(uint64_t cMinParams)
 {
     m_cMinParams = cMinParams;
     return INF_SUCCESS;
 }
 
 
-inline uint64_t XFunction::MaxParams() const
+uint64_t XFunction::MaxParams() const
 {
     return m_cMaxParams;
 }
 
 
-inline int XFunction::SetMaxParams(uint64_t cMaxParams)
+int XFunction::SetMaxParams(uint64_t cMaxParams)
 {
     m_cMaxParams = cMaxParams;
     return INF_SUCCESS;
 }
 
 
-inline PFNFUNCTION XFunction::Function() const
+PFNFUNCTION XFunction::Function() const
 {
     return m_pfnFunction;
 }
 
 
-inline int XFunction::SetFunction(PFNFUNCTION pfnFunction)
+int XFunction::SetFunction(PFNFUNCTION pfnFunction)
 {
     m_pfnFunction = pfnFunction;
     return INF_SUCCESS;

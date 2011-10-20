@@ -89,15 +89,15 @@ int32_t XOperator::Priority() const
 }
 
 
-bool XOperator::IsOpenParanthesis() const
+bool XOperator::IsOpenParenthesis() const
 {
-    return (m_uId == XANK_OPEN_PARANTHESIS_OPERATOR_ID);
+    return (m_uId == XANK_OPEN_PARENTHESIS_OPERATOR_ID);
 }
 
 
-bool XOperator::IsCloseParanthesis() const
+bool XOperator::IsCloseParenthesis() const
 {
-    return (m_uId == XANK_CLOSE_PARANTHESIS_OPERATOR_ID);
+    return (m_uId == XANK_CLOSE_PARENTHESIS_OPERATOR_ID);
 }
 
 

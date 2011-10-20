@@ -115,18 +115,18 @@ class XOperator
         int                     Invoke(XAtom *apAtoms[]);
 
         /**
-         * Returns if this Operator is the Open Paranthesis Operator.
+         * Returns if this Operator is the Open Parenthesis Operator.
          *
-         * @return bool: true if it's the Open Paranthesis Operator, false otherwise.
+         * @return bool: true if it's the Open Parenthesis Operator, false otherwise.
          */
-        bool                    IsOpenParanthesis() const;
+        bool                    IsOpenParenthesis() const;
 
         /**
-         * Returns if this Operator is the Close Paranthesis Operator.
+         * Returns if this Operator is the Close Parenthesis Operator.
          *
-         * @return bool: true if it's the Close Paranthesis Operator, false otherwise.
+         * @return bool: true if it's the Close Parenthesis Operator, false otherwise.
          */
-        bool                    IsCloseParanthesis() const;
+        bool                    IsCloseParenthesis() const;
 
         /**
          * Returns if this Operator is the Parameter Separator Operator.

@@ -26,10 +26,10 @@
 #define XANK_MAX_VARIABLE_NAME_LEN                  128
 
 /** Operator Id for Open Paranthesis Operator. */
-#define XANK_OPEN_PARANTHESIS_OPERATOR_ID           0
+#define XANK_OPEN_PARENTHESIS_OPERATOR_ID           0
 
 /** Operator Id for Close Paranthesis Operator. */
-#define XANK_CLOSE_PARANTHESIS_OPERATOR_ID          1
+#define XANK_CLOSE_PARENTHESIS_OPERATOR_ID          1
 
 /** Operator Id for Parameter Separator Operator. */
 #define XANK_PARAM_SEPARATOR_OPERATOR_ID            2
