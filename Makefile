@@ -44,7 +44,7 @@ Group0_SRC = \
 	CStringOps.cpp \
     Settings.cpp \
 	Main.cpp \
-    TextIO.cpp \
+	TextIO.cpp \
 	XAtom.cpp \
 	XErrors.cpp \
 	XEvaluator.cpp \
