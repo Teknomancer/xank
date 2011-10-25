@@ -27,12 +27,11 @@
 #include "XGenericDefs.h"
 #include "XOperator.h"
 #include "XErrors.h"
-
-#ifdef XANK_DEBUG
-# include "ConsoleIO.h"
-#endif
+#include "ConsoleIO.h"
+#include "Debug.h"
 
 #include <cstring>
+#include <cstdarg>
 #include <stdint.h>
 #include <gmp.h>
 
@@ -65,6 +64,9 @@ const XFunction XEvaluator::m_sFunctions[] =
 XEvaluator::XEvaluator()
 {
     /** @todo add parameters to accept settings */
+    m_fInitialized = false;
+    m_Error        = ERR_NOT_INITIALIZED;
+    m_sError       = "Evaluator not initialized.";
     m_pOpenParenthesisOperator = &m_sOperators[0];   /* for now, later set this while verifying list of Operators */
 }
 
@@ -74,8 +76,98 @@ XEvaluator::~XEvaluator()
 }
 
 
+void XEvaluator::SetError(int rc, const char *pcszMsg, ...)
+{
+    va_list FmtArgs;
+    char szBuf[2048];
+
+    va_start(FmtArgs, pcszMsg);
+    vsnprintf(szBuf, sizeof(szBuf) - 1, pcszMsg, FmtArgs);
+    va_end(FmtArgs);
+
+    m_sError = szBuf;
+    m_Error = rc;
+}
+
+
+int XEvaluator::Init()
+{
+    static uint64_t cOperators = XANK_ARRAY_ELEMENTS(m_sOperators);
+    for (uint64_t i = 0; i < cOperators; i++)
+    {
+        const XOperator *pcOperator = &m_sOperators[i];
+        if (   pcOperator->Name().empty()
+            || pcOperator->ShortDesc().empty()
+            || pcOperator->LongDesc().empty())
+        {
+            SetError(ERR_INVALID_OPERATOR,
+                "Operator with missing name, syntax or description. Index=%" PRIu64 " Operator %s",
+                i, pcOperator->PrintToString().c_str());
+            return ERR_INVALID_OPERATOR;
+        }
+
+#if 0
+        if (isdigit(*pOperator->pszOperator) || *pOperator->pszOperator == '.')
+        {
+            StrNPrintf(pszError, cbError, "Invalid operator name '%s' at [%d] id=%d.", pOperator->pszOperator, i, pOperator->OperatorId);
+            return RERR_INVALID_OPERATOR;
+        }
+
+        /*
+         * Let us for now only allow Operators taking 2 or lower parameters.
+         * The evaluation logic can of course handle any number of parameters
+         * but we don't have a parameter separator for Operators unlike Functors.
+         */
+        if (pOperator->cParams > 2)
+        {
+            StrNPrintf(pszError, cbError, "Operator '%s' at [%d] exceeds maximum parameter limit of 2.", pOperator->pszOperator, i);
+            return RERR_INVALID_OPERATOR;
+        }
+
+        for (unsigned k = 0; k < g_cOperators; k++)
+        {
+            if (i == k)
+                continue;
+
+            PCOPERATOR pCur = &g_aOperators[k];
+
+            /*
+             * Make sure each operator Id is unique.
+             */
+            if (pOperator->OperatorId == pCur->OperatorId)
+            {
+                StrNPrintf(pszError, cbError, "Duplicate operator Id=%d '%s' at [%d] and '%s' at [%d].", pOperator->OperatorId,
+                           pOperator->pszOperator, i, pCur->pszOperator, k);
+                return RERR_CONFLICTING_OPERATORS;
+            }
+
+            if (   !StrCmp(pOperator->pszOperator, pCur->pszOperator)
+                && pOperator->Direction == pCur->Direction)
+            {
+                if (pOperator->cParams == pCur->cParams)
+                {
+                    StrNPrintf(pszError, cbError, "Duplicate operator '%s' at [%d] and [%d].", pOperator->pszOperator, i, k);
+                    return RERR_DUPLICATE_OPERATOR;
+                }
+
+                StrNPrintf(pszError, cbError, "Conflicting operator '%s' at [%d] and [%d].", pOperator->pszOperator, i, k);
+                return RERR_CONFLICTING_OPERATORS;
+            }
+        }
+#endif
+    }
+
+    m_fInitialized = true;
+    return INF_SUCCESS;
+}
+
+
 int XEvaluator::Parse(const char *pcszExpr)
 {
+    if (!m_fInitialized)
+        return ERR_NOT_INITIALIZED;
+
+
     return INF_SUCCESS;
 }
 

@@ -43,6 +43,15 @@ class XEvaluator
         virtual ~XEvaluator();
 
         /**
+         * Initializes the expression object. This must be invoked before any other
+         * methods of this object, otherwise all of them will return
+         * ERR_NOT_INITIALIZED error.
+         *
+         * @return int: xank error code.
+         */
+        int                         Init();
+
+        /**
          * Parses an expression.
          *
          * @param pcszExr           The expression to parse.
@@ -130,9 +139,21 @@ class XEvaluator
          */
         XAtom                      *ParseCommand(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom);
 
+        /**
+         * Sets the error for this evaluator object.
+         *
+         * @param rc                The error code.
+         * @param pcszError         The string describing the error and required
+         *                          details, va_args style.
+         */
+        void                        SetError(int rc, const char *pcszError, ...);
+
+        bool                        m_fInitialized; /**< Whether this object has been successfully initialized. */
         std::string                 m_sExpr;        /**< The full, unmodified expression */
         std::queue<XAtom*>          m_RPNQueue;     /**< Internal RPN representation done at the parsing stage. */
         std::list<XAtom*>           m_VarList;      /**< List of variables being evaulated, used for circular dependency checks. */
+        std::string                 m_sError;       /**< The last error's descriptive string. */
+        int                         m_Error;        /**< The last error. */
         static const XFunction      m_sFunctions[]; /**< Static array of Function objects. */
         static const XOperator      m_sOperators[]; /**< Static array of Operator objects. */
         Settings                    m_Setttings;    /**< Settings for evaluator. */

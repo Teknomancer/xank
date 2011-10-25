@@ -79,7 +79,7 @@
 #define ERR_CIRCULAR_DEPENDENCY                    (-121)
 /** Incorrect atom type for operation. */
 #define ERR_INVALID_ATOM_TYPE_FOR_OPERATION        (-122)
-/** Operator on unitialized object. */
+/** Uninitialized object. */
 #define ERR_NOT_INITIALIZED                        (-301)
 /** Magic mismatch. */
 #define ERR_BAD_MAGIC                              (-302)

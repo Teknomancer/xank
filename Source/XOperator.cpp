@@ -113,3 +113,14 @@ bool XOperator::IsAssignment() const
 }
 
 
+std::string XOperator::PrintToString() const
+{
+    /** @todo fill in the other members here  */
+    std::string sOut;
+    sOut =  "Name    : " + m_sName + "\n";
+    sOut += "Id      : ";
+    sOut += m_uId;
+    sOut += "\n";
+    return sOut;
+}
+

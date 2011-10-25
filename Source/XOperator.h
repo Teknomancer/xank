@@ -142,6 +142,13 @@ class XOperator
          */
         bool                    IsAssignment() const;
 
+        /**
+         * Prints the current state of this Operator to a string and return it.
+         *
+         * @return std::string
+         */
+        std::string             PrintToString() const;
+
     private:
         uint32_t                m_uId;          /**< The operator Id, used to identify certain key Operators. */
         int32_t                 m_iPriority;    /**< Operator priority, value is relative to Operators. */

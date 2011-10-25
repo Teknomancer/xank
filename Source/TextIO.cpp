@@ -1,5 +1,5 @@
 /** @file
- * xank - Function, implementation.
+ * xank - TextIO, implementation.
  */
 
 /*
@@ -19,12 +19,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ConsoleIO.h"
+#include "TextIO.h"
+#include "CStringOps.h"
 
-int main(int argc, char **argv)
+TextIO::TextIO()
 {
-    ConsoleIO Console;
-    Console.ColorPrintf(enmConsoleColorRed, "Hello\n");
-    return 0;
 }
+
+TextIO::~TextIO()
+{
+}
+
 
