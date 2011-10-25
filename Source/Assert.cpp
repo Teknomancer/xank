@@ -25,6 +25,7 @@
 
 void AssertMsg(const char *pcszExpr, unsigned uLine, const char *pcszFile, const char *pcszFunction)
 {
-    AssertPrintf("Expression: %s\nLocation  : %s:%u %s\n", pcszExpr, pcszFile, uLine, pcszFunction);
+    ConsoleIO Out;
+    Out.AssertPrintf("Expression: %s\nLocation  : %s:%u %s\n", pcszExpr, pcszFile, uLine, pcszFunction);
 }
 

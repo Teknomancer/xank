@@ -27,7 +27,8 @@
 #include <cstdio>
 #include <cstdarg>
 
-static const bool g_fxTermColors = true;
+/** @todo Probably a bad idea, but whatever should be readonly. Fix this
+ *                later. */
 static const char *const g_aszConsoleColors[] =
 {
     "\033[0m",
@@ -49,8 +50,18 @@ static const char *const g_aszConsoleColors[] =
     "\033[1;37m"
 };
 
+ConsoleIO::ConsoleIO()
+    : m_fxTermColors(true)
+{
+}
 
-void AssertPrintf(const char *pcszAssertMsg, ...)
+
+ConsoleIO::~ConsoleIO()
+{
+}
+
+
+void ConsoleIO::AssertPrintf(const char *pcszAssertMsg, ...)
 {
     va_list FmtArgs;
     char szBuf[2048];
@@ -64,7 +75,7 @@ void AssertPrintf(const char *pcszAssertMsg, ...)
 }
 
 
-void ErrorPrintf(int rc, const char *pcszError, ...)
+void ConsoleIO::ErrorPrintf(int rc, const char *pcszError, ...)
 {
     va_list FmtArgs;
     char szBuf[2048];
@@ -77,17 +88,22 @@ void ErrorPrintf(int rc, const char *pcszError, ...)
     const ErrorMessage *pcErrorMsg = ErrorMessageForRC(rc);
     if (pcErrorMsg)
     {
-        fprintf(stderr, "%sError!%s %s rc=%s%s%s (%d)\n\n", g_aszConsoleColors[enmConsoleColorBoldRed],
-                    g_aszConsoleColors[enmConsoleColorReset], pszBuf,
-                    g_aszConsoleColors[enmConsoleColorRed], pcErrorMsg->pcszName,
-                    g_aszConsoleColors[enmConsoleColorReset], rc);
+        if (m_fxTermColors)
+        {
+            fprintf(stderr, "%sError!%s %s rc=%s%s%s (%d)\n\n", g_aszConsoleColors[enmConsoleColorBoldRed],
+                        g_aszConsoleColors[enmConsoleColorReset], pszBuf,
+                        g_aszConsoleColors[enmConsoleColorRed], pcErrorMsg->pcszName,
+                        g_aszConsoleColors[enmConsoleColorReset], pcErrorMsg->rc);
+        }
+        else
+            fprintf(stderr, "Error! %s rc=%s (%d)\n\n", pszBuf, pcErrorMsg->pcszName, pcErrorMsg->rc);
     }
     else
         fprintf(stderr, "Extreme error! Missing pcErrorMsg!\n");
 }
 
 
-void ColorPrintf(ConsoleColor enmColor, const char *pcszMsg, ...)
+void ConsoleIO::ColorPrintf(ConsoleColor enmColor, const char *pcszMsg, ...)
 {
     va_list FmtArgs;
     char szBuf[2048];
@@ -99,17 +115,19 @@ void ColorPrintf(ConsoleColor enmColor, const char *pcszMsg, ...)
     bool fNewLine = true;
     char *pszBuf = StrStripLF(szBuf, &fNewLine);
 
-    const char *pcszColorCode = g_aszConsoleColors[enmColor];
+    if (m_fxTermColors)
+    {
+        const char *pcszColorCode = g_aszConsoleColors[enmColor];
 
-    fprintf(stdout, "%s%s%s%s",
-            g_fxTermColors ? pcszColorCode : "",
-            pszBuf,
-            CIOCOLOR_RESET,
-            fNewLine ? "\n" : "");
+        fprintf(stdout, "%s%s%s%s", pcszColorCode, pszBuf, g_aszConsoleColors[enmConsoleColorReset],
+                fNewLine ? "\n" : "");
+    }
+    else
+        fprintf(stdout, "%s%s", pszBuf, fNewLine ? "\n" : "");
 }
 
 
-void DebugPrintf(const char *pcszMsg, ...)
+void ConsoleIO::DebugPrintf(const char *pcszMsg, ...)
 {
     va_list FmtArgs;
     char szBuf[2048];
@@ -122,5 +140,11 @@ void DebugPrintf(const char *pcszMsg, ...)
     char *pszBuf = StrStripLF(szBuf, &fNewLine);
 
     fprintf(stderr, "%s%s%s", fNewLine ? "  dbg:" : "", pszBuf, fNewLine ? "\n" : "");
+}
+
+
+void ConsoleIO::SetColor(bool fColorOutputEnable)
+{
+    m_fxTermColors = fColorOutputEnable;
 }
 

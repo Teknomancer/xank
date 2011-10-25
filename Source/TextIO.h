@@ -1,5 +1,5 @@
 /** @file
- * xank - Function, implementation.
+ * xank - TextIO, header.
  */
 
 /*
@@ -19,12 +19,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ConsoleIO.h"
+#ifndef XANK_TEXTIO_H
+# define XANK_TEXTIO_H
 
-int main(int argc, char **argv)
+class TextIO
 {
-    ConsoleIO Console;
-    Console.ColorPrintf(enmConsoleColorRed, "Hello\n");
-    return 0;
-}
+    public:
+        TextIO();
+        virtual ~TextIO();
+
+        virtual void            AssertPrintf(const char *pcszAssertMsg, ...) = 0;
+        virtual void            ErrorPrintf(int rc, const char *pcszMsg, ...) = 0;
+};
+
+#endif /* XANK_TEXTIO_H */
 

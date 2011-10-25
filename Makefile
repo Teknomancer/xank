@@ -44,6 +44,7 @@ Group0_SRC = \
 	CStringOps.cpp \
     Settings.cpp \
 	Main.cpp \
+    TextIO.cpp \
 	XAtom.cpp \
 	XErrors.cpp \
 	XEvaluator.cpp \
@@ -70,7 +71,7 @@ CC = g++
 INC_FLAGS = -I Source -I $(OUT_DIR_GEN)
 
 C_FLAGS_COMMON = -Wall -Wextra -pedantic -Wshadow -Wunused-function -Wunused-label -Wunused-value -Wunused-variable
-C_FLAGS_COMMON += -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS
+C_FLAGS_COMMON += -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS
 
 ifeq ($(BUILD_TYPE),debug)
 C_FLAGS += -g $(C_FLAGS_COMMON) -D_DEBUG -DXANK_DEBUG ${INC_FLAGS}
