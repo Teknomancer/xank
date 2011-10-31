@@ -35,8 +35,10 @@
 #include <stdint.h>
 #include <gmp.h>
 
-static int FxAdd (XAtom *apAtoms_[], uint64_t cAtoms_)
+static int FxAdd (XAtom *apAtoms[], uint64_t cAtoms)
 {
+    NOREF(apAtoms);
+    NOREF(cAtoms);
     return INF_SUCCESS;
 }
 
@@ -106,11 +108,11 @@ int XEvaluator::Init()
             return ERR_INVALID_OPERATOR;
         }
 
-#if 0
-        if (isdigit(*pOperator->pszOperator) || *pOperator->pszOperator == '.')
+        if (isdigit(*pcOperator->Name().c_str()) || pcOperator->Name() == ".")
         {
-            StrNPrintf(pszError, cbError, "Invalid operator name '%s' at [%d] id=%d.", pOperator->pszOperator, i, pOperator->OperatorId);
-            return RERR_INVALID_OPERATOR;
+            SetError(ERR_INVALID_OPERATOR,
+                "Invalid operator name. Index=" PRIu64 " Operator %s", i, pcOperator->PrintToString().c_str());
+            return ERR_INVALID_OPERATOR;
         }
 
         /*
@@ -118,43 +120,47 @@ int XEvaluator::Init()
          * The evaluation logic can of course handle any number of parameters
          * but we don't have a parameter separator for Operators unlike Functors.
          */
-        if (pOperator->cParams > 2)
+        if (pcOperator->Params() > 2)
         {
-            StrNPrintf(pszError, cbError, "Operator '%s' at [%d] exceeds maximum parameter limit of 2.", pOperator->pszOperator, i);
-            return RERR_INVALID_OPERATOR;
+            SetError(ERR_INVALID_OPERATOR,
+                "Too many parameters. Index=" PRIu64 " Operator %s", i, pcOperator->PrintToString().c_str());
+            return ERR_INVALID_OPERATOR;
         }
 
-        for (unsigned k = 0; k < g_cOperators; k++)
+        for (uint64_t k = 0; k < cOperators; k++)
         {
             if (i == k)
                 continue;
 
-            PCOPERATOR pCur = &g_aOperators[k];
+            const XOperator *pcCur = &m_sOperators[k];
 
             /*
              * Make sure each operator Id is unique.
              */
-            if (pOperator->OperatorId == pCur->OperatorId)
+            if (pcOperator->Id() == pcCur->Id())
             {
-                StrNPrintf(pszError, cbError, "Duplicate operator Id=%d '%s' at [%d] and '%s' at [%d].", pOperator->OperatorId,
-                           pOperator->pszOperator, i, pCur->pszOperator, k);
-                return RERR_CONFLICTING_OPERATORS;
+                SetError(ERR_CONFLICTING_OPERATORS,
+                        "Duplicate operator Id=%" PRIu32 " %s at [%" PRIu64 "] and %s at [%" PRIu64 "]",
+                        pcOperator->Id(), pcOperator->PrintToString().c_str(), i, pcCur->PrintToString().c_str(), k);
+                return ERR_CONFLICTING_OPERATORS;
             }
 
-            if (   !StrCmp(pOperator->pszOperator, pCur->pszOperator)
-                && pOperator->Direction == pCur->Direction)
+            if (   pcOperator->Name() == pcCur->Name()
+                && pcOperator->Dir() == pcCur->Dir())
             {
-                if (pOperator->cParams == pCur->cParams)
+                if (pcOperator->Params() == pcCur->Params())
                 {
-                    StrNPrintf(pszError, cbError, "Duplicate operator '%s' at [%d] and [%d].", pOperator->pszOperator, i, k);
-                    return RERR_DUPLICATE_OPERATOR;
+                    SetError(ERR_DUPLICATE_OPERATOR,
+                        "Duplicate operator %s at [%" PRIu64 "] and [%" PRIu64 "]", pcOperator->PrintToString().c_str(),
+                            i, k);
+                    return ERR_DUPLICATE_OPERATOR;
                 }
 
-                StrNPrintf(pszError, cbError, "Conflicting operator '%s' at [%d] and [%d].", pOperator->pszOperator, i, k);
-                return RERR_CONFLICTING_OPERATORS;
+                SetError(ERR_CONFLICTING_OPERATORS, "Conflicting operator %s at [%" PRIu64 "] and [%" PRIu64 "]",
+                        pcOperator->PrintToString().c_str(), i, k);
+                return ERR_CONFLICTING_OPERATORS;
             }
         }
-#endif
     }
 
     m_fInitialized = true;
@@ -164,6 +170,7 @@ int XEvaluator::Init()
 
 int XEvaluator::Parse(const char *pcszExpr)
 {
+    NOREF(pcszExpr);
     if (!m_fInitialized)
         return ERR_NOT_INITIALIZED;
 
@@ -215,6 +222,7 @@ XAtom *XEvaluator::ParseAtom(const char *pcszExpr, const char **ppcszEnd, const 
 
 XAtom *XEvaluator::ParseFunction(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom)
 {
+    NOREF(pcPreviousAtom);
     static uint64_t cFunctions = XANK_ARRAY_ELEMENTS(m_sFunctions);
     for (uint64_t i = 0; i < cFunctions; i++)
     {
@@ -250,6 +258,7 @@ XAtom *XEvaluator::ParseFunction(const char *pcszExpr, const char **ppcszEnd, co
 
 XAtom *XEvaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom)
 {
+    NOREF(pcPreviousAtom);
     std::string sNum;
     const char *pcszStart = pcszExpr;
     int iRadix = 0;
@@ -439,11 +448,13 @@ XAtom *XEvaluator::ParseOperator(const char *pcszExpr, const char **ppcszEnd, co
 
 XAtom *XEvaluator::ParseVariable(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom)
 {
+    NOREF(pcszExpr); NOREF(ppcszEnd); NOREF(pcPreviousAtom);
     return NULL;
 }
 
 
 XAtom *XEvaluator::ParseCommand(const char *pcszExpr,  const char **ppcszEnd,  const XAtom *pcPreviousAtom)
 {
+    NOREF(pcszExpr); NOREF(ppcszEnd); NOREF(pcPreviousAtom);
     return NULL;
 }
