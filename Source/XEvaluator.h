@@ -25,6 +25,7 @@
 #include <queue>
 #include <list>
 #include <string>
+#include <stack>
 
 #include "Settings.h"
 
@@ -140,13 +141,14 @@ class XEvaluator
         XAtom                      *ParseCommand(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom);
 
         /**
-         * Sets the error for this evaluator object.
+         * Clean up evaluator state and sets up error object accordingly.
          *
+         * @param pStack            Pointer to the current stack.
          * @param rc                The error code.
          * @param pcszError         The string describing the error and required
          *                          details, va_args style.
          */
-        void                        SetError(int rc, const char *pcszError, ...);
+        void                        CleanUp(std::stack<XAtom*> *pStack, int rc, const char *pcszError, ...);
 
         bool                        m_fInitialized; /**< Whether this object has been successfully initialized. */
         std::string                 m_sExpr;        /**< The full, unmodified expression */

@@ -182,6 +182,13 @@ class XFunction
          */
         const XFunction& operator  =(const XFunction &Fn);
 
+        /**
+         * Prints the current state of this Function to a string and return it.
+         *
+         * @return std::string
+         */
+        std::string             PrintToString() const;
+
     private:
         /**
          * Sets this Function to be identical to the passed Function.

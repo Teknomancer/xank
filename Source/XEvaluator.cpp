@@ -32,7 +32,6 @@
 
 #include <cstring>
 #include <cstdarg>
-#include <stack>
 #include <stdint.h>
 #include <gmp.h>
 
@@ -79,8 +78,10 @@ XEvaluator::~XEvaluator()
 }
 
 
-void XEvaluator::SetError(int rc, const char *pcszMsg, ...)
+void XEvaluator::CleanUp(std::stack<XAtom*> *pStack, int rc, const char *pcszMsg, ...)
 {
+    /** @todo handle pStack clean-up here. */
+
     va_list FmtArgs;
     char szBuf[2048];
 
@@ -99,6 +100,7 @@ void XEvaluator::SetError(int rc, const char *pcszMsg, ...)
 
 int XEvaluator::Init()
 {
+    int rc = ERR_UNDEFINED;
     static uint64_t cOperators = XANK_ARRAY_ELEMENTS(m_sOperators);
     for (uint64_t i = 0; i < cOperators; i++)
     {
@@ -107,17 +109,19 @@ int XEvaluator::Init()
             || pcOperator->ShortDesc().empty()
             || pcOperator->LongDesc().empty())
         {
-            SetError(ERR_INVALID_OPERATOR,
+            rc = ERR_INVALID_OPERATOR;
+            CleanUp(NULL, rc,
                 "Operator with missing name, syntax or description. Index=%" FMT_U64 " Operator %s",
                 i, pcOperator->PrintToString().c_str());
-            return ERR_INVALID_OPERATOR;
+            return rc;
         }
 
         if (isdigit(*pcOperator->Name().c_str()) || pcOperator->Name() == ".")
         {
-            SetError(ERR_INVALID_OPERATOR,
+            rc = ERR_INVALID_OPERATOR;
+            CleanUp(NULL,  rc,
                 "Invalid operator name. Index=%" FMT_U64 " Operator %s", i, pcOperator->PrintToString().c_str());
-            return ERR_INVALID_OPERATOR;
+            return rc;
         }
 
         /*
@@ -127,9 +131,10 @@ int XEvaluator::Init()
          */
         if (pcOperator->Params() > 2)
         {
-            SetError(ERR_INVALID_OPERATOR,
+            rc = ERR_INVALID_OPERATOR;
+            CleanUp(NULL, rc,
                 "Too many parameters. Index=%" FMT_U64 " Operator %s", i, pcOperator->PrintToString().c_str());
-            return ERR_INVALID_OPERATOR;
+            return rc;
         }
 
         for (uint64_t k = 0; k < cOperators; k++)
@@ -144,10 +149,11 @@ int XEvaluator::Init()
              */
             if (pcOperator->Id() == pcCur->Id())
             {
-                SetError(ERR_CONFLICTING_OPERATORS,
+                rc = ERR_CONFLICTING_OPERATORS;
+                CleanUp(NULL, rc,
                         "Duplicate operator Id=%" FMT_U32 " %s at [%" FMT_U64 "] and %s at [%" FMT_U64 "]",
                         pcOperator->Id(), pcOperator->PrintToString().c_str(), i, pcCur->PrintToString().c_str(), k);
-                return ERR_CONFLICTING_OPERATORS;
+                return rc;
             }
 
             if (   pcOperator->Name() == pcCur->Name()
@@ -155,15 +161,17 @@ int XEvaluator::Init()
             {
                 if (pcOperator->Params() == pcCur->Params())
                 {
-                    SetError(ERR_DUPLICATE_OPERATOR,
+                    rc = ERR_DUPLICATE_OPERATOR;
+                    CleanUp(NULL, rc,
                         "Duplicate operator %s at [%" FMT_U64 "] and [%" FMT_U64 "]", pcOperator->PrintToString().c_str(),
                             i, k);
-                    return ERR_DUPLICATE_OPERATOR;
+                    return rc;
                 }
 
-                SetError(ERR_CONFLICTING_OPERATORS, "Conflicting operator %s at [%" FMT_U64 "] and [%" FMT_U64 "]",
+                rc = ERR_CONFLICTING_OPERATORS;
+                CleanUp(NULL, rc, "Conflicting operator %s at [%" FMT_U64 "] and [%" FMT_U64 "]",
                         pcOperator->PrintToString().c_str(), i, k);
-                return ERR_CONFLICTING_OPERATORS;
+                return rc;
             }
         }
     }
@@ -171,7 +179,6 @@ int XEvaluator::Init()
     m_fInitialized = true;
     return INF_SUCCESS;
 }
-
 
 int XEvaluator::Parse(const char *pcszExpr)
 {
@@ -182,8 +189,7 @@ int XEvaluator::Parse(const char *pcszExpr)
     std::stack<XAtom*> Stack;
     const char *pcszEnd  = NULL;
     XAtom *pPreviousAtom = NULL;
-
-    int rc = ERR_UNDEFINED;
+    int rc               = ERR_UNDEFINED;
     for (;;)
     {
         XAtom *pAtom = ParseAtom(pcszExpr, &pcszEnd, pPreviousAtom);
@@ -209,8 +215,85 @@ int XEvaluator::Parse(const char *pcszExpr)
         }
         else if (pAtom->IsOperator())
         {
-            /* DEBUGPRINTF(("Adding operator")); */
-            /** @todo yeah right */
+            const XOperator *pcOperator = pAtom->Operator();
+            Assert(pcOperator);
+            if (pcOperator->IsOpenParenthesis())
+            {
+                /* DEBUGPRINTF(("Parenthesis begin '%s' pushing to stack.\n", pOperator->Name().c_str())); */
+                Stack.push(pAtom);
+            }
+            else if (pcOperator->IsCloseParenthesis())
+            {
+                /* DEBUGPRINTF(("Parenthesis end '%s'.\n", pOperator->Name().c_str())); */
+                XAtom *pStackAtom = NULL;
+                while (!Stack.empty())
+                {
+                    pStackAtom = Stack.top();
+                    Assert(pStackAtom);
+                    if (   pStackAtom->Operator()
+                        && pStackAtom->Operator()->IsOpenParenthesis())
+                        break;
+                    /* DEBUGPRINTF(("Popping '%s' to queue.\n", pStackAtom->PrintToString().c_str())); */
+                    Stack.pop();
+                    m_RPNQueue.push(pStackAtom);
+                }
+
+                if (!pStackAtom)
+                {
+                    /* DEBUGPRINTF(("Missing open parenthesis.\n")); */
+                    delete pAtom;
+                    pAtom = NULL;
+                    rc = ERR_PARENTHESIS_UNBALANCED;
+                    CleanUp(&Stack, rc, "Missing open parenthesis.");
+                    return rc;
+                }
+
+                if (   pStackAtom->Operator()
+                    && pStackAtom->Operator()->IsOpenParenthesis())
+                {
+                    Stack.pop();
+                    delete pStackAtom;
+                    pStackAtom = NULL;
+                }
+
+                /*
+                 * If the left parenthesis is preceeded by a function, pop it to the Queue
+                 * incrementing number of parameters the function already has.
+                 */
+                if (   !Stack.empty()
+                    && (pStackAtom = Stack.top()) != NULL
+                    && (pStackAtom->Function()))
+                {
+                    /* DEBUGPRINTF(("Popping Function '%s' to queue.\n", pStackAtom->Function().Name()->c_str())); */
+                    Stack.pop();
+                    m_RPNQueue.push(pStackAtom);
+
+                    pStackAtom->IncrementFunctionParams();
+                    if (pStackAtom->FunctionParams() > pStackAtom->Function()->MaxParams())
+                    {
+                        /* DEBUGPRINTF(("Too many params to Function '%s'.\n", pStackAtom->Function()->Name().c_str())); */
+                        delete pAtom;
+                        pAtom = NULL;
+                        rc = ERR_TOO_MANY_PARAMETERS;
+                        CleanUp(&Stack, rc,
+                            "Too many parameters to function %s", pStackAtom->Function()->PrintToString().c_str());
+                        return rc;
+                    }
+                    else if (pStackAtom->FunctionParams() < pStackAtom->Function()->MinParams())
+                    {
+                        /* DEBUGPRINTF(("Too few params to Function '%s'.\n", pStackAtom->Function()->Name().c_str())); */
+                        delete pAtom;
+                        pAtom = NULL;
+                        rc = ERR_TOO_FEW_PARAMETERS;
+                        CleanUp(&Stack, rc,
+                            "Too few parameters to function %s", pStackAtom->Function()->PrintToString().c_str());
+                        return rc;
+                    }
+
+                    /* DEBUGPRINTF(("Function %s cParams=%" FMT_U64 ".\n", pStackAtom->Function()->Name().c_str(),
+                            pStackAtom->Function()->FunctionParams())); */
+                }
+            }
         }
     }
 

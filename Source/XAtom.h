@@ -205,6 +205,21 @@ class XAtom
          */
         int                         SetVariable(XVariable *pVariable);
 
+        /**
+         * Increments function parameters for a Function Atom.
+         * Has no effect if invoked on a non-Function Atom.
+         *
+         */
+        void                        IncrementFunctionParams();
+
+        /**
+         * Returns number of function parameters for a Function Atom.
+         *
+         * @return uint64_t: Number of function parameters, undefined
+         * if this is not a Function Atom.
+         */
+        uint64_t                    FunctionParams() const;
+
     private:
         /**
          * Sets this Atom to be identical to the passed in Atom.

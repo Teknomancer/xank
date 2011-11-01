@@ -144,3 +144,17 @@ void XFunction::SetTo(const XFunction &Fn)
     m_sLongDesc      = Fn.m_sLongDesc;
 }
 
+
+std::string XFunction::PrintToString() const
+{
+    /** @todo fill in the other members here  */
+    std::string sOut;
+    sOut =  "Name      : " + m_sName + "\n";
+    sOut += "Min Params: ";
+    sOut += m_cMinParams;
+    sOut += "\n";
+    sOut += "Max Params: ";
+    sOut += m_cMaxParams;
+    sOut += "\n";
+    return sOut;
+}
