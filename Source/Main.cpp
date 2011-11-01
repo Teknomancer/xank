@@ -21,12 +21,18 @@
 
 #include "XEvaluator.h"
 #include "ConsoleIO.h"
+#include "XErrors.h"
 
 int main(int argc, char **argv)
 {
-    XEvaluator Eval;
     ConsoleIO Console;
-    Console.ColorPrintf(enmConsoleColorRed, "Hello\n");
+    XEvaluator Eval;
+    int rc = Eval.Init();
+    if (IS_SUCCESS(rc))
+    {
+        Console.Printf("Initialized Evaluator %s.\n", "Hello");
+    }
+    else
+        Console.ColorPrintf(enmConsoleColorRed, "Evaluator initilization failed.\n");
     return 0;
 }
-
