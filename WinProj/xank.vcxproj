@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <CustomBuildBeforeTargets>
+    </CustomBuildBeforeTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <CustomBuildBeforeTargets>
+    </CustomBuildBeforeTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;XANK_OS_WINDOWS;__STDC_FORMAT_MACROS;__STDC_CONSTANT_MACROS;__STDC_LIMIT_MACROS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\GnuWin32\include\readline;..\Libs\Windows\mpir-2.4.0\build.vc10\lib\Win32\Release</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>..\Libs\Windows\MPIR\mpir.lib;C:\Program Files (x86)\GnuWin32\lib\readline.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
+    </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>sed.exe -f ..\Source\ErrorData.sed ..\Source\XErrors.h &gt; ..\Source\GenErrorData.h</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Prebuild event: Sed generation</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;XANK_OS_WINDOWS;__STDC_FORMAT_MACROS;__STDC_CONSTANT_MACROS;__STDC_LIMIT_MACROS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>..\Libs\Windows\mpir-2.4.0\build.vc10\lib\Win32\Release\mpir.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
+    </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>sed.exe -f ..\Source\ErrorData.sed ..\Source\XErrors.h &gt; ..\Source\GenErrorData.h</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Prebuild event: Sed generation</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Source\Assert.cpp" />
+    <ClCompile Include="..\Source\ConsoleIO.cpp" />
+    <ClCompile Include="..\Source\CStringOps.cpp" />
+    <ClCompile Include="..\source\Main.cpp" />
+    <ClCompile Include="..\Source\Settings.cpp" />
+    <ClCompile Include="..\Source\TextIO.cpp" />
+    <ClCompile Include="..\Source\XAtom.cpp" />
+    <ClCompile Include="..\Source\XErrors.cpp" />
+    <ClCompile Include="..\Source\XEvaluator.cpp" />
+    <ClCompile Include="..\Source\XFunction.cpp" />
+    <ClCompile Include="..\Source\XOperator.cpp" />
+    <ClCompile Include="..\Source\XVariable.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Source\Assert.h" />
+    <ClInclude Include="..\Source\ConsoleColors.h" />
+    <ClInclude Include="..\Source\ConsoleIO.h" />
+    <ClInclude Include="..\Source\CStringOps.h" />
+    <ClInclude Include="..\source\Errors.h" />
+    <ClInclude Include="..\Source\Settings.h" />
+    <ClInclude Include="..\Source\TextIO.h" />
+    <ClInclude Include="..\Source\WinIncludes\inttypes.h" />
+    <ClInclude Include="..\Source\XAtom.h" />
+    <ClInclude Include="..\Source\XErrors.h" />
+    <ClInclude Include="..\Source\XEvaluator.h" />
+    <ClInclude Include="..\Source\XEvaluatorDefs.h" />
+    <ClInclude Include="..\Source\XFunction.h" />
+    <ClInclude Include="..\Source\XGenericDefs.h" />
+    <ClInclude Include="..\Source\XOperator.h" />
+    <ClInclude Include="..\Source\XVariable.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

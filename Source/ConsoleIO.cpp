@@ -51,7 +51,11 @@ static const char *const g_aszConsoleColors[] =
 };
 
 ConsoleIO::ConsoleIO()
+#ifdef XANK_OS_WINDOWS
+    : m_fxTermColors(false)
+#else
     : m_fxTermColors(true)
+#endif
 {
 }
 
@@ -67,7 +71,11 @@ void ConsoleIO::AssertPrintf(const char *pcszAssertMsg, ...)
     char szBuf[2048];
 
     va_start(FmtArgs, pcszAssertMsg);
+#ifdef XANK_OS_WINDOWS
+    vsnprintf_s(szBuf, sizeof(szBuf), pcszAssertMsg, FmtArgs);
+#else
     vsnprintf(szBuf, sizeof(szBuf) - 1, pcszAssertMsg, FmtArgs);
+#endif
     va_end(FmtArgs);
 
     char *pszBuf = szBuf;
@@ -81,7 +89,11 @@ void ConsoleIO::ErrorPrintf(int rc, const char *pcszError, ...)
     char szBuf[2048];
 
     va_start(FmtArgs, pcszError);
+#ifdef XANK_OS_WINDOWS
+    vsnprintf_s(szBuf, sizeof(szBuf), pcszError, FmtArgs);
+#else
     vsnprintf(szBuf, sizeof(szBuf) - 1, pcszError, FmtArgs);
+#endif
     va_end(FmtArgs);
 
     char *pszBuf = StrStripLF(szBuf, NULL /* pfStripped */);
@@ -109,7 +121,11 @@ void ConsoleIO::ColorPrintf(ConsoleColor enmColor, const char *pcszMsg, ...)
     char szBuf[2048];
 
     va_start(FmtArgs, pcszMsg);
+#ifdef XANK_OS_WINDOWS
+    vsnprintf_s(szBuf, sizeof(szBuf), pcszMsg, FmtArgs);
+#else
     vsnprintf(szBuf, sizeof(szBuf) - 1, pcszMsg, FmtArgs);
+#endif
     va_end(FmtArgs);
 
     bool fNewLine = true;
@@ -133,7 +149,11 @@ void ConsoleIO::DebugPrintf(const char *pcszMsg, ...)
     char szBuf[2048];
 
     va_start(FmtArgs, pcszMsg);
+#ifdef XANK_OS_WINDOWS
+    vsnprintf_s(szBuf, sizeof(szBuf), pcszMsg, FmtArgs);
+#else
     vsnprintf(szBuf, sizeof(szBuf) - 1, pcszMsg, FmtArgs);
+#endif
     va_end(FmtArgs);
 
     bool fNewLine = true;
@@ -145,6 +165,7 @@ void ConsoleIO::DebugPrintf(const char *pcszMsg, ...)
 
 void ConsoleIO::SetColor(bool fColorOutputEnable)
 {
+#ifndef XANK_OS_WINDOWS
     m_fxTermColors = fColorOutputEnable;
+#endif
 }
-
