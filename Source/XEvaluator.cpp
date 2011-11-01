@@ -28,7 +28,7 @@
 #include "XOperator.h"
 #include "XErrors.h"
 #include "ConsoleIO.h"
-#include "Debug.h"
+//#include "Debug.h"
 
 #include <cstring>
 #include <cstdarg>
@@ -84,7 +84,11 @@ void XEvaluator::SetError(int rc, const char *pcszMsg, ...)
     char szBuf[2048];
 
     va_start(FmtArgs, pcszMsg);
+#ifdef XANK_OS_WINDOWS
+    vsnprintf_s(szBuf, sizeof(szBuf), pcszMsg, FmtArgs);
+#else
     vsnprintf(szBuf, sizeof(szBuf) - 1, pcszMsg, FmtArgs);
+#endif
     va_end(FmtArgs);
 
     m_sError = szBuf;
@@ -103,7 +107,7 @@ int XEvaluator::Init()
             || pcOperator->LongDesc().empty())
         {
             SetError(ERR_INVALID_OPERATOR,
-                "Operator with missing name, syntax or description. Index=%" PRIu64 " Operator %s",
+                "Operator with missing name, syntax or description. Index=%" FMT_U64 " Operator %s",
                 i, pcOperator->PrintToString().c_str());
             return ERR_INVALID_OPERATOR;
         }
@@ -111,7 +115,7 @@ int XEvaluator::Init()
         if (isdigit(*pcOperator->Name().c_str()) || pcOperator->Name() == ".")
         {
             SetError(ERR_INVALID_OPERATOR,
-                "Invalid operator name. Index=" PRIu64 " Operator %s", i, pcOperator->PrintToString().c_str());
+                "Invalid operator name. Index=%" FMT_U64 " Operator %s", i, pcOperator->PrintToString().c_str());
             return ERR_INVALID_OPERATOR;
         }
 
@@ -123,7 +127,7 @@ int XEvaluator::Init()
         if (pcOperator->Params() > 2)
         {
             SetError(ERR_INVALID_OPERATOR,
-                "Too many parameters. Index=" PRIu64 " Operator %s", i, pcOperator->PrintToString().c_str());
+                "Too many parameters. Index=%" FMT_U64 " Operator %s", i, pcOperator->PrintToString().c_str());
             return ERR_INVALID_OPERATOR;
         }
 
@@ -140,7 +144,7 @@ int XEvaluator::Init()
             if (pcOperator->Id() == pcCur->Id())
             {
                 SetError(ERR_CONFLICTING_OPERATORS,
-                        "Duplicate operator Id=%" PRIu32 " %s at [%" PRIu64 "] and %s at [%" PRIu64 "]",
+                        "Duplicate operator Id=%" FMT_U32 " %s at [%" FMT_U64 "] and %s at [%" FMT_U64 "]",
                         pcOperator->Id(), pcOperator->PrintToString().c_str(), i, pcCur->PrintToString().c_str(), k);
                 return ERR_CONFLICTING_OPERATORS;
             }
@@ -151,12 +155,12 @@ int XEvaluator::Init()
                 if (pcOperator->Params() == pcCur->Params())
                 {
                     SetError(ERR_DUPLICATE_OPERATOR,
-                        "Duplicate operator %s at [%" PRIu64 "] and [%" PRIu64 "]", pcOperator->PrintToString().c_str(),
+                        "Duplicate operator %s at [%" FMT_U64 "] and [%" FMT_U64 "]", pcOperator->PrintToString().c_str(),
                             i, k);
                     return ERR_DUPLICATE_OPERATOR;
                 }
 
-                SetError(ERR_CONFLICTING_OPERATORS, "Conflicting operator %s at [%" PRIu64 "] and [%" PRIu64 "]",
+                SetError(ERR_CONFLICTING_OPERATORS, "Conflicting operator %s at [%" FMT_U64 "] and [%" FMT_U64 "]",
                         pcOperator->PrintToString().c_str(), i, k);
                 return ERR_CONFLICTING_OPERATORS;
             }
@@ -181,7 +185,7 @@ int XEvaluator::Parse(const char *pcszExpr)
 
 XAtom *XEvaluator::ParseAtom(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom)
 {
-    DEBUGPRINTF(("ParseAtom\n"));
+//    DEBUGPRINTF(("ParseAtom\n"));
     XAtom *pAtom = NULL;
     while (*pcszExpr)
     {

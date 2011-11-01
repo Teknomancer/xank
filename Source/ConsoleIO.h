@@ -23,20 +23,24 @@
 # define XANK_CONSOLE_IO_H
 
 #include "TextIO.h"
-#include <inttypes.h>
+#ifdef XANK_OS_WINDOWS
+# include <cstdint>
+#else
+# include <inttypes.h>
+#endif
 
 #if defined(FMT_D32) || defined(FMT_D64) || defined(FMT_I32) || defined(FMT_I64) || defined(FMT_U32) || defined(FMT_U64) || defined(FMT_X64)
 # error bummer.
 #endif
 
 #if defined(XANK_OS_WINDOWS) && defined(_MSC_VER)
-# define FMT_D32           I32d
-# define FMT_D64           I64d
-# define FMT_I32           I32i
-# define FMT_I64           I64i
-# define FMT_U32           I32u
-# define FMT_U64           I64u
-# define FMT_X64           I64x
+# define FMT_D32           "I32d"
+# define FMT_D64           "I64d"
+# define FMT_I32           "I32i"
+# define FMT_I64           "I64i"
+# define FMT_U32           "I32u"
+# define FMT_U64           "I64u"
+# define FMT_X64           "I64x"
 #else
 # define FMT_D32           PRId32
 # define FMT_D64           PRId64
