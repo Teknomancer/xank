@@ -151,10 +151,19 @@ std::string XFunction::PrintToString() const
     std::string sOut;
     sOut =  "Name      : " + m_sName + "\n";
     sOut += "Min Params: ";
-    sOut += m_cMinParams;
+    /* What the bloody hell? Can't append uint64_t to std::string on Winblows? */
+#ifdef XANK_OS_WINDOWS
+    sOut += (uint32_t)m_cMinParams;
+#else
+    sOut += (uint32_t)m_cMinParams;
+#endif
     sOut += "\n";
     sOut += "Max Params: ";
+#ifdef XANK_OS_WINDOWS
+    sOut += (uint32_t)m_cMaxParams;
+#else
     sOut += m_cMaxParams;
+#endif
     sOut += "\n";
     return sOut;
 }

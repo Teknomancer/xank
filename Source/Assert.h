@@ -24,12 +24,18 @@
 
 #include <cstdlib>
 
+#if defined(_MSC_VER) && defined(XANK_OS_WINDOWS)
+# define XANK_PRETTY_FUNC       __FUNCSIG__
+#else
+# define XANK_PRETTY_FUNC       __PRETTY_FUNCTION__
+#endif
+
 #ifdef XANK_DEBUG
 # define Assert(expr)  \
     do { \
         if (!(expr)) \
         { \
-            AssertMsg(#expr, __LINE__, __FILE__, __PRETTY_FUNCTION__); \
+            AssertMsg(#expr, __LINE__, __FILE__, XANK_PRETTY_FUNC); \
             abort(); \
         } \
     } while (0)
@@ -41,7 +47,7 @@
     do { \
         if (!(expr)) \
         { \
-            AssertMsg(#expr, __LINE__, __FILE__, __PRETTY_FUNCTION__); \
+            AssertMsg(#expr, __LINE__, __FILE__, XANK_PRETTY_FUNC); \
             return (rc); \
         } \
     } while (0)
@@ -50,7 +56,7 @@
     do { \
         if (!(expr)) \
         { \
-            AssertMsg(#expr, __LINE__, __FILE__, __PRETTY_FUNCTION__); \
+            AssertMsg(#expr, __LINE__, __FILE__, XANK_PRETTY_FUNC); \
             return; \
         } \
     } while (0)
@@ -61,7 +67,15 @@
        ____compileTimeAssertFailed[0]=0; \
     }
 
+#define AssertRelease(expr) \
+    do { \
+        if (!(expr)) \
+        { \
+            AssertMsg(#expr, __LINE__, __FILE__, XANK_PRETTY_FUNC); \
+            abort(); \
+        } \
+    } while (0)
+
 extern void AssertMsg(const char *pcszExpr, unsigned uLine, const char *pcszFile, const char *pcszFunction);
 
 #endif /* XANK_ASSERT_H */
-

@@ -187,17 +187,16 @@ int XEvaluator::Parse(const char *pcszExpr)
     if (!m_fInitialized)
         return ERR_NOT_INITIALIZED;
 
+    std::queue<XAtom*> Queue;
     std::stack<XAtom*> Stack;
     const char *pcszEnd  = NULL;
+    XAtom *pAtom         = NULL;
     XAtom *pPreviousAtom = NULL;
     int rc               = ERR_UNDEFINED;
-    for (;;)
+    while ((pAtom = ParseAtom(pcszExpr, &pcszEnd, pPreviousAtom)) != NULL)
     {
-        XAtom *pAtom = ParseAtom(pcszExpr, &pcszEnd, pPreviousAtom);
-        if (!pAtom)
-            break;
-
-        if (   pPreviousAtom->Operator()
+        if (   pPreviousAtom
+            && pPreviousAtom->Operator()
             && pPreviousAtom->Operator()->IsCloseParenthesis())
         {
             delete pPreviousAtom;
@@ -207,12 +206,18 @@ int XEvaluator::Parse(const char *pcszExpr)
         if (pAtom->IsNumber())
         {
             /* DEBUGPRINTF(("Adding number")); */
-            m_RPNQueue.push(pAtom);
+            Queue.push(pAtom);
         }
         else if (pAtom->IsFunction())
         {
             /* DEBUGPRINTF(("Adding function")); */
             Stack.push(pAtom);
+        }
+        else if (pAtom->IsVariable())
+        {
+            /** @todo variable atom */
+            rc = ERR_NOT_SUPPORTED;
+            AssertRelease(rc == ERR_NOT_SUPPORTED);
         }
         else if (pAtom->IsOperator())
         {
@@ -236,7 +241,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                         break;
                     /* DEBUGPRINTF(("Popping '%s' to queue.\n", pStackAtom->PrintToString().c_str())); */
                     Stack.pop();
-                    m_RPNQueue.push(pStackAtom);
+                    Queue.push(pStackAtom);
                 }
 
                 if (!pStackAtom)
@@ -267,7 +272,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                 {
                     /* DEBUGPRINTF(("Popping Function '%s' to queue.\n", pStackAtom->Function().Name()->c_str())); */
                     Stack.pop();
-                    m_RPNQueue.push(pStackAtom);
+                    Queue.push(pStackAtom);
 
                     pStackAtom->IncrementFunctionParams();
                     if (pStackAtom->FunctionParams() > pStackAtom->Function()->MaxParams())
@@ -309,7 +314,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                     }
 
                     Stack.pop();
-                    m_RPNQueue.push(pStackAtom);
+                    Queue.push(pStackAtom);
                 }
 
                 if (  !pStackAtom
@@ -369,9 +374,103 @@ int XEvaluator::Parse(const char *pcszExpr)
                     return rc;
                 }
             }
+            else if (pcOperator->IsAssignment())
+            {
+                /** @todo variable assignment */
+                rc = ERR_NOT_SUPPORTED;
+                AssertRelease(rc == ERR_NOT_SUPPORTED);
+            }
+            else
+            {
+                /*
+                 * Regular operator, handle preceedence.
+                 */
+                XAtom *pStackAtom = NULL;
+                while (   !Stack.empty()
+                        && (pStackAtom = Stack.top()) != NULL)
+                {
+                    const XOperator *pcStackOperator = pStackAtom->Operator();
+                    if (  !pcStackOperator
+                        || pcStackOperator->IsOpenParenthesis())
+                    {
+                        break;
+                    }
+
+                    if (   (pcOperator->Dir() == enmOperatorDirLeft  && pcOperator->Priority() <= pcStackOperator->Priority())
+                        || (pcOperator->Dir() == enmOperatorDirRight && pcOperator->Priority() < pcStackOperator->Priority()))
+                    {
+                        /* DEBUGPRINTF(("Moving operator '%s' cParams=%" FMT_U8 " from stack to queue.\n",
+                                pcStackOperator->Name().c_str(), pcStackOperator->Params())); */
+                        Stack.pop();
+                        m_RPNQueue.push(pStackAtom);
+                    }
+                    else
+                        break;
+                }
+
+                /* DEBUGPRINTF(("Pushing operator '%s' (id=%" FMT_U32 ") cParams=%" FMT_U8 " to stack.\n",
+                        pcOperator->Name().c_str(), pcOperator->Id(), pcOperator->Params())); */
+                Stack.push(pAtom);
+            }
         }
+        else
+        {
+            /* DEBUGPRINTF(("Unknown token.\n")); */
+            delete pAtom;
+            pAtom = NULL;
+            break;
+        }
+        pcszExpr = pcszEnd;
+        pPreviousAtom = pAtom;
     }
 
+    /*
+     * If there are any Atoms left in the stack we must pop them into the queue.
+     * However, an open parenthesis on top of the stack means we have unbalanced parenthesis.
+     */
+    pAtom = NULL;
+    if (   !Stack.empty()
+        && (pAtom = Stack.top()) != NULL
+        && pAtom->Operator()
+        && pAtom->Operator()->IsOpenParenthesis())
+    {
+        rc = ERR_PARENTHESIS_UNBALANCED;
+        Stack.pop();
+        delete pAtom;
+        pAtom = NULL;
+        CleanUp(&Stack, rc, "Unbalanced parenthesis.\n");
+        return rc;
+    }
+
+    /*
+     * Pop the remaining Operators, Functions to the queue.
+     */
+    while (   !Stack.empty()
+           && (pAtom = Stack.top()) != NULL)
+    {
+        Stack.pop();
+        Queue.push(pAtom);
+    }
+
+    if (Queue.empty())
+    {
+        rc = ERR_EXPRESSION_INVALID;
+        CleanUp(&Stack, rc, "No atoms detected.\n");
+        return rc;
+    }
+
+    /*
+     * Clear old queue if any, and restore the new one.
+     */
+    while (  !m_RPNQueue.empty()
+           && (pAtom = m_RPNQueue.front()) != NULL)
+    {
+        m_RPNQueue.pop();
+        delete pAtom;
+        pAtom = NULL;
+    }
+
+    m_RPNQueue = Queue;
     return INF_SUCCESS;
 }
 

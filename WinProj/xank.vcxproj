@@ -48,7 +48,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;XANK_OS_WINDOWS;__STDC_FORMAT_MACROS;__STDC_CONSTANT_MACROS;__STDC_LIMIT_MACROS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;XANK_OS_WINDOWS;XANK_DEBUG;__STDC_FORMAT_MACROS;__STDC_CONSTANT_MACROS;__STDC_LIMIT_MACROS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -62,6 +62,7 @@
       <AdditionalDependencies>..\Libs\Windows\MPIR\mpir.lib;C:\Program Files (x86)\GnuWin32\lib\readline.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Link>
     <CustomBuildStep>
       <Command>
