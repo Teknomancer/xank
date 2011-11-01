@@ -1,5 +1,5 @@
 /** @file
- * xank - Function, implementation.
+ * xank - Main, implementation.
  */
 
 /*
