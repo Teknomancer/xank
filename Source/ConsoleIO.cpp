@@ -115,6 +115,14 @@ void ConsoleIO::ErrorPrintf(int rc, const char *pcszError, ...)
 }
 
 
+void ConsoleIO::Printf(const char *pcszMsg, ...)
+{
+    va_list FmtArgs;
+    va_start(FmtArgs, pcszMsg);
+    va_end(FmtArgs);
+    ColorPrintf(enmConsoleColorReset, pcszMsg, FmtArgs);
+}
+
 void ConsoleIO::ColorPrintf(ConsoleColor enmColor, const char *pcszMsg, ...)
 {
     va_list FmtArgs;

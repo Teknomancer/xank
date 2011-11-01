@@ -100,6 +100,13 @@ class ConsoleIO : public TextIO
         virtual void            ColorPrintf(ConsoleColor enmColor, const char *pcszMsg, ...);
 
         /**
+         * Prints a message to the console (stdout) in resetted/default color.
+         *
+         * @param pcszMsg       The message, va_args style.
+         */
+        virtual void            Printf(const char *pcszMsg, ...);
+
+        /**
          * Prints debug message to console (stderr).
          *
          * @param pcszMsg       The message, va_args style.

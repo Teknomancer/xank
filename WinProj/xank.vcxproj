@@ -62,7 +62,8 @@
       <AdditionalDependencies>..\Libs\Windows\MPIR\mpir.lib;C:\Program Files (x86)\GnuWin32\lib\readline.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
-      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
     </Link>
     <CustomBuildStep>
       <Command>
