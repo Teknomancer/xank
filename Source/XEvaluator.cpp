@@ -180,6 +180,7 @@ int XEvaluator::Init()
     return INF_SUCCESS;
 }
 
+
 int XEvaluator::Parse(const char *pcszExpr)
 {
     NOREF(pcszExpr);
@@ -292,6 +293,80 @@ int XEvaluator::Parse(const char *pcszExpr)
 
                     /* DEBUGPRINTF(("Function %s cParams=%" FMT_U64 ".\n", pStackAtom->Function()->Name().c_str(),
                             pStackAtom->Function()->FunctionParams())); */
+                }
+            }
+            else if (pcOperator->IsParamSeparator())
+            {
+                /* DEBUGPRINTF(("Function param separator.\n")); */
+                XAtom *pStackAtom = NULL;
+                while (   !Stack.empty()
+                       && (pStackAtom = Stack.top()) != NULL)
+                {
+                    if (   pStackAtom->Operator()
+                        && pStackAtom->Operator()->IsOpenParenthesis())
+                    {
+                        break;
+                    }
+
+                    Stack.pop();
+                    m_RPNQueue.push(pStackAtom);
+                }
+
+                if (  !pStackAtom
+                    || (   pStackAtom->Operator()
+                        && pStackAtom->Operator()->IsOpenParenthesis()))
+                {
+                    /* DEBUGPRINTF(("Operator '%s' param mismatch.\n", pcOperator->Name().c_str())); */
+                    delete pAtom;
+                    pAtom = NULL;
+                    rc = ERR_PARENTHESIS_SEPARATOR_UNEXPECTED;
+                    CleanUp(&Stack, rc, "Operator %s parameter mismatch.\n", pcOperator->PrintToString().c_str());
+                    return rc;
+                }
+
+                Stack.pop();
+                XAtom *pOpenParenAtom = pStackAtom;
+                pStackAtom            = NULL;
+                XAtom *pFunctionAtom  = NULL;
+                if (!Stack.empty())
+                {
+                    pFunctionAtom = Stack.top();
+                    Stack.pop();
+                }
+
+                if (   pFunctionAtom
+                    && pFunctionAtom->Function())
+                {
+                    pFunctionAtom->IncrementFunctionParams();
+                    if (pFunctionAtom->FunctionParams() >= pFunctionAtom->Function()->MaxParams())
+                    {
+                        /* DEBUGPRINTF(("Too many params to Function '%s' max=%" FMT_U64 ".\n", pFunctionAtom->Function()->Name().c_str(),
+                                pFunctionAtom->Function()->MaxParams())); */
+                        delete pAtom;
+                        pAtom = NULL;
+                        rc = ERR_TOO_FEW_PARAMETERS;
+                        CleanUp(&Stack, rc, "Too many parameters to Function %s", pFunctionAtom->Function()->PrintToString().c_str());
+                        return rc;
+                    }
+
+                    /*
+                     * Now that we've recorded the information into the Function Atom, restore the
+                     * stack items as though nothing happened :)
+                     */
+                    Stack.push(pFunctionAtom);
+                    Stack.push(pOpenParenAtom);
+                    
+                    /* DEBUGPRINTF(("Function '%s' cParams=%" FMT_U64 ".\n", pFunctionAtom->Function()->Name().c_str(),
+                            pFunctionAtom->FunctionParams())); */
+                }
+                else
+                {
+                    /* DEBUGPRINTF(("No function specified.\n")); */
+                    delete pAtom;
+                    pAtom = NULL;
+                    rc = ERR_PARENTHESIS_SEPARATOR_UNEXPECTED;
+                    CleanUp(&Stack, rc, "No function specified.\n");
+                    return rc;
                 }
             }
         }

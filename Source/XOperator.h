@@ -133,7 +133,7 @@ class XOperator
          *
          * @return bool: true if it's the Parameter Separator Operator, false otherwise.
          */
-        bool                    IsParameterSeparator() const;
+        bool                    IsParamSeparator() const;
 
         /**
          * Returns if this Operator is the Assignment Operator.

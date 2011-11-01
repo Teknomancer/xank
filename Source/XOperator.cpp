@@ -101,7 +101,7 @@ bool XOperator::IsCloseParenthesis() const
 }
 
 
-bool XOperator::IsParameterSeparator() const
+bool XOperator::IsParamSeparator() const
 {
     return (m_uId == XANK_PARAM_SEPARATOR_OPERATOR_ID);
 }
