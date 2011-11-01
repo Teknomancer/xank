@@ -202,3 +202,17 @@ void XAtom::Destroy()
     m_AtomType = enmAtomTypeEmpty;
 }
 
+
+void XAtom::IncrementFunctionParams()
+{
+    if (m_AtomType == enmAtomTypeFunction)
+        m_cParams++;
+}
+
+
+uint64_t XAtom::FunctionParams() const
+{
+    if (m_AtomType == enmAtomTypeFunction)
+        return m_cParams;
+    return UINT64_MAX;
+}
