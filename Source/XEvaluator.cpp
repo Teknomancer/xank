@@ -66,10 +66,10 @@ const XFunction XEvaluator::m_sFunctions[] =
 XEvaluator::XEvaluator()
 {
     /** @todo add parameters to accept settings */
-    m_fInitialized = false;
-    m_Error        = ERR_NOT_INITIALIZED;
-    m_sError       = "Evaluator not initialized.";
-    m_pOpenParenthesisOperator = &m_sOperators[0];   /* for now, later set this while verifying list of Operators */
+    m_fInitialized             = false;
+    m_Error                    = ERR_NOT_INITIALIZED;
+    m_sError                   = "Evaluator not initialized.";
+    m_pOpenParenthesisOperator = NULL;
 }
 
 
@@ -97,11 +97,26 @@ void XEvaluator::CleanUp(std::stack<XAtom*> *pStack, int rc, const char *pcszMsg
     m_Error = rc;
 }
 
+static int OperatorCompare(const void *pcvOperator1, const void *pcvOperator2)
+{
+    const XOperator *pcOperator1 = reinterpret_cast<const XOperator*>(pcvOperator1);
+    const XOperator *pcOperator2 = reinterpret_cast<const XOperator*>(pcvOperator2);
+    const char *pcszOperator1    = pcOperator1->Name().c_str();
+    const char *pcszOperator2    = pcOperator2->Name().c_str();
+    const size_t cbOperator1     = pcOperator1->Name().length();
+    const size_t cbOperator2     = pcOperator2->Name().length();
+
+    int rc = std::strncmp(pcszOperator1, pcszOperator2, XANK_MAX(cbOperator1, cbOperator2));
+    if (!rc)
+        return pcOperator2->Params() - pcOperator1->Params();
+    return -rc;
+}
+
 
 int XEvaluator::Init()
 {
     int rc = ERR_UNDEFINED;
-    static uint64_t cOperators = XANK_ARRAY_ELEMENTS(m_sOperators);
+    static size_t cOperators = XANK_ARRAY_ELEMENTS(m_sOperators);
     for (uint64_t i = 0; i < cOperators; i++)
     {
         const XOperator *pcOperator = &m_sOperators[i];
@@ -137,7 +152,7 @@ int XEvaluator::Init()
             return rc;
         }
 
-        for (uint64_t k = 0; k < cOperators; k++)
+        for (size_t k = 0; k < cOperators; k++)
         {
             if (i == k)
                 continue;
@@ -174,6 +189,64 @@ int XEvaluator::Init()
                 return rc;
             }
         }
+    }
+
+    /*
+     * Sort operator list to workaround overlapping operator names, e.g.: "++" always appears before "+".
+     * While sorting operators with the same name, the one with more parameters is sorted first.
+     * For e.g. binary '-' is placed before unary '-', See ParseOperator().
+     */
+    std::qsort((void*)m_sOperators, cOperators, sizeof(XOperator), OperatorCompare);
+    /* DEBUGPRINTF(("Sorted operators.\n")); */
+    
+    const XOperator *pCloseParenthesisOperator = NULL;
+    const XOperator *pParamSeparatorOperator   = NULL;
+    for (size_t i = 0; i < cOperators; i++)
+    {
+        /* DEBUGPRINTF(("%s cParams=%" FMT_U8 " Id=%" FMT_U32 "\n", m_sOperators[i].Name().c_str(),
+                m_sOperators[i].Params(), m_sOperators[i].Id())); */
+        if (m_sOperators[i].IsOpenParenthesis())
+        {
+            if (m_pOpenParenthesisOperator == NULL)
+                m_pOpenParenthesisOperator = &m_sOperators[i];
+            else
+            {
+                rc = ERR_DUPLICATE_OPERATOR;
+                CleanUp(NULL, rc, "Invalid duplicate operator: Open parenthesis\n");
+                return rc;
+            }
+        }
+        else if (m_sOperators[i].IsCloseParenthesis())
+        {
+            if (pCloseParenthesisOperator == NULL)
+                pCloseParenthesisOperator = &m_sOperators[i];
+            else
+            {
+                rc = ERR_DUPLICATE_OPERATOR;
+                CleanUp(NULL, rc, "Invalid duplicate operator: Close parenthesis\n");
+                return rc;
+            }
+        }
+        else if (m_sOperators[i].IsParamSeparator())
+        {
+            if (pParamSeparatorOperator == NULL)
+                pParamSeparatorOperator = &m_sOperators[i];
+            else
+            {
+                rc = ERR_DUPLICATE_OPERATOR;
+                CleanUp(NULL, rc, "Invalid duplicate operator: Parameter sepatator.\n");
+                return rc;
+            }
+        }
+    }
+
+    if (   !m_pOpenParenthesisOperator
+        || !pParamSeparatorOperator
+        || !pCloseParenthesisOperator)
+    {
+        rc = ERR_BASIC_OPERATOR_MISSING;
+        CleanUp(NULL, rc, "Basic operator missing.\n");
+        return rc;
     }
 
     m_fInitialized = true;
@@ -471,6 +544,7 @@ int XEvaluator::Parse(const char *pcszExpr)
     }
 
     m_RPNQueue = Queue;
+    CleanUp(NULL, INF_SUCCESS, "Parsed expression successfully.");
     return INF_SUCCESS;
 }
 
