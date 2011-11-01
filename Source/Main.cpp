@@ -25,6 +25,8 @@
 
 int main(int argc, char **argv)
 {
+    /** @todo later try resolve the LIBCMT conflicting lib usage warning
+     * on Win32, see http://msdn.microsoft.com/en-us/library/Aa267384 */
     ConsoleIO Console;
     XEvaluator Eval;
     int rc = Eval.Init();
