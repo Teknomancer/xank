@@ -86,7 +86,7 @@ class XEvaluator
          * @return Atom*: A newly allocated Atom or NULL if no functions were parsed.
          */
         XAtom                      *ParseFunction(const char *pcszexpr, const char **ppcszEnd, const XAtom *pcPreviousAtom);
-
+        
         /**
          * Parses the expression for a number.
          *
