@@ -68,7 +68,7 @@
 /** Some fundamental operator missing. */
 #define ERR_BASIC_OPERATOR_MISSING                 (-116)
 /** Invalid parameter separator position. */
-#define ERR_PARANTHESIS_SEPARATOR_UNEXPECTED       (-117)
+#define ERR_PARENTHESIS_SEPARATOR_UNEXPECTED       (-117)
 /** Too many parameters to functor. */
 #define ERR_TOO_MANY_PARAMETERS                    (-118)
 /** Too few parameters to functor. */
