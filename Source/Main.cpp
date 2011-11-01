@@ -19,10 +19,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "XEvaluator.h"
 #include "ConsoleIO.h"
 
 int main(int argc, char **argv)
 {
+    XEvaluator Eval;
     ConsoleIO Console;
     Console.ColorPrintf(enmConsoleColorRed, "Hello\n");
     return 0;

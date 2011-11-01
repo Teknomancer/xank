@@ -51,4 +51,3 @@ Windows build instructions
 			mpirxx.pdb
 			
 5. Open xank.sln and "Build".
-

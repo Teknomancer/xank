@@ -32,6 +32,7 @@
 
 #include <cstring>
 #include <cstdarg>
+#include <stack>
 #include <stdint.h>
 #include <gmp.h>
 
@@ -178,6 +179,40 @@ int XEvaluator::Parse(const char *pcszExpr)
     if (!m_fInitialized)
         return ERR_NOT_INITIALIZED;
 
+    std::stack<XAtom*> Stack;
+    const char *pcszEnd  = NULL;
+    XAtom *pPreviousAtom = NULL;
+
+    int rc = ERR_UNDEFINED;
+    for (;;)
+    {
+        XAtom *pAtom = ParseAtom(pcszExpr, &pcszEnd, pPreviousAtom);
+        if (!pAtom)
+            break;
+
+        if (   pPreviousAtom->Operator()
+            && pPreviousAtom->Operator()->IsCloseParenthesis())
+        {
+            delete pPreviousAtom;
+            pPreviousAtom= NULL;
+        }
+
+        if (pAtom->IsNumber())
+        {
+            /* DEBUGPRINTF(("Adding number")); */
+            m_RPNQueue.push(pAtom);
+        }
+        else if (pAtom->IsFunction())
+        {
+            /* DEBUGPRINTF(("Adding function")); */
+            Stack.push(pAtom);
+        }
+        else if (pAtom->IsOperator())
+        {
+            /* DEBUGPRINTF(("Adding operator")); */
+            /** @todo yeah right */
+        }
+    }
 
     return INF_SUCCESS;
 }
