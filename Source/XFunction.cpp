@@ -27,6 +27,7 @@ XFunction::XFunction(uint64_t cMinParams, uint64_t cMaxParams, std::string sName
     : m_cMinParams(cMinParams),
     m_cMaxParams(cMaxParams),
     m_sName(sName),
+    m_pfnFunction(pfnFunction),
     m_sShortDesc(sShortDesc),
     m_sLongDesc(sLongDesc)
 {

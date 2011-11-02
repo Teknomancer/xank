@@ -87,7 +87,7 @@ class XEvaluator
          * @return Atom*: A newly allocated Atom or NULL if no functions were parsed.
          */
         XAtom                      *ParseFunction(const char *pcszexpr, const char **ppcszEnd, const XAtom *pcPreviousAtom);
-        
+
         /**
          * Parses the expression for a number.
          *
@@ -148,7 +148,7 @@ class XEvaluator
          * @param pcszError         The string describing the error and required
          *                          details, va_args style.
          */
-        void                        CleanUp(std::stack<XAtom*> *pStack, int rc, const char *pcszError, ...);
+        void                        CleanUp(std::stack<XAtom*> *pStack, std::queue<XAtom*> *pQueue, int rc, const char *pcszError, ...);
 
         bool                        m_fInitialized; /**< Whether this object has been successfully initialized. */
         std::string                 m_sExpr;        /**< The full, unmodified expression */
