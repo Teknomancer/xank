@@ -78,10 +78,28 @@ XEvaluator::~XEvaluator()
 }
 
 
-void XEvaluator::CleanUp(std::stack<XAtom*> *pStack, int rc, const char *pcszMsg, ...)
+void XEvaluator::CleanUp(std::stack<XAtom*> *pStack, std::queue<XAtom*> *pQueue, int rc, const char *pcszMsg, ...)
 {
-    NOREF(pStack);
     /** @todo handle pStack clean-up here. */
+    if (pStack)
+        while (!pStack->empty())
+        {
+            XAtom *pAtom = pStack->top();
+            pStack->pop();
+            Assert(pAtom);
+            delete pAtom;
+            pAtom = NULL;
+        }
+
+    if (pQueue)
+        while (!pQueue->empty())
+        {
+            XAtom *pAtom = pQueue->front();
+            pQueue->pop();
+            Assert(pAtom);
+            delete pAtom;
+            pAtom = NULL;
+        }
 
     va_list FmtArgs;
     char szBuf[2048];
@@ -126,7 +144,7 @@ int XEvaluator::Init()
             || pcOperator->LongDesc().empty())
         {
             rc = ERR_INVALID_OPERATOR;
-            CleanUp(NULL, rc,
+            CleanUp(NULL, NULL, rc,
                 "Operator with missing name, syntax or description. Index=%" FMT_U64 " Operator %s",
                 i, pcOperator->PrintToString().c_str());
             return rc;
@@ -135,7 +153,7 @@ int XEvaluator::Init()
         if (isdigit(*pcOperator->Name().c_str()) || pcOperator->Name() == ".")
         {
             rc = ERR_INVALID_OPERATOR;
-            CleanUp(NULL,  rc,
+            CleanUp(NULL, NULL, rc,
                 "Invalid operator name. Index=%" FMT_U64 " Operator %s", i, pcOperator->PrintToString().c_str());
             return rc;
         }
@@ -148,7 +166,7 @@ int XEvaluator::Init()
         if (pcOperator->Params() > 2)
         {
             rc = ERR_INVALID_OPERATOR;
-            CleanUp(NULL, rc,
+            CleanUp(NULL, NULL, rc,
                 "Too many parameters. Index=%" FMT_U64 " Operator %s", i, pcOperator->PrintToString().c_str());
             return rc;
         }
@@ -166,7 +184,7 @@ int XEvaluator::Init()
             if (pcOperator->Id() == pcCur->Id())
             {
                 rc = ERR_CONFLICTING_OPERATORS;
-                CleanUp(NULL, rc,
+                CleanUp(NULL, NULL, rc,
                         "Duplicate operator Id=%" FMT_U32 " %s at [%" FMT_U64 "] and %s at [%" FMT_U64 "]",
                         pcOperator->Id(), pcOperator->PrintToString().c_str(), i, pcCur->PrintToString().c_str(), k);
                 return rc;
@@ -178,14 +196,14 @@ int XEvaluator::Init()
                 if (pcOperator->Params() == pcCur->Params())
                 {
                     rc = ERR_DUPLICATE_OPERATOR;
-                    CleanUp(NULL, rc,
+                    CleanUp(NULL, NULL, rc,
                         "Duplicate operator %s at [%" FMT_U64 "] and [%" FMT_U64 "]", pcOperator->PrintToString().c_str(),
                             i, k);
                     return rc;
                 }
 
                 rc = ERR_CONFLICTING_OPERATORS;
-                CleanUp(NULL, rc, "Conflicting operator %s at [%" FMT_U64 "] and [%" FMT_U64 "]",
+                CleanUp(NULL, NULL, rc, "Conflicting operator %s at [%" FMT_U64 "] and [%" FMT_U64 "]",
                         pcOperator->PrintToString().c_str(), i, k);
                 return rc;
             }
@@ -213,7 +231,7 @@ int XEvaluator::Init()
             else
             {
                 rc = ERR_DUPLICATE_OPERATOR;
-                CleanUp(NULL, rc, "Invalid duplicate operator: Open parenthesis\n");
+                CleanUp(NULL, NULL, rc, "Invalid duplicate operator: Open parenthesis\n");
                 return rc;
             }
         }
@@ -224,7 +242,7 @@ int XEvaluator::Init()
             else
             {
                 rc = ERR_DUPLICATE_OPERATOR;
-                CleanUp(NULL, rc, "Invalid duplicate operator: Close parenthesis\n");
+                CleanUp(NULL, NULL, rc, "Invalid duplicate operator: Close parenthesis\n");
                 return rc;
             }
         }
@@ -235,7 +253,7 @@ int XEvaluator::Init()
             else
             {
                 rc = ERR_DUPLICATE_OPERATOR;
-                CleanUp(NULL, rc, "Invalid duplicate operator: Parameter sepatator.\n");
+                CleanUp(NULL, NULL, rc, "Invalid duplicate operator: Parameter sepatator.\n");
                 return rc;
             }
         }
@@ -246,7 +264,7 @@ int XEvaluator::Init()
         || !pCloseParenthesisOperator)
     {
         rc = ERR_BASIC_OPERATOR_MISSING;
-        CleanUp(NULL, rc, "Basic operator missing.\n");
+        CleanUp(NULL, NULL, rc, "Basic operator missing.\n");
         return rc;
     }
 
@@ -325,7 +343,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                     delete pAtom;
                     pAtom = NULL;
                     rc = ERR_PARENTHESIS_UNBALANCED;
-                    CleanUp(&Stack, rc, "Missing open parenthesis.");
+                    CleanUp(&Stack, &Queue, rc, "Missing open parenthesis.");
                     return rc;
                 }
 
@@ -356,7 +374,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                         delete pAtom;
                         pAtom = NULL;
                         rc = ERR_TOO_MANY_PARAMETERS;
-                        CleanUp(&Stack, rc,
+                        CleanUp(&Stack, &Queue, rc,
                             "Too many parameters to function %s", pStackAtom->Function()->PrintToString().c_str());
                         return rc;
                     }
@@ -366,7 +384,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                         delete pAtom;
                         pAtom = NULL;
                         rc = ERR_TOO_FEW_PARAMETERS;
-                        CleanUp(&Stack, rc,
+                        CleanUp(&Stack, &Queue, rc,
                             "Too few parameters to function %s", pStackAtom->Function()->PrintToString().c_str());
                         return rc;
                     }
@@ -400,7 +418,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                     delete pAtom;
                     pAtom = NULL;
                     rc = ERR_PARENTHESIS_SEPARATOR_UNEXPECTED;
-                    CleanUp(&Stack, rc, "Operator %s parameter mismatch.\n", pcOperator->PrintToString().c_str());
+                    CleanUp(&Stack, &Queue, rc, "Operator %s parameter mismatch.\n", pcOperator->PrintToString().c_str());
                     return rc;
                 }
 
@@ -425,7 +443,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                         delete pAtom;
                         pAtom = NULL;
                         rc = ERR_TOO_FEW_PARAMETERS;
-                        CleanUp(&Stack, rc, "Too many parameters to Function %s", pFunctionAtom->Function()->PrintToString().c_str());
+                        CleanUp(&Stack, &Queue, rc, "Too many parameters to Function %s", pFunctionAtom->Function()->PrintToString().c_str());
                         return rc;
                     }
 
@@ -445,7 +463,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                     delete pAtom;
                     pAtom = NULL;
                     rc = ERR_PARENTHESIS_SEPARATOR_UNEXPECTED;
-                    CleanUp(&Stack, rc, "No function specified.\n");
+                    CleanUp(&Stack, &Queue, rc, "No function specified.\n");
                     return rc;
                 }
             }
@@ -513,7 +531,7 @@ int XEvaluator::Parse(const char *pcszExpr)
         Stack.pop();
         delete pAtom;
         pAtom = NULL;
-        CleanUp(&Stack, rc, "Unbalanced parenthesis.\n");
+        CleanUp(&Stack, &Queue, rc, "Unbalanced parenthesis.\n");
         return rc;
     }
 
@@ -530,7 +548,7 @@ int XEvaluator::Parse(const char *pcszExpr)
     if (Queue.empty())
     {
         rc = ERR_EXPRESSION_INVALID;
-        CleanUp(&Stack, rc, "No atoms detected.\n");
+        CleanUp(&Stack, &Queue, rc, "No atoms detected.\n");
         return rc;
     }
 
@@ -546,7 +564,7 @@ int XEvaluator::Parse(const char *pcszExpr)
     }
 
     m_RPNQueue = Queue;
-    CleanUp(NULL, INF_SUCCESS, "Parsed expression successfully.");
+    CleanUp(NULL, NULL, INF_SUCCESS, "Expression parsed successfully.");
     return INF_SUCCESS;
 }
 
