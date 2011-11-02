@@ -75,6 +75,14 @@ XEvaluator::XEvaluator()
 
 XEvaluator::~XEvaluator()
 {
+    while (!m_RPNQueue.empty())
+    {
+        XAtom *pAtom = m_RPNQueue.front();
+        m_RPNQueue.pop();
+        Assert(pAtom);
+        delete pAtom;
+        pAtom = NULL;
+    }
 }
 
 
@@ -115,6 +123,7 @@ void XEvaluator::CleanUp(std::stack<XAtom*> *pStack, std::queue<XAtom*> *pQueue,
     m_sError = szBuf;
     m_Error = rc;
 }
+
 
 static int OperatorCompare(const void *pcvOperator1, const void *pcvOperator2)
 {
