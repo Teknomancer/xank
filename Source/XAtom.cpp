@@ -31,7 +31,9 @@
 #include <cstring>
 
 XAtom::XAtom()
-    : m_AtomType(enmAtomTypeEmpty)
+    : m_AtomType(enmAtomTypeEmpty),
+    m_iPosition(0),
+    m_cParams(0)
 {
     std::memset(&m_u, 0, sizeof(m_u));
 }
