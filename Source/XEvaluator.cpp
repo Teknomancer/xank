@@ -28,7 +28,7 @@
 #include "XOperator.h"
 #include "XErrors.h"
 #include "ConsoleIO.h"
-//#include "Debug.h"
+#include "Debug.h"
 
 #include <cstring>
 #include <cstdarg>
@@ -80,6 +80,7 @@ XEvaluator::~XEvaluator()
 
 void XEvaluator::CleanUp(std::stack<XAtom*> *pStack, int rc, const char *pcszMsg, ...)
 {
+    NOREF(pStack);
     /** @todo handle pStack clean-up here. */
 
     va_list FmtArgs;
@@ -197,14 +198,14 @@ int XEvaluator::Init()
      * For e.g. binary '-' is placed before unary '-', See ParseOperator().
      */
     std::qsort((void*)m_sOperators, cOperators, sizeof(XOperator), OperatorCompare);
-    /* DEBUGPRINTF(("Sorted operators.\n")); */
-    
+    DEBUGPRINTF(("Sorted operators.\n"));
+
     const XOperator *pCloseParenthesisOperator = NULL;
     const XOperator *pParamSeparatorOperator   = NULL;
     for (size_t i = 0; i < cOperators; i++)
     {
-        /* DEBUGPRINTF(("%s cParams=%" FMT_U8 " Id=%" FMT_U32 "\n", m_sOperators[i].Name().c_str(),
-                m_sOperators[i].Params(), m_sOperators[i].Id())); */
+        DEBUGPRINTF(("%s cParams=%" FMT_U8 " Id=%" FMT_U32 "\n", m_sOperators[i].Name().c_str(),
+                m_sOperators[i].Params(), m_sOperators[i].Id()));
         if (m_sOperators[i].IsOpenParenthesis())
         {
             if (m_pOpenParenthesisOperator == NULL)
@@ -278,12 +279,12 @@ int XEvaluator::Parse(const char *pcszExpr)
 
         if (pAtom->IsNumber())
         {
-            /* DEBUGPRINTF(("Adding number")); */
+            DEBUGPRINTF(("Adding number"));
             Queue.push(pAtom);
         }
-        else if (pAtom->IsFunction())
+        else if (pAtom->Function())
         {
-            /* DEBUGPRINTF(("Adding function")); */
+            DEBUGPRINTF(("Adding function %s", pAtom->Function()->PrintToString().c_str()));
             Stack.push(pAtom);
         }
         else if (pAtom->IsVariable())
@@ -298,12 +299,12 @@ int XEvaluator::Parse(const char *pcszExpr)
             Assert(pcOperator);
             if (pcOperator->IsOpenParenthesis())
             {
-                /* DEBUGPRINTF(("Parenthesis begin '%s' pushing to stack.\n", pOperator->Name().c_str())); */
+                DEBUGPRINTF(("Parenthesis begin '%s' pushing to stack.\n", pcOperator->Name().c_str()));
                 Stack.push(pAtom);
             }
             else if (pcOperator->IsCloseParenthesis())
             {
-                /* DEBUGPRINTF(("Parenthesis end '%s'.\n", pOperator->Name().c_str())); */
+                DEBUGPRINTF(("Parenthesis end '%s'.\n", pcOperator->Name().c_str()));
                 XAtom *pStackAtom = NULL;
                 while (!Stack.empty())
                 {
@@ -312,6 +313,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                     if (   pStackAtom->Operator()
                         && pStackAtom->Operator()->IsOpenParenthesis())
                         break;
+                    /** @todo implement XAtom::PrintToString() */
                     /* DEBUGPRINTF(("Popping '%s' to queue.\n", pStackAtom->PrintToString().c_str())); */
                     Stack.pop();
                     Queue.push(pStackAtom);
@@ -319,7 +321,7 @@ int XEvaluator::Parse(const char *pcszExpr)
 
                 if (!pStackAtom)
                 {
-                    /* DEBUGPRINTF(("Missing open parenthesis.\n")); */
+                    DEBUGPRINTF(("Missing open parenthesis.\n"));
                     delete pAtom;
                     pAtom = NULL;
                     rc = ERR_PARENTHESIS_UNBALANCED;
@@ -343,14 +345,14 @@ int XEvaluator::Parse(const char *pcszExpr)
                     && (pStackAtom = Stack.top()) != NULL
                     && (pStackAtom->Function()))
                 {
-                    /* DEBUGPRINTF(("Popping Function '%s' to queue.\n", pStackAtom->Function().Name()->c_str())); */
+                    DEBUGPRINTF(("Popping Function '%s' to queue.\n", pStackAtom->Function()->Name().c_str()));
                     Stack.pop();
                     Queue.push(pStackAtom);
 
                     pStackAtom->IncrementFunctionParams();
                     if (pStackAtom->FunctionParams() > pStackAtom->Function()->MaxParams())
                     {
-                        /* DEBUGPRINTF(("Too many params to Function '%s'.\n", pStackAtom->Function()->Name().c_str())); */
+                        DEBUGPRINTF(("Too many params to Function '%s'.\n", pStackAtom->Function()->Name().c_str()));
                         delete pAtom;
                         pAtom = NULL;
                         rc = ERR_TOO_MANY_PARAMETERS;
@@ -360,7 +362,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                     }
                     else if (pStackAtom->FunctionParams() < pStackAtom->Function()->MinParams())
                     {
-                        /* DEBUGPRINTF(("Too few params to Function '%s'.\n", pStackAtom->Function()->Name().c_str())); */
+                        DEBUGPRINTF(("Too few params to Function '%s'.\n", pStackAtom->Function()->Name().c_str()));
                         delete pAtom;
                         pAtom = NULL;
                         rc = ERR_TOO_FEW_PARAMETERS;
@@ -369,13 +371,13 @@ int XEvaluator::Parse(const char *pcszExpr)
                         return rc;
                     }
 
-                    /* DEBUGPRINTF(("Function %s cParams=%" FMT_U64 ".\n", pStackAtom->Function()->Name().c_str(),
-                            pStackAtom->Function()->FunctionParams())); */
+                    DEBUGPRINTF(("Function %s cParams=%" FMT_U64 ".\n", pStackAtom->Function()->Name().c_str(),
+                            pStackAtom->FunctionParams()));
                 }
             }
             else if (pcOperator->IsParamSeparator())
             {
-                /* DEBUGPRINTF(("Function param separator.\n")); */
+                DEBUGPRINTF(("Function param separator.\n"));
                 XAtom *pStackAtom = NULL;
                 while (   !Stack.empty()
                        && (pStackAtom = Stack.top()) != NULL)
@@ -394,7 +396,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                     || (   pStackAtom->Operator()
                         && pStackAtom->Operator()->IsOpenParenthesis()))
                 {
-                    /* DEBUGPRINTF(("Operator '%s' param mismatch.\n", pcOperator->Name().c_str())); */
+                    DEBUGPRINTF(("Operator '%s' param mismatch.\n", pcOperator->Name().c_str()));
                     delete pAtom;
                     pAtom = NULL;
                     rc = ERR_PARENTHESIS_SEPARATOR_UNEXPECTED;
@@ -418,8 +420,8 @@ int XEvaluator::Parse(const char *pcszExpr)
                     pFunctionAtom->IncrementFunctionParams();
                     if (pFunctionAtom->FunctionParams() >= pFunctionAtom->Function()->MaxParams())
                     {
-                        /* DEBUGPRINTF(("Too many params to Function '%s' max=%" FMT_U64 ".\n", pFunctionAtom->Function()->Name().c_str(),
-                                pFunctionAtom->Function()->MaxParams())); */
+                        DEBUGPRINTF(("Too many params to Function '%s' max=%" FMT_U64 ".\n", pFunctionAtom->Function()->Name().c_str(),
+                                pFunctionAtom->Function()->MaxParams()));
                         delete pAtom;
                         pAtom = NULL;
                         rc = ERR_TOO_FEW_PARAMETERS;
@@ -433,13 +435,13 @@ int XEvaluator::Parse(const char *pcszExpr)
                      */
                     Stack.push(pFunctionAtom);
                     Stack.push(pOpenParenAtom);
-                    
-                    /* DEBUGPRINTF(("Function '%s' cParams=%" FMT_U64 ".\n", pFunctionAtom->Function()->Name().c_str(),
-                            pFunctionAtom->FunctionParams())); */
+
+                    DEBUGPRINTF(("Function '%s' cParams=%" FMT_U64 ".\n", pFunctionAtom->Function()->Name().c_str(),
+                            pFunctionAtom->FunctionParams()));
                 }
                 else
                 {
-                    /* DEBUGPRINTF(("No function specified.\n")); */
+                    DEBUGPRINTF(("No function specified.\n"));
                     delete pAtom;
                     pAtom = NULL;
                     rc = ERR_PARENTHESIS_SEPARATOR_UNEXPECTED;
@@ -472,8 +474,8 @@ int XEvaluator::Parse(const char *pcszExpr)
                     if (   (pcOperator->Dir() == enmOperatorDirLeft  && pcOperator->Priority() <= pcStackOperator->Priority())
                         || (pcOperator->Dir() == enmOperatorDirRight && pcOperator->Priority() < pcStackOperator->Priority()))
                     {
-                        /* DEBUGPRINTF(("Moving operator '%s' cParams=%" FMT_U8 " from stack to queue.\n",
-                                pcStackOperator->Name().c_str(), pcStackOperator->Params())); */
+                        DEBUGPRINTF(("Moving operator '%s' cParams=%" FMT_U8 " from stack to queue.\n",
+                                pcStackOperator->Name().c_str(), pcStackOperator->Params()));
                         Stack.pop();
                         m_RPNQueue.push(pStackAtom);
                     }
@@ -481,14 +483,14 @@ int XEvaluator::Parse(const char *pcszExpr)
                         break;
                 }
 
-                /* DEBUGPRINTF(("Pushing operator '%s' (id=%" FMT_U32 ") cParams=%" FMT_U8 " to stack.\n",
-                        pcOperator->Name().c_str(), pcOperator->Id(), pcOperator->Params())); */
+                DEBUGPRINTF(("Pushing operator '%s' (id=%" FMT_U32 ") cParams=%" FMT_U8 " to stack.\n",
+                        pcOperator->Name().c_str(), pcOperator->Id(), pcOperator->Params()));
                 Stack.push(pAtom);
             }
         }
         else
         {
-            /* DEBUGPRINTF(("Unknown token.\n")); */
+            DEBUGPRINTF(("Unknown token.\n"));
             delete pAtom;
             pAtom = NULL;
             break;
@@ -551,7 +553,7 @@ int XEvaluator::Parse(const char *pcszExpr)
 
 XAtom *XEvaluator::ParseAtom(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom)
 {
-//    DEBUGPRINTF(("ParseAtom\n"));
+    DEBUGPRINTF(("ParseAtom\n"));
     XAtom *pAtom = NULL;
     while (*pcszExpr)
     {

@@ -1,5 +1,5 @@
 /** @file
- * xank - Main, implementation.
+ * xank - Debug, header.
  */
 
 /*
@@ -19,25 +19,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "XEvaluator.h"
+#ifndef XANK_DEBUG_H
+# define XANK_DEBUG_H
+
 #include "ConsoleIO.h"
-#include "XErrors.h"
-#include "XGenericDefs.h"
 
-int main(int argc, char **argv)
-{
-    NOREF(argc); NOREF(argv);
+#ifdef XANK_DEBUG
+/** Print debug message to console (stderr), NOP in release builds */
+# define DEBUGPRINTF(s)         ConsoleIO::DebugPrintf s
+#else
+/** Print debug message to console (stderr), NOP in release builds */
+# define DEBUGPRINTF(s)         do { } while (0)
+#endif
 
-    /** @todo later try resolve the LIBCMT conflicting lib usage warning
-     * on Win32, see http://msdn.microsoft.com/en-us/library/Aa267384 */
-    ConsoleIO Console;
-    XEvaluator Eval;
-    int rc = Eval.Init();
-    if (IS_SUCCESS(rc))
-    {
-        Console.Printf("Initialized Evaluator %s.\n", "Hello");
-    }
-    else
-        Console.ColorPrintf(enmConsoleColorRed, "Evaluator initilization failed.\n");
-    return 0;
-}
+#endif /* XANK_DEBUG_H */
+
