@@ -34,6 +34,8 @@
 #endif
 
 #if defined(XANK_OS_WINDOWS) && defined(_MSC_VER)
+# define FMT_U8            "I8u"
+# define FMT_I8            "I8i"
 # define FMT_D32           "I32d"
 # define FMT_D64           "I64d"
 # define FMT_I32           "I32i"
@@ -42,6 +44,8 @@
 # define FMT_U64           "I64u"
 # define FMT_X64           "I64x"
 #else
+# define FMT_U8            PRIu8
+# define FMT_I8            PRId8
 # define FMT_D32           PRId32
 # define FMT_D64           PRId64
 # define FMT_I32           PRIi32
