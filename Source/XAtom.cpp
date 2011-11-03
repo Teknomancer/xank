@@ -251,6 +251,7 @@ std::string XAtom::PrintToString() const
         case enmAtomTypeFloat:
         {
             sOut += "Float: ";
+            char *pszBuf = NULL;
             int rc = gmp_asprintf(&pszBuf, "%F", m_u.Float);
             if (rc == 0)
             {

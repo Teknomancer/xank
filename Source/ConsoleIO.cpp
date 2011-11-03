@@ -118,9 +118,28 @@ void ConsoleIO::ErrorPrintf(int rc, const char *pcszError, ...)
 void ConsoleIO::Printf(const char *pcszMsg, ...)
 {
     va_list FmtArgs;
+    char szBuf[2048];
+
     va_start(FmtArgs, pcszMsg);
+#ifdef XANK_OS_WINDOWS
+    vsnprintf_s(szBuf, sizeof(szBuf), pcszMsg, FmtArgs);
+#else
+    vsnprintf(szBuf, sizeof(szBuf) - 1, pcszMsg, FmtArgs);
+#endif
     va_end(FmtArgs);
-    ColorPrintf(enmConsoleColorReset, pcszMsg, FmtArgs);
+
+    bool fNewLine = true;
+    char *pszBuf = StrStripLF(szBuf, &fNewLine);
+
+    if (m_fxTermColors)
+    {
+        const char *pcszColorCode = g_aszConsoleColors[enmConsoleColorReset];
+
+        fprintf(stdout, "%s%s%s%s", pcszColorCode, pszBuf, g_aszConsoleColors[enmConsoleColorReset],
+                fNewLine ? "\n" : "");
+    }
+    else
+        fprintf(stdout, "%s%s", pszBuf, fNewLine ? "\n" : "");
 }
 
 void ConsoleIO::ColorPrintf(ConsoleColor enmColor, const char *pcszMsg, ...)
