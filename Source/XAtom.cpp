@@ -237,18 +237,32 @@ std::string XAtom::PrintToString() const
         {
             sOut += "Int: ";
             /* sigh, why can't std::string do this shit? reminds me of java. ugh. */
-            std::stringstream strmOut;
-            strmOut << m_u.Integer;
-            sOut += strmOut.str();
+            char *pszBuf = NULL;
+            int rc = gmp_asprintf(&pszBuf, "%Zd", m_u.Integer);
+            if (rc == 0)
+            {
+                sOut += pszBuf;
+                free(pszBuf);
+                pszBuf = NULL;
+            }
+            else
+                sOut += "<NoMem>";
             break;
         }
 
         case enmAtomTypeFloat:
         {
             sOut += "Float: ";
-            std::stringstream strmOut;
-            strmOut << m_u.Float;
-            sOut += strmOut.str();
+            char *pszBuf = NULL;
+            int rc = gmp_asprintf(&pszBuf, "%F", m_u.Float);
+            if (rc == 0)
+            {
+                sOut += pszBuf;
+                free(pszBuf);
+                pszBuf = NULL;
+            }
+            else
+                sOut += "<NoMem>";
             break;
         }
 
