@@ -80,7 +80,7 @@ C_FLAGS += -O2 -Wuninitialized $(C_FLAGS_COMMON) ${INC_FLAGS}
 endif
 
 # Common linker flags for all build types
-LD_FLAGS += -ltermcap -lreadline -lgmp -lm
+LD_FLAGS += -ltermcap -lreadline -lgmpxx -lgmp
 
 # OS specifics
 ifeq ($(OS), SunOS)

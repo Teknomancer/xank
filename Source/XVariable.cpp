@@ -31,3 +31,9 @@ XVariable::~XVariable()
 }
 
 
+std::string XVariable::Name() const
+{
+    return m_sName;
+}
+
+

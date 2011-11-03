@@ -113,6 +113,19 @@ bool XOperator::IsAssignment() const
 }
 
 
+int XOperator::Invoke(XAtom *apAtoms[]) const
+{
+    int rc = (*m_pfnOperator)(apAtoms);
+    return rc;
+}
+
+
+PFNOPERATOR XOperator::Function() const
+{
+    return m_pfnOperator;
+}
+
+
 std::string XOperator::PrintToString() const
 {
     /** @todo fill in the other members here  */

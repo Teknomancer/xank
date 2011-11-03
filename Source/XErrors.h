@@ -56,19 +56,19 @@
 /** Invalid RPN, parsing had failed. */
 #define ERR_INVALID_RPN                            (-110)
 /** Invalid expression for grammar. */
-#define ERR_EXPRESSION_INVALID                     (-111)
+#define ERR_INVALID_EXPRESSION                     (-111)
 /** Variable name is too long. */
 #define ERR_VARIABLE_NAME_TOO_LONG                 (-112)
 /** Variable name contains invalid characters. */
-#define ERR_VARIABLE_NAME_INVALID                  (-113)
+#define ERR_INVALID_VARIABLE_NAME                  (-113)
 /** Variable undefined but trying to evaluate. */
-#define ERR_VARIABLE_UNDEFINED                     (-114)
+#define ERR_UNDEFINED_VARIABLE                     (-114)
 /** Parenthesis unbalaned. */
-#define ERR_PARENTHESIS_UNBALANCED                 (-115)
+#define ERR_UNBALANCED_PARENTHESIS                 (-115)
 /** Some fundamental operator missing. */
-#define ERR_BASIC_OPERATOR_MISSING                 (-116)
+#define ERR_MISSING_BASIC_OPERATOR                 (-116)
 /** Invalid parameter separator position. */
-#define ERR_PARENTHESIS_SEPARATOR_UNEXPECTED       (-117)
+#define ERR_UNEXPECTED_PARENTHESIS_SEPARATOR       (-117)
 /** Too many parameters to functor. */
 #define ERR_TOO_MANY_PARAMETERS                    (-118)
 /** Too few parameters to functor. */
@@ -79,6 +79,8 @@
 #define ERR_CIRCULAR_DEPENDENCY                    (-121)
 /** Incorrect atom type for operation. */
 #define ERR_INVALID_ATOM_TYPE_FOR_OPERATION        (-122)
+/** Parsing wasn't done. */
+#define ERR_UNPARSED_EXPRESSION                    (-123)
 /** Uninitialized object. */
 #define ERR_NOT_INITIALIZED                        (-301)
 /** Magic mismatch. */

@@ -37,8 +37,15 @@ class XVariable
         XVariable();
         virtual ~XVariable();
 
+        /**
+         * Returns the name of this variable.
+         *
+         * @return std::string
+         */
+        std::string             Name() const;
+
     private:
-        std::string             m_sVariable;    /**< Name of the Variable as seen in the expression. */
+        std::string             m_sName;        /**< Name of the Variable as seen in the expression. */
         std::string             m_sExpr;        /**< The expression assigned to the variable. */
         std::queue<XAtom*>      m_RPNQueue;     /** The RPN Queue. */
 };

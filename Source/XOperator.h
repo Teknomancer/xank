@@ -40,7 +40,7 @@ enum XOperatorDir
 };
 
 /** An Operator function. */
-typedef int FNOPERATOR(XAtom *apAtoms_[]);
+typedef int FNOPERATOR(XAtom *apAtoms[]);
 /** Pointer to an Operator function. */
 typedef FNOPERATOR *PFNOPERATOR;
 
@@ -106,13 +106,20 @@ class XOperator
         std::string             LongDesc() const;
 
         /**
+         * Returns a pointer to the function of this Operator.
+         *
+         * @return PFNFUNCTION
+         */
+        PFNOPERATOR             Function() const;
+
+        /**
          * Invokes the function associated with this Operator.
          *
          * @param apAtoms_              Array of pointers of Atoms.
          *
          * @return int: xank error code.
          */
-        int                     Invoke(XAtom *apAtoms[]);
+        int                     Invoke(XAtom *apAtoms[]) const;
 
         /**
          * Returns if this Operator is the Open Parenthesis Operator.
@@ -143,7 +150,7 @@ class XOperator
         bool                    IsAssignment() const;
 
         /**
-         * Prints the current state of this Operator to a string and return it.
+         * Prints the current state of this Operator to a string and returns it.
          *
          * @return std::string
          */
@@ -153,7 +160,7 @@ class XOperator
         uint32_t                m_uId;          /**< The operator Id, used to identify certain key Operators. */
         int32_t                 m_iPriority;    /**< Operator priority, value is relative to Operators. */
         XOperatorDir            m_Dir;          /**< Operator associativity direction. */
-        uint8_t                 m_cParams;      /**< Number of parameters to the operator (valid values: 0, 1 or 2) */
+        uint8_t                 m_cParams;      /**< Number of parameters to the operator, see XANK_MAX_OPERATOR_PARAMETERS. */
         std::string             m_sName;        /**< Name of the Operator as seen in the expression. */
         PFNOPERATOR             m_pfnOperator;  /**< Pointer to the Operator evaluator function. */
         std::string             m_sShortDesc;   /**< Short description of the Operator. */
