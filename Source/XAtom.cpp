@@ -29,7 +29,6 @@
 #include "XErrors.h"
 
 #include <cstring>
-#include <sstream>
 
 XAtom::XAtom()
     : m_AtomType(enmAtomTypeEmpty),
@@ -236,7 +235,6 @@ std::string XAtom::PrintToString() const
         case enmAtomTypeInteger:
         {
             sOut += "Int: ";
-            /* sigh, why can't std::string do this shit? reminds me of java. ugh. */
             char *pszBuf = NULL;
             int rc = gmp_asprintf(&pszBuf, "%Zd", m_u.Integer);
             if (rc == 0)
@@ -253,7 +251,6 @@ std::string XAtom::PrintToString() const
         case enmAtomTypeFloat:
         {
             sOut += "Float: ";
-            char *pszBuf = NULL;
             int rc = gmp_asprintf(&pszBuf, "%F", m_u.Float);
             if (rc == 0)
             {
