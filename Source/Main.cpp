@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     int rc = Eval.Init();
     if (IS_SUCCESS(rc))
     {
-        Console.Printf("Initialized Evaluator %s.\n", "Hello");
+        Console.ColorPrintf(enmConsoleColorRed, "Initialized Evaluator %s.\n", "Hello");
     }
     else
         Console.ColorPrintf(enmConsoleColorRed, "Evaluator initilization failed.\n");
