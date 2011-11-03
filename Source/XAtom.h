@@ -23,7 +23,7 @@
 # define XANK_ATOM_H
 
 #include <stdint.h>
-#include <gmp.h>
+#include <gmpxx.h>
 
 #include <string>
 
@@ -219,6 +219,13 @@ class XAtom
          * if this is not a Function Atom.
          */
         uint64_t                    FunctionParams() const;
+
+        /**
+         * Prints the current state of this Atom to a string and returns it.
+         *
+         * @return std::string
+         */
+        std::string                 PrintToString() const;
 
     private:
         /**

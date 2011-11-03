@@ -34,6 +34,7 @@
 #endif
 
 #if defined(XANK_OS_WINDOWS) && defined(_MSC_VER)
+/* See http://msdn.microsoft.com/en-us/library/tcxf1dw6%28v=vs.71%29.aspx */
 # define FMT_U8            "I8u"
 # define FMT_I8            "I8i"
 # define FMT_D32           "I32d"
@@ -43,6 +44,7 @@
 # define FMT_U32           "I32u"
 # define FMT_U64           "I64u"
 # define FMT_X64           "I64x"
+# define FMT_SZT           "Iu"
 #else
 # define FMT_U8            PRIu8
 # define FMT_I8            PRId8
@@ -53,6 +55,7 @@
 # define FMT_U32           PRIu32
 # define FMT_U64           PRIu64
 # define FMT_X64           PRIx64
+# define FMT_SZT           "zu"         /* ISO/IEC 9899:1999 Section 7.19.6(7).   */
 #endif
 
 /**

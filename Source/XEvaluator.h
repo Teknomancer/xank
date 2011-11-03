@@ -53,13 +53,22 @@ class XEvaluator
         int                         Init();
 
         /**
-         * Parses an expression.
+         * Parses an expression into an internal representation.
          *
          * @param pcszExr           The expression to parse.
          *
          * @return int: xank error code.
          */
         int                         Parse(const char *pcszExr);
+
+        /**
+         * Evaluates the internal representation of the previously parsed expression.
+         * The logic is roughly reverse polish notation but modified to support
+         * variables, variable arguments to functions etc.
+         *
+         * @return int: xank error code.
+         */
+        int                         Evaluate();
 
     private:
         /**

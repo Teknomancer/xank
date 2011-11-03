@@ -29,6 +29,7 @@
 #include "XErrors.h"
 
 #include <cstring>
+#include <sstream>
 
 XAtom::XAtom()
     : m_AtomType(enmAtomTypeEmpty),
@@ -218,3 +219,61 @@ uint64_t XAtom::FunctionParams() const
         return m_cParams;
     return UINT64_MAX;
 }
+
+
+std::string XAtom::PrintToString() const
+{
+    std::string sOut = "Atom: ";
+    sOut += "Type: ";
+    switch (m_AtomType)
+    {
+        case enmAtomTypeEmpty:
+        {
+            sOut += "Empty";
+            break;
+        }
+
+        case enmAtomTypeInteger:
+        {
+            sOut += "Int: ";
+            /* sigh, why can't std::string do this shit? reminds me of java. ugh. */
+            std::stringstream strmOut;
+            strmOut << m_u.Integer;
+            sOut += strmOut.str();
+            break;
+        }
+
+        case enmAtomTypeFloat:
+        {
+            sOut += "Float: ";
+            std::stringstream strmOut;
+            strmOut << m_u.Float;
+            sOut += strmOut.str();
+            break;
+        }
+
+        case enmAtomTypeFunction:
+        {
+            sOut += "Function: ";
+            sOut += m_u.pFunction ? m_u.pFunction->Name() : "NULL";
+            break;
+        }
+
+        case enmAtomTypeOperator:
+        {
+            sOut += "Operator: ";
+            sOut += m_u.pOperator ? m_u.pOperator->Name() : "NULL";
+            break;
+        }
+
+        case enmAtomTypeVariable:
+        {
+            sOut += "Variable";
+            sOut += m_u.pVariable ? m_u.pVariable->Name() : "NULL";
+            break;
+        }
+    }
+
+    return sOut;
+}
+

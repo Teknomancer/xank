@@ -272,7 +272,7 @@ int XEvaluator::Init()
         || !pParamSeparatorOperator
         || !pCloseParenthesisOperator)
     {
-        rc = ERR_BASIC_OPERATOR_MISSING;
+        rc = ERR_MISSING_BASIC_OPERATOR;
         CleanUp(NULL, NULL, rc, "Basic operator missing.\n");
         return rc;
     }
@@ -351,7 +351,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                     DEBUGPRINTF(("Missing open parenthesis.\n"));
                     delete pAtom;
                     pAtom = NULL;
-                    rc = ERR_PARENTHESIS_UNBALANCED;
+                    rc = ERR_UNBALANCED_PARENTHESIS;
                     CleanUp(&Stack, &Queue, rc, "Missing open parenthesis.");
                     return rc;
                 }
@@ -426,7 +426,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                     DEBUGPRINTF(("Operator '%s' param mismatch.\n", pcOperator->Name().c_str()));
                     delete pAtom;
                     pAtom = NULL;
-                    rc = ERR_PARENTHESIS_SEPARATOR_UNEXPECTED;
+                    rc = ERR_UNEXPECTED_PARENTHESIS_SEPARATOR;
                     CleanUp(&Stack, &Queue, rc, "Operator %s parameter mismatch.\n", pcOperator->PrintToString().c_str());
                     return rc;
                 }
@@ -471,7 +471,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                     DEBUGPRINTF(("No function specified.\n"));
                     delete pAtom;
                     pAtom = NULL;
-                    rc = ERR_PARENTHESIS_SEPARATOR_UNEXPECTED;
+                    rc = ERR_UNEXPECTED_PARENTHESIS_SEPARATOR;
                     CleanUp(&Stack, &Queue, rc, "No function specified.\n");
                     return rc;
                 }
@@ -536,7 +536,7 @@ int XEvaluator::Parse(const char *pcszExpr)
         && pAtom->Operator()
         && pAtom->Operator()->IsOpenParenthesis())
     {
-        rc = ERR_PARENTHESIS_UNBALANCED;
+        rc = ERR_UNBALANCED_PARENTHESIS;
         Stack.pop();
         delete pAtom;
         pAtom = NULL;
@@ -556,7 +556,7 @@ int XEvaluator::Parse(const char *pcszExpr)
 
     if (Queue.empty())
     {
-        rc = ERR_EXPRESSION_INVALID;
+        rc = ERR_INVALID_EXPRESSION;
         CleanUp(&Stack, &Queue, rc, "No atoms detected.\n");
         return rc;
     }
@@ -577,6 +577,132 @@ int XEvaluator::Parse(const char *pcszExpr)
     return INF_SUCCESS;
 }
 
+
+int XEvaluator::Evaluate()
+{
+    if (!m_fInitialized)
+        return ERR_NOT_INITIALIZED;
+
+    if (m_RPNQueue.empty())
+        return ERR_UNPARSED_EXPRESSION;
+
+    std::stack<XAtom*> Stack;
+    XAtom *pAtom = NULL;
+    int rc       = ERR_NOT_INITIALIZED;
+
+    while ((pAtom = m_RPNQueue.front()) != NULL)
+    {
+        m_RPNQueue.pop();
+
+        if (pAtom->IsNumber())
+        {
+            DEBUGPRINTF(("Pushing %s to stack.\n", pAtom->PrintToString().c_str()));
+            Stack.push(pAtom);
+        }
+        else if (pAtom->Operator())
+        {
+            const XOperator *pcOperator = pAtom->Operator();
+            DEBUGPRINTF(("Operator %s\n", pcOperator->Name().c_str()));
+            if (Stack.size() < pcOperator->Params())
+            {
+                DEBUGPRINTF(("Stack size=%" FMT_SZT " cParams=" FMT_U8 ".\n", Stack.size(), pcOperator->Params()));
+                rc = ERR_TOO_FEW_PARAMETERS;
+                CleanUp(&Stack, &m_RPNQueue, rc,
+                        "Insufficient parameters to operator %s cParams=%" FMT_U8 "\n", pcOperator->Name().c_str(),
+                        pcOperator->Params());
+                return rc;
+            }
+
+            /*
+             * Construct the array of parameter Atoms and pass it to the Operator evaluator if any, otherwise just
+             * push the first parameter as the result.
+             */
+            XAtom *apAtoms[XANK_MAX_OPERATOR_PARAMETERS];
+            Assert(pcOperator->Params() < XANK_MAX_OPERATOR_PARAMETERS);
+            uint8_t cParams = pcOperator->Params();
+            while (--cParams)
+            {
+                apAtoms[cParams] = Stack.top();   /* We've already checked Stack.size() above, so this is fine. */
+                Stack.pop();
+
+                /** @todo handle type-cast stuff here, i.e. operator specifies what range it
+                 *        can take and we fiddle with the Atom to figure out if it's valid or
+                 *        not. */
+            }
+
+            XAtom *pResultAtom = NULL;
+            if (pcOperator->Function())
+            {
+                rc = pcOperator->Invoke(apAtoms);
+                if (IS_SUCCESS(rc))
+                    pResultAtom = apAtoms[0];
+            }
+            else
+            {
+                rc = INF_SUCCESS;
+                pResultAtom = apAtoms[0];
+            }
+
+            if (pResultAtom)
+            {
+                Assert(IS_SUCCESS(rc));
+                for (uint8_t i = 1 /* not zero, duh! */; i < pcOperator->Params(); i++)
+                {
+                    delete apAtoms[i];
+                    apAtoms[i] = NULL;
+                }
+                Stack.push(apAtoms[0]);
+            }
+            else
+            {
+                Assert(IS_FAILURE(rc));
+                DEBUGPRINTF(("Operator %s failed on given operands. rc=%d\n", pcOperator->Name().c_str(), rc));
+                CleanUp(&Stack, &m_RPNQueue, rc,
+                        "Operator %s failed on given operands.", pcOperator->Name().c_str());
+                return rc;
+            }
+        }
+        else if (pAtom->Function())
+        {
+            /** @todo function evaluation. */
+        }
+        else if (pAtom->Variable())
+        {
+            /** @todo variable evaluation. */
+        }
+        else
+        {
+            DEBUGPRINTF(("Wow, an undiscovered Atom!\n"));
+            delete pAtom;
+            pAtom = NULL;
+        }
+    }
+
+    /*
+     * Result is on the stack, otherwise it's an error.
+     */
+    if (Stack.size() == 1)
+    {
+        pAtom = Stack.top();
+        Stack.pop();
+        DEBUGPRINTF(("Result is %s\n", pAtom->PrintToString().c_str()));
+        rc = INF_SUCCESS;
+        CleanUp(NULL, NULL, rc,
+                "Expression evaluated successfully.\n");
+
+        /** @todo do something with the result atom! Copy it to a string? or cast and
+         *        send it to the caller? Hmm think about this. */
+
+        delete pAtom;
+        pAtom = NULL;
+        return rc;
+    }
+
+    rc = ERR_INVALID_EXPRESSION;
+    CleanUp(&Stack, &m_RPNQueue, rc,
+            "Excess atoms, invalid expression.\n");
+    return rc;
+}
 
 XAtom *XEvaluator::ParseAtom(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom)
 {

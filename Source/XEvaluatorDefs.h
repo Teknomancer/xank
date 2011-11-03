@@ -25,6 +25,14 @@
 /** Maximum length of a variable name, in bytes. */
 #define XANK_MAX_VARIABLE_NAME_LEN                  128
 
+/**
+ * Maximum number of parameters to an operator. Since this is
+ * a uint8_t internally, it's UINT8_MAX here. If that changes
+ * this must change & vice versa. Probably also have to update
+ * all printf format specifiers for them.
+ */
+#define XANK_MAX_OPERATOR_PARAMETERS                UINT8_MAX
+
 /** Operator Id for Open Paranthesis Operator. */
 #define XANK_OPEN_PARENTHESIS_OPERATOR_ID           0
 
