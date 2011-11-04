@@ -35,8 +35,8 @@
 
 #if defined(XANK_OS_WINDOWS) && defined(_MSC_VER)
 /* See http://msdn.microsoft.com/en-us/library/tcxf1dw6%28v=vs.71%29.aspx */
-# define FMT_U8            "I8u"
-# define FMT_I8            "I8i"
+# define FMT_U8            "hu"
+# define FMT_I8            "hi"
 # define FMT_D32           "I32d"
 # define FMT_D64           "I64d"
 # define FMT_I32           "I32i"
