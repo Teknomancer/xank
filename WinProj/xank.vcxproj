@@ -147,6 +147,9 @@
     <ClInclude Include="..\Source\XOperator.h" />
     <ClInclude Include="..\Source\XVariable.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="BuildInstructions.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
