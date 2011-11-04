@@ -113,9 +113,9 @@ bool XOperator::IsAssignment() const
 }
 
 
-int XOperator::Invoke(XAtom *apAtoms[]) const
+int XOperator::Invoke(XAtom *apAtoms[], size_t cAtoms) const
 {
-    int rc = (*m_pfnOperator)(apAtoms);
+    int rc = (*m_pfnOperator)(apAtoms, cAtoms);
     return rc;
 }
 

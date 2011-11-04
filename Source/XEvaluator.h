@@ -167,6 +167,7 @@ class XEvaluator
         int                         m_Error;        /**< The last error. */
         static const XFunction      m_sFunctions[]; /**< Static array of Function objects. */
         static const XOperator      m_sOperators[]; /**< Static array of Operator objects. */
+        static const size_t         m_cOperators;   /**< Static count of Operators in Operator objects array. */
         Settings                    m_Setttings;    /**< Settings for evaluator. */
         const XOperator            *m_pOpenParenthesisOperator;  /**< Pointer to open parenthesis operator. */
 };

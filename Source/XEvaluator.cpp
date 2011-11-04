@@ -42,24 +42,10 @@ static int FxAdd (XAtom *apAtoms[], uint64_t cAtoms)
     return INF_SUCCESS;
 }
 
-const XOperator XEvaluator::m_sOperators[] =
-{
-    /*     Id        Pri    Associativity          cParams  Name   pfn    ShortHelp      LongHelp */
-    /* Special Operators*/
-    XOperator(XANK_OPEN_PARENTHESIS_OPERATOR_ID,
-                      99, enmOperatorDirNone,        0,      "(",   NULL,  "(<expr>",        "Begin subexpresion or function."),
-    XOperator(XANK_CLOSE_PARENTHESIS_OPERATOR_ID,
-                      99,  enmOperatorDirNone,       0,      ")",   NULL,  "<expr>)",        "End subexpression or function."),
-    XOperator(XANK_PARAM_SEPARATOR_OPERATOR_ID,
-                       0,  enmOperatorDirLeft,       2,      ",",   NULL,  "<expr>, <expr>", "Function Parameter separator."),
-    XOperator(XANK_ASSIGNMENT_OPERATOR_ID,
-                       0,  enmOperatorDirLeft,       2,      "=",   NULL, "<lval>=<rval>",   "Assignment operator."),
-};
-
 const XFunction XEvaluator::m_sFunctions[] =
 {
-    XFunction(1, UINT64_MAX, "avg",       FxAdd, "Average", "Returns the arithmetic average."),
-    XFunction(1, UINT64_MAX, "fact",      FxAdd, "Factorial", "Returns the factorial."),
+    XFunction(1, SIZE_MAX, "avg",       FxAdd, "Average", "Returns the arithmetic average."),
+    XFunction(1, SIZE_MAX, "fact",      FxAdd, "Factorial", "Returns the factorial."),
 };
 
 
@@ -144,8 +130,7 @@ static int OperatorCompare(const void *pcvOperator1, const void *pcvOperator2)
 int XEvaluator::Init()
 {
     int rc = ERR_UNDEFINED;
-    static size_t cOperators = XANK_ARRAY_ELEMENTS(m_sOperators);
-    for (uint64_t i = 0; i < cOperators; i++)
+    for (size_t i = 0; i < m_cOperators; i++)
     {
         const XOperator *pcOperator = &m_sOperators[i];
         if (   pcOperator->Name().empty()
@@ -154,7 +139,7 @@ int XEvaluator::Init()
         {
             rc = ERR_INVALID_OPERATOR;
             CleanUp(NULL, NULL, rc,
-                "Operator with missing name, syntax or description. Index=%" FMT_U64 " Operator %s",
+                "Operator with missing name, syntax or description. Index=%" FMT_SZT " Operator %s",
                 i, pcOperator->PrintToString().c_str());
             return rc;
         }
@@ -176,11 +161,11 @@ int XEvaluator::Init()
         {
             rc = ERR_INVALID_OPERATOR;
             CleanUp(NULL, NULL, rc,
-                "Too many parameters. Index=%" FMT_U64 " Operator %s", i, pcOperator->PrintToString().c_str());
+                "Too many parameters. Index=%" FMT_SZT " Operator %s", i, pcOperator->PrintToString().c_str());
             return rc;
         }
 
-        for (size_t k = 0; k < cOperators; k++)
+        for (size_t k = 0; k < m_cOperators; k++)
         {
             if (i == k)
                 continue;
@@ -194,7 +179,7 @@ int XEvaluator::Init()
             {
                 rc = ERR_CONFLICTING_OPERATORS;
                 CleanUp(NULL, NULL, rc,
-                        "Duplicate operator Id=%" FMT_U32 " %s at [%" FMT_U64 "] and %s at [%" FMT_U64 "]",
+                        "Duplicate operator Id=%" FMT_U32 " %s at [%" FMT_SZT "] and %s at [%" FMT_SZT "]",
                         pcOperator->Id(), pcOperator->PrintToString().c_str(), i, pcCur->PrintToString().c_str(), k);
                 return rc;
             }
@@ -206,13 +191,13 @@ int XEvaluator::Init()
                 {
                     rc = ERR_DUPLICATE_OPERATOR;
                     CleanUp(NULL, NULL, rc,
-                        "Duplicate operator %s at [%" FMT_U64 "] and [%" FMT_U64 "]", pcOperator->PrintToString().c_str(),
+                        "Duplicate operator %s at [%" FMT_SZT "] and [%" FMT_SZT "]", pcOperator->PrintToString().c_str(),
                             i, k);
                     return rc;
                 }
 
                 rc = ERR_CONFLICTING_OPERATORS;
-                CleanUp(NULL, NULL, rc, "Conflicting operator %s at [%" FMT_U64 "] and [%" FMT_U64 "]",
+                CleanUp(NULL, NULL, rc, "Conflicting operator %s at [%" FMT_SZT "] and [%" FMT_SZT "]",
                         pcOperator->PrintToString().c_str(), i, k);
                 return rc;
             }
@@ -224,12 +209,11 @@ int XEvaluator::Init()
      * While sorting operators with the same name, the one with more parameters is sorted first.
      * For e.g. binary '-' is placed before unary '-', See ParseOperator().
      */
-    std::qsort((void*)m_sOperators, cOperators, sizeof(XOperator), OperatorCompare);
-    DEBUGPRINTF(("Sorted operators.\n"));
+    std::qsort((void*)m_sOperators, m_cOperators, sizeof(XOperator), OperatorCompare);
 
     const XOperator *pCloseParenthesisOperator = NULL;
     const XOperator *pParamSeparatorOperator   = NULL;
-    for (size_t i = 0; i < cOperators; i++)
+    for (size_t i = 0; i < m_cOperators; i++)
     {
         DEBUGPRINTF(("%s cParams=%" FMT_U8 " Id=%" FMT_U32 "\n", m_sOperators[i].Name().c_str(),
                 m_sOperators[i].Params(), m_sOperators[i].Id()));
@@ -634,7 +618,7 @@ int XEvaluator::Evaluate()
             XAtom *pResultAtom = NULL;
             if (pcOperator->Function())
             {
-                rc = pcOperator->Invoke(apAtoms);
+                rc = pcOperator->Invoke(apAtoms, pcOperator->Params());
                 if (IS_SUCCESS(rc))
                     pResultAtom = apAtoms[0];
             }
@@ -929,8 +913,7 @@ XAtom *XEvaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, cons
 
 XAtom *XEvaluator::ParseOperator(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom)
 {
-    static uint64_t cOperators = XANK_ARRAY_ELEMENTS(m_sOperators);
-    for (uint64_t i = 0; i < cOperators; i++)
+    for (size_t i = 0; i < m_cOperators; i++)
     {
         /** @todo use std::string's length/size/count or whatever shit here
          *        later. */
