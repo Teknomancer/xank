@@ -25,20 +25,23 @@ Windows build instructions
 4. Rebuilding a new MPIR:
 	I already provide pre-build static binaries for Win32. It is in "Libs\Windows\MPIR".
 	But if you want to rebuild MPIR (or a later version) here are the steps.
-	
-	See http://www.mpir.org/ and extract the Source tarball (or the tarball provided in
-	xank)
+
+	Download source tarball for MPIR from http://www.mpir.org/ or use the tarball included
+	in xank/Libs/.
 
 	a. VS Yasm: (See http://yasm.tortall.net/Download.html)
 		- Get http://www.tortall.net/projects/yasm/releases/vsyasm-1.2.0-win32.zip
 		- Copy 'vsyasm.exe' to C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin
 
-	b. Open build.vc10\mpir.sln (VS2011 Solution), ignore errors about "x64".
-		- Change Active configurations "lib_mpir_p4" and "lib_mpir_cxx" to "Release".
-		- Right-click "lib_mpir_p4" -> Build.
-		- Right-click "lib_mpir_cxx" -> Build.
-		- Copy "build.vc10\lib\Win32\Release\*" to xank's "Libs\Windows\MPIR\" folder.
-		The files hould be:
+	b. Open build.vc10\mpir.sln (VS2011 Solution), ignore errors about "x64" if any.
+		- Always build both Debug and Release configurations of the library.
+		- Change Active configurations "lib_mpir_p4" and "lib_mpir_cxx" to "Debug"
+		  and "Release", for each configuration:
+			- Right-click "lib_mpir_p4" -> Rebuild.
+			- Right-click "lib_mpir_cxx" -> Rebuild.
+		- Copy "build.vc10\lib\Win32\[Debug|Release]\*" to
+		  "Libs\Windows\MPIR\[Debug|Release]\*" folders.
+		The files should be:
 			config.h
 			gmp-mparam.h
 			gmp.h
@@ -49,5 +52,5 @@ Windows build instructions
 			mpirxx.h
 			mpirxx.lib
 			mpirxx.pdb
-			
-5. Open xank.sln and "Build".
+
+5. Open xank.sln and build (or rebuild as the case maybe).
