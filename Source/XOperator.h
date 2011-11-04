@@ -40,7 +40,7 @@ enum XOperatorDir
 };
 
 /** An Operator function. */
-typedef int FNOPERATOR(XAtom *apAtoms[]);
+typedef int FNOPERATOR(XAtom *apAtoms[], size_t cAtoms);
 /** Pointer to an Operator function. */
 typedef FNOPERATOR *PFNOPERATOR;
 
@@ -115,11 +115,12 @@ class XOperator
         /**
          * Invokes the function associated with this Operator.
          *
-         * @param apAtoms_              Array of pointers of Atoms.
+         * @param apAtoms               Array of pointers to operand Atoms.
+         * @param cAtoms                Number of items in @a apAtoms.
          *
          * @return int: xank error code.
          */
-        int                     Invoke(XAtom *apAtoms[]) const;
+        int                     Invoke(XAtom *apAtoms[], size_t cAtoms) const;
 
         /**
          * Returns if this Operator is the Open Parenthesis Operator.

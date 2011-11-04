@@ -48,6 +48,7 @@ Group0_SRC = \
 	XAtom.cpp \
 	XErrors.cpp \
 	XEvaluator.cpp \
+    XEvaluatorOperators.cpp \
 	XFunction.cpp \
 	XOperator.cpp \
 	XVariable.cpp
