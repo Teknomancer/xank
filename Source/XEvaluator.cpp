@@ -919,10 +919,7 @@ XAtom *XEvaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, cons
     if (!pAtom)
         return NULL;
     if (fFloat)
-    {
         pAtom->SetFloatFromStr(sNum.c_str(), iRadix);
-        DEBUGPRINTF(("sNum=%s iRadix=%d %s\n", sNum.c_str(), iRadix, pAtom->PrintToString().c_str()));
-    }
     else
         pAtom->SetIntegerFromStr(sNum.c_str(), iRadix);
     *ppcszEnd = pcszExpr;
