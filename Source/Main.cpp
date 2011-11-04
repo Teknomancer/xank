@@ -32,7 +32,12 @@ int main(int argc, char **argv)
     int rc = Eval.Init();
     if (IS_SUCCESS(rc))
     {
-        Console.ColorPrintf(enmConsoleColorRed, "Initialized Evaluator %s.\n", "Hello");
+        rc = Eval.Parse("3.4+4");
+        if (IS_FAILURE(rc))
+            Console.ErrorPrintf(rc, "Parsing failed.\n");
+        else
+            Console.Printf("Parse success\n");
+        printf("abcd %" FMT_U8 "\n", (uint8_t)256);
     }
     else
         Console.ColorPrintf(enmConsoleColorRed, "Evaluator initilization failed.\n");

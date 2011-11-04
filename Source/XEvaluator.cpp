@@ -306,12 +306,12 @@ int XEvaluator::Parse(const char *pcszExpr)
 
         if (pAtom->IsNumber())
         {
-            DEBUGPRINTF(("Adding number"));
+            DEBUGPRINTF(("Adding number %s\n", pAtom->PrintToString().c_str()));
             Queue.push(pAtom);
         }
         else if (pAtom->Function())
         {
-            DEBUGPRINTF(("Adding function %s", pAtom->Function()->PrintToString().c_str()));
+            DEBUGPRINTF(("Adding function %s\n", pAtom->Function()->PrintToString().c_str()));
             Stack.push(pAtom);
         }
         else if (pAtom->IsVariable())
@@ -322,6 +322,7 @@ int XEvaluator::Parse(const char *pcszExpr)
         }
         else if (pAtom->IsOperator())
         {
+            DEBUGPRINTF(("Parsing operator %s\n", pAtom->Operator()->PrintToString().c_str()));
             const XOperator *pcOperator = pAtom->Operator();
             Assert(pcOperator);
             if (pcOperator->IsOpenParenthesis())
@@ -918,7 +919,10 @@ XAtom *XEvaluator::ParseNumber(const char *pcszExpr, const char **ppcszEnd, cons
     if (!pAtom)
         return NULL;
     if (fFloat)
+    {
         pAtom->SetFloatFromStr(sNum.c_str(), iRadix);
+        DEBUGPRINTF(("sNum=%s iRadix=%d %s\n", sNum.c_str(), iRadix, pAtom->PrintToString().c_str()));
+    }
     else
         pAtom->SetIntegerFromStr(sNum.c_str(), iRadix);
     *ppcszEnd = pcszExpr;

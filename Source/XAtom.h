@@ -246,8 +246,8 @@ class XAtom
         std::string                 m_sVariable;  /**< Name of the variable if this is/might become a Variable Atom. */
         union
         {
-            mpz_t                   Integer;      /**< Integer value for a Number Atom. */
             mpf_t                   Float;        /**< Float point value for a Number Atom. */
+            mpz_t                   Integer;      /**< Integer value for a Number Atom. */
             const XOperator        *pOperator;    /*< Pointer to the Operator for an Operator Atom. */
             const XFunction        *pFunction;    /*< Pointer to the Function for a Function Atom. */
             const XVariable        *pVariable;    /*< Pointer to the Variable for a Variable Atom. */

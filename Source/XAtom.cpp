@@ -237,14 +237,14 @@ std::string XAtom::PrintToString() const
             sOut += "Int: ";
             char *pszBuf = NULL;
             int rc = gmp_asprintf(&pszBuf, "%Zd", m_u.Integer);
-            if (rc == 0)
+            if (rc > 0)
             {
                 sOut += pszBuf;
                 free(pszBuf);
                 pszBuf = NULL;
             }
             else
-                sOut += "<NoMem>";
+                sOut += "<NoMem?>";
             break;
         }
 
@@ -252,15 +252,15 @@ std::string XAtom::PrintToString() const
         {
             sOut += "Float: ";
             char *pszBuf = NULL;
-            int rc = gmp_asprintf(&pszBuf, "%F", m_u.Float);
-            if (rc == 0)
+            int rc = gmp_asprintf(&pszBuf, "%.2Ff", m_u.Float);
+            if (rc > 0)
             {
                 sOut += pszBuf;
                 free(pszBuf);
                 pszBuf = NULL;
             }
             else
-                sOut += "<NoMem>";
+                sOut += "<NoMem?>";
             break;
         }
 
