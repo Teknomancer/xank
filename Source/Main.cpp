@@ -37,7 +37,6 @@ int main(int argc, char **argv)
             Console.ErrorPrintf(rc, "Parsing failed.\n");
         else
             Console.Printf("Parse success\n");
-        printf("abcd %" FMT_U8 "\n", (uint8_t)256);
     }
     else
         Console.ColorPrintf(enmConsoleColorRed, "Evaluator initilization failed.\n");
