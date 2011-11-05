@@ -125,6 +125,7 @@
     <ClCompile Include="..\Source\XAtom.cpp" />
     <ClCompile Include="..\Source\XErrors.cpp" />
     <ClCompile Include="..\Source\XEvaluator.cpp" />
+    <ClCompile Include="..\Source\XEvaluatorOperators.cpp" />
     <ClCompile Include="..\Source\XFunction.cpp" />
     <ClCompile Include="..\Source\XOperator.cpp" />
     <ClCompile Include="..\Source\XVariable.cpp" />

@@ -95,4 +95,3 @@ const XOperator XEvaluator::m_sOperators[] =
 };
 
 const size_t XEvaluator::m_cOperators = XANK_ARRAY_ELEMENTS(m_sOperators);
-

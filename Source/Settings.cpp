@@ -57,7 +57,6 @@ SettingsValueParamType SettingsValue::Type() const
         return m_ParamType;
 }
 
-
 /* ============================================================================================================================ */
 
 Settings::Settings()
@@ -151,5 +150,4 @@ void Settings::GetStringDef(std::string sKey, std::string *psVal, std::string sV
     else
         *psVal = iterMap->second.m_sVal;
 }
-
 
