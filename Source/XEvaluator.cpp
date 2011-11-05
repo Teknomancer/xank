@@ -738,9 +738,6 @@ XAtom *XEvaluator::ParseFunction(const char *pcszExpr, const char **ppcszEnd, co
         size_t cbFunction = m_sFunctions[i].Name().length();
         if (!std::strncmp(m_sFunctions[i].Name().c_str(), pcszExpr, cbFunction))
         {
-            /*
-             * Skip over whitespaces till we encounter an open parenthesis.
-             */
             pcszExpr += cbFunction;
             while (isspace(*pcszExpr))
                 pcszExpr++;
