@@ -74,7 +74,6 @@ XEvaluator::~XEvaluator()
 
 void XEvaluator::CleanUp(std::stack<XAtom*> *pStack, std::queue<XAtom*> *pQueue, int rc, const char *pcszMsg, ...)
 {
-    /** @todo handle pStack clean-up here. */
     if (pStack)
         while (!pStack->empty())
         {
@@ -736,9 +735,7 @@ XAtom *XEvaluator::ParseFunction(const char *pcszExpr, const char **ppcszEnd, co
     static uint64_t cFunctions = XANK_ARRAY_ELEMENTS(m_sFunctions);
     for (uint64_t i = 0; i < cFunctions; i++)
     {
-        /** @todo use std::string's length/size/count or whatever shit here
-         *        later. */
-        size_t cbFunction = std::strlen(m_sFunctions[i].Name().c_str());
+        size_t cbFunction = m_sFunctions[i].Name().length();
         if (!std::strncmp(m_sFunctions[i].Name().c_str(), pcszExpr, cbFunction))
         {
             /*
@@ -748,10 +745,8 @@ XAtom *XEvaluator::ParseFunction(const char *pcszExpr, const char **ppcszEnd, co
             while (isspace(*pcszExpr))
                 pcszExpr++;
 
-            /** @todo use std::string's length/size/count or whatever shit here
-             *        later. */
             if (!std::strncmp(pcszExpr, m_pOpenParenthesisOperator->Name().c_str(),
-                            std::strlen(m_pOpenParenthesisOperator->Name().c_str())))
+                            m_pOpenParenthesisOperator->Name().length()))
             {
                 XAtom *pAtom = new(std::nothrow) XAtom;
                 if (!pAtom)
@@ -915,9 +910,7 @@ XAtom *XEvaluator::ParseOperator(const char *pcszExpr, const char **ppcszEnd, co
 {
     for (size_t i = 0; i < m_cOperators; i++)
     {
-        /** @todo use std::string's length/size/count or whatever shit here
-         *        later. */
-        size_t cbOperator = std::strlen(m_sOperators[i].Name().c_str());
+        size_t cbOperator = m_sOperators[i].Name().length();
         if (!std::strncmp(m_sOperators[i].Name().c_str(), pcszExpr, cbOperator))
         {
             /*
