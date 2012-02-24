@@ -223,7 +223,6 @@ uint64_t XAtom::FunctionParams() const
 std::string XAtom::PrintToString() const
 {
     std::string sOut = "Atom: ";
-    sOut += "Type: ";
     switch (m_AtomType)
     {
         case enmAtomTypeEmpty:

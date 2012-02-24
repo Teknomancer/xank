@@ -130,7 +130,7 @@ std::string XOperator::PrintToString() const
 {
     /** @todo fill in the other members here  */
     std::string sOut;
-    sOut =  "Name    : " + m_sName + "\n";
+    sOut =  "Operator: " + m_sName + "\n";
     sOut += "Id      : ";
     sOut += m_uId;
     sOut += "\n";

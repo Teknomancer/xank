@@ -289,12 +289,12 @@ int XEvaluator::Parse(const char *pcszExpr)
 
         if (pAtom->IsNumber())
         {
-            DEBUGPRINTF(("Adding number %s\n", pAtom->PrintToString().c_str()));
+            DEBUGPRINTF(("Queue push number %s\n", pAtom->PrintToString().c_str()));
             Queue.push(pAtom);
         }
         else if (pAtom->Function())
         {
-            DEBUGPRINTF(("Adding function %s\n", pAtom->Function()->PrintToString().c_str()));
+            DEBUGPRINTF(("Queue push function %s\n", pAtom->Function()->PrintToString().c_str()));
             Stack.push(pAtom);
         }
         else if (pAtom->IsVariable())
@@ -310,7 +310,7 @@ int XEvaluator::Parse(const char *pcszExpr)
             Assert(pcOperator);
             if (pcOperator->IsOpenParenthesis())
             {
-                DEBUGPRINTF(("Parenthesis begin '%s' pushing to stack.\n", pcOperator->Name().c_str()));
+                DEBUGPRINTF(("Stack push parenthesis begin '%s'.\n", pcOperator->Name().c_str()));
                 Stack.push(pAtom);
             }
             else if (pcOperator->IsCloseParenthesis())
@@ -325,7 +325,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                         && pStackAtom->Operator()->IsOpenParenthesis())
                         break;
                     /** @todo implement XAtom::PrintToString() */
-                    /* DEBUGPRINTF(("Popping '%s' to queue.\n", pStackAtom->PrintToString().c_str())); */
+                    DEBUGPRINTF(("Popping '%s' to queue.\n", pStackAtom->PrintToString().c_str()));
                     Stack.pop();
                     Queue.push(pStackAtom);
                 }
@@ -690,7 +690,7 @@ int XEvaluator::Evaluate()
 
 XAtom *XEvaluator::ParseAtom(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom)
 {
-    DEBUGPRINTF(("ParseAtom\n"));
+    DEBUGPRINTF(("ParseAtom \"%s\"\n", pcszExpr));
     XAtom *pAtom = NULL;
     while (*pcszExpr)
     {
