@@ -1,6 +1,7 @@
 xank - arbitrary precision expression evaluator
 Copyright (c) 2011 Ramshankar (aka Teknomancer)
 
+
 Windows build instructions
 ==========================
 
@@ -23,11 +24,11 @@ Windows build instructions
 		(Make sure you change to "All configurations")
 
 4. Rebuilding a new MPIR:
-	I already provide pre-build static binaries for Win32. It is in "Libs\Windows\MPIR".
-	But if you want to rebuild MPIR (or a later version) here are the steps.
+	I already provide pre-built static binaries for Win32. It is in "Libs\Windows\MPIR".
+	However, if you want to rebuild MPIR (or a later version) here are the steps:
 
 	Download source tarball for MPIR from http://www.mpir.org/ or use the tarball included
-	in xank/Libs/.
+	in xank/Libs/
 
 	a. VS Yasm: (See http://yasm.tortall.net/Download.html)
 		- Get http://www.tortall.net/projects/yasm/releases/vsyasm-1.2.0-win32.zip
@@ -54,3 +55,4 @@ Windows build instructions
 			mpirxx.pdb
 
 5. Open xank.sln and build (or rebuild as the case maybe).
+
