@@ -112,6 +112,15 @@ int XAtom::SetIntegerFromStr(const char *pcszStr, int iRadix)
 }
 
 
+int XAtom::SetInteger(mpz_t Source)
+{
+    Destroy();
+    mpz_init_set(m_u.Integer, Source);
+    m_AtomType = enmAtomTypeInteger;
+    return INF_SUCCESS;
+}
+
+
 int XAtom::GetFloat(mpf_t Result) const
 {
     if (m_AtomType == enmAtomTypeFloat)
@@ -123,6 +132,18 @@ int XAtom::GetFloat(mpf_t Result) const
 }
 
 
+int XAtom::PromoteGetFloat(mpf_t Result) const
+{
+    if (m_AtomType == enmAtomTypeFloat)
+        return GetFloat(Result);
+    else
+    {
+        mpf_set_z(Result, m_u.Integer);
+        return INF_SUCCESS;
+    }
+}
+
+
 int XAtom::SetFloatFromStr(const char *pcszStr, int iRadix)
 {
     Destroy();
@@ -131,6 +152,14 @@ int XAtom::SetFloatFromStr(const char *pcszStr, int iRadix)
     return INF_SUCCESS;
 }
 
+
+int XAtom::SetFloat(mpf_t Source)
+{
+    Destroy();
+    mpf_init_set(m_u.Float, Source);
+    m_AtomType = enmAtomTypeFloat;
+    return INF_SUCCESS;
+}
 
 const XOperator *XAtom::Operator() const
 {
@@ -222,6 +251,7 @@ uint64_t XAtom::FunctionParams() const
 
 std::string XAtom::PrintToString() const
 {
+    /** @todo use std::ostringstream here?  */
     std::string sOut = "Atom: ";
     switch (m_AtomType)
     {

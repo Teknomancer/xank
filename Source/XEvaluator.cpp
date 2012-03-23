@@ -617,7 +617,7 @@ int XEvaluator::Evaluate()
             XAtom *pResultAtom = NULL;
             if (pcOperator->Function())
             {
-                rc = pcOperator->Invoke(apAtoms, pcOperator->Params());
+                rc = pcOperator->Invoke(apAtoms, pcOperator->Params(), NULL /* pvData */);
                 if (IS_SUCCESS(rc))
                     pResultAtom = apAtoms[0];
             }

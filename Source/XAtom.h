@@ -127,12 +127,20 @@ class XAtom
         /**
          * Sets the integer value from a string.
          *
-         * @param pcszStr           The string representation of the itneger value.
+         * @param pcszStr           The string representation of the integer value.
          * @param iRadix            The radix of the integer value in @a pcszStr.
          *
          * @return int: xank error code.
          */
         int                         SetIntegerFromStr(const char *pcszStr, int iRadix);
+
+        /**
+         * Sets the integer value for this Atom making it an Integer Atom.
+         * @param Source            The integer value to assign to this Atom.
+         *
+         * @return int: xank error code.
+         */
+        int                         SetInteger(mpz_t Source);
 
         /**
          * Gets the floating point value for this Float Atom.
@@ -144,6 +152,15 @@ class XAtom
         int                         GetFloat(mpf_t Result) const;
 
         /**
+         * Promotes an integer Atom (if necessary) to float and gets the floating point
+         * value for this Atom.
+         * @param Result            Where to set the promoted floating point value.
+         *
+         * @return int: xank error code.
+         */
+        int                         PromoteGetFloat(mpf_t Result) const;
+
+        /**
          * Sets the floating point value from a string.
          *
          * @param pcszStr           The string representation of the floating point
@@ -153,6 +170,14 @@ class XAtom
          * @return int: xank error code.
          */
         int                         SetFloatFromStr(const char *pcszStr, int iRadix);
+
+        /**
+         * Sets the floating point value for this Atom making it a Float atom.
+         * @param Source            The value to assign to this Atom.
+         *
+         * @return int: xank error code.
+         */
+        int                         SetFloat(mpf_t Source);
 
         /**
          * Returns pointer to the Operator Atom.
@@ -248,9 +273,9 @@ class XAtom
         {
             mpf_t                   Float;        /**< Float point value for a Number Atom. */
             mpz_t                   Integer;      /**< Integer value for a Number Atom. */
-            const XOperator        *pOperator;    /*< Pointer to the Operator for an Operator Atom. */
-            const XFunction        *pFunction;    /*< Pointer to the Function for a Function Atom. */
-            const XVariable        *pVariable;    /*< Pointer to the Variable for a Variable Atom. */
+            const XOperator        *pOperator;    /**< Pointer to the Operator for an Operator Atom. */
+            const XFunction        *pFunction;    /**< Pointer to the Function for a Function Atom. */
+            const XVariable        *pVariable;    /**< Pointer to the Variable for a Variable Atom. */
         } m_u;
 };
 
