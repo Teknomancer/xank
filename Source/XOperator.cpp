@@ -22,6 +22,9 @@
 #include "XOperator.h"
 #include "XEvaluatorDefs.h"
 
+#include <iostream>
+#include <sstream>
+
 XOperator::XOperator()
     : m_uId(UINT32_MAX)
 {
@@ -113,9 +116,9 @@ bool XOperator::IsAssignment() const
 }
 
 
-int XOperator::Invoke(XAtom *apAtoms[], size_t cAtoms) const
+int XOperator::Invoke(XAtom *apAtoms[], size_t cAtoms, void *pvData) const
 {
-    int rc = (*m_pfnOperator)(apAtoms, cAtoms);
+    int rc = (*m_pfnOperator)(apAtoms, cAtoms, pvData);
     return rc;
 }
 
@@ -129,11 +132,8 @@ PFNOPERATOR XOperator::Function() const
 std::string XOperator::PrintToString() const
 {
     /** @todo fill in the other members here  */
-    std::string sOut;
-    sOut =  "Operator: " + m_sName + "\n";
-    sOut += "Id      : ";
-    sOut += m_uId;
-    sOut += "\n";
-    return sOut;
+    std::ostringstream sOut;
+    sOut <<  "Operator: '" << m_sName << "' Id: " << m_uId;
+    return sOut.str();
 }
 
