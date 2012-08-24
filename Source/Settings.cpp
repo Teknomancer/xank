@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2011 Ramshankar (aka Teknomancer)
+ * Copyright (C) 2011-2012 Ramshankar (aka Teknomancer)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,6 @@ SettingsValueParamType SettingsValue::Type() const
         return m_ParamType;
 }
 
-/* ============================================================================================================================ */
 
 Settings::Settings()
 {

@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2011 Ramshankar (aka Teknomancer)
+ * Copyright (C) 2011-2012 Ramshankar (aka Teknomancer)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,7 +121,7 @@ int XFunction::SetFunction(PFNFUNCTION pfnFunction)
 }
 
 
-int XFunction::Invoke(XAtom *apAtoms[], uint64_t cAtoms)
+int XFunction::Invoke(XAtom *apAtoms[], uint64_t cAtoms) const
 {
     int rc = (*m_pfnFunction)(apAtoms, cAtoms);
     return rc;

@@ -24,6 +24,8 @@
 
 #include <cstdlib>
 
+#include "XGenericDefs.h"
+
 #if defined(_MSC_VER) && defined(XANK_OS_WINDOWS)
 # define XANK_PRETTY_FUNC       __FUNCSIG__
 #else
@@ -61,10 +63,13 @@
         } \
     } while (0)
 
+/* To avoid warnings we NOREF the temporary, thus this cannot be used in headers.
+   If we need this macro in headers, make a new version without the NOREF. */
 #define AssertCompile(expr) \
     { \
        char ____compileTimeAssertFailed[(expr)?1:-1]; \
        ____compileTimeAssertFailed[0]=0; \
+	   NOREF(____compileTimeAssertFailed); \
     }
 
 #define AssertRelease(expr) \

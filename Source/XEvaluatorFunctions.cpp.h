@@ -1,9 +1,9 @@
 /** @file
- * xank - Assert, implementation.
+ * xank - Expression Evaluator, Function implementions.
  */
 
 /*
- * Copyright (C) 2011-2012 Ramshankar (aka Teknomancer)
+ * Copyright (C) 2011 Ramshankar (aka Teknomancer)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,13 +19,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Assert.h"
-#include "ConsoleIO.h"
-#include <iostream>
-
-void AssertMsg(const char *pcszExpr, unsigned uLine, const char *pcszFile, const char *pcszFunction)
+static int FxAdd (XAtom *apAtoms[], uint64_t cAtoms)
 {
-    ConsoleIO Out;
-    Out.AssertPrintf("Expression: %s\nLocation  : %s:%u %s\n", pcszExpr, pcszFile, uLine, pcszFunction);
+    NOREF(apAtoms);
+    NOREF(cAtoms);
+    return INF_SUCCESS;
 }
+
+const XFunction XEvaluator::m_sFunctions[] =
+{
+    XFunction(1, SIZE_MAX, "avg",       FxAdd, "Average", "Returns the arithmetic average."),
+    XFunction(1, SIZE_MAX, "fact",      FxAdd, "Factorial", "Returns the factorial."),
+};
 
