@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2011 Ramshankar (aka Teknomancer)
+ * Copyright (C) 2011-2012 Ramshankar (aka Teknomancer)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,17 @@
 #define XANK_MAX_VARIABLE_NAME_LEN                  128
 
 /**
- * Maximum number of parameters to an operator. Since this is
- * a uint8_t internally, it's UINT8_MAX here. If that changes
- * this must change & vice versa. Probably also have to update
- * all printf format specifiers for them.
+ * Maximum number of parameters to an operator. Since this is a uint8_t
+ * internally, it's UINT8_MAX here. If that changes this must change & vice
+ * versa. Probably also have to update all printf format specifiers for them.
  */
 #define XANK_MAX_OPERATOR_PARAMETERS                UINT8_MAX
+
+/**
+ * Maximum number of parameters to a function. Restrict this to size_t's maximum
+ * value as we construct arrays with this. Internally this is a uint64_t.
+ */
+#define XANK_MAX_FUNCTION_PARAMETERS                SIZE_MAX
 
 /** Operator Id for Open Paranthesis Operator. */
 #define XANK_OPEN_PARENTHESIS_OPERATOR_ID           0

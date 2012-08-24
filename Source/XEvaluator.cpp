@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2011 Ramshankar (aka Teknomancer)
+ * Copyright (C) 2011-2012 Ramshankar (aka Teknomancer)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,19 +35,7 @@
 #include <stdint.h>
 #include <gmp.h>
 
-static int FxAdd (XAtom *apAtoms[], uint64_t cAtoms)
-{
-    NOREF(apAtoms);
-    NOREF(cAtoms);
-    return INF_SUCCESS;
-}
-
-const XFunction XEvaluator::m_sFunctions[] =
-{
-    XFunction(1, SIZE_MAX, "avg",       FxAdd, "Average", "Returns the arithmetic average."),
-    XFunction(1, SIZE_MAX, "fact",      FxAdd, "Factorial", "Returns the factorial."),
-};
-
+#include "XEvaluatorFunctions.cpp.h"
 
 XEvaluator::XEvaluator()
 {
@@ -284,7 +272,7 @@ int XEvaluator::Parse(const char *pcszExpr)
             && pPreviousAtom->Operator()->IsCloseParenthesis())
         {
             delete pPreviousAtom;
-            pPreviousAtom= NULL;
+            pPreviousAtom = NULL;
         }
 
         if (pAtom->IsNumber())
@@ -570,7 +558,7 @@ int XEvaluator::Evaluate()
     if (m_RPNQueue.empty())
         return ERR_UNPARSED_EXPRESSION;
 
-    std::stack<XAtom*> Stack;
+    std::stack<XAtom *> Stack;
     XAtom *pAtom = NULL;
     int rc       = ERR_NOT_INITIALIZED;
 
@@ -648,7 +636,83 @@ int XEvaluator::Evaluate()
         }
         else if (pAtom->Function())
         {
-            /** @todo function evaluation. */
+            const XFunction *pcFunction = pAtom->Function();
+            DEBUGPRINTF(("%s ", pcFunction->Name().c_str()));
+
+            if (Stack.size() < pAtom->FunctionParams())
+            {
+                DEBUGPRINTF(("Stack size=%" FMT_SZT " cParams=%" FMT_U8 "\n", Stack.size(), pAtom->FunctionParams()));
+                rc = ERR_TOO_FEW_PARAMETERS;
+                CleanUp(&Stack, &m_RPNQueue, rc,
+                        "Insufficient parameters to function %s cParams=%" FMT_U8 "\n", pcFunction->Name().c_str(),
+                        pAtom->FunctionParams());
+                return rc;
+            }
+
+            /*
+             * Construct an array of maximum possible XAtoms parameters and pass it to the function
+             * actuator if any, otherwise just push the first paramater as the result.
+             */
+            AssertCompile(XANK_MAX_FUNCTION_PARAMETERS == SIZE_MAX);
+            Assert(pcFunction->MaxParams() <= XANK_MAX_FUNCTION_PARAMETERS);
+
+            const size_t cParams = XANK_MIN(pAtom->FunctionParams(), XANK_MAX_FUNCTION_PARAMETERS);
+            XAtom **ppaAtoms     = new(std::nothrow) XAtom *[cParams];
+            if (!ppaAtoms)
+            {
+                rc = ERR_NO_MEMORY;
+                CleanUp(&Stack, &m_RPNQueue, rc,
+                        "No memory to allocate %" FMT_SZT " Atoms.\n", cParams);
+                return rc;
+            }
+
+            rc = ERR_UNDEFINED;
+            size_t cParamsTmp = cParams;
+            while (cParamsTmp--)
+            {
+                ppaAtoms[cParamsTmp] = Stack.top();
+                Stack.pop();
+
+                /** @todo check if the Function can cast to the required to perform its
+                 *        operation. If not, we cannot proceed as it would invoke undefined
+                 *        behaviour. */
+            }
+
+            XAtom *pResultAtom = NULL;
+            if (pcFunction->Function())
+            {
+                rc = pcFunction->Invoke(ppaAtoms, cParams);
+                if (IS_SUCCESS(rc))
+                    pResultAtom = ppaAtoms[0];
+            }
+            else
+            {
+                pResultAtom = ppaAtoms[0];
+                AssertReturn(pResultAtom, ERR_GENERAL_FAILURE);
+                rc = INF_SUCCESS;
+            }
+
+            /* Cleanup temporaries and stack. */
+            for (size_t i = 1; i < cParams; i++)
+            {
+                delete ppaAtoms[i];
+                ppaAtoms[i] = NULL;
+            }
+            delete[] ppaAtoms;
+            ppaAtoms = NULL;
+
+            if (IS_SUCCESS(rc))
+            {
+                Assert(pResultAtom);
+                Stack.push(pResultAtom);
+            }
+            else
+            {
+                DEBUGPRINTF(("Function %s failed with given operands. rc=%d\n", pcFunction->Name().c_str(), rc));
+                CleanUp(&Stack, &m_RPNQueue, rc,
+                        "Function %s failed with given operands.\n", pcFunction->Name().c_str());
+                return rc;
+            }
         }
         else if (pAtom->Variable())
         {
@@ -947,6 +1011,7 @@ XAtom *XEvaluator::ParseOperator(const char *pcszExpr, const char **ppcszEnd, co
 
 XAtom *XEvaluator::ParseVariable(const char *pcszExpr, const char **ppcszEnd, const XAtom *pcPreviousAtom)
 {
+    /** @todo Parse variables. */
     NOREF(pcszExpr); NOREF(ppcszEnd); NOREF(pcPreviousAtom);
     return NULL;
 }
@@ -954,6 +1019,7 @@ XAtom *XEvaluator::ParseVariable(const char *pcszExpr, const char **ppcszEnd, co
 
 XAtom *XEvaluator::ParseCommand(const char *pcszExpr,  const char **ppcszEnd,  const XAtom *pcPreviousAtom)
 {
+    /** @todo Parse commands. */
     NOREF(pcszExpr); NOREF(ppcszEnd); NOREF(pcPreviousAtom);
     return NULL;
 }

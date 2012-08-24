@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2011 Ramshankar (aka Teknomancer)
+ * Copyright (C) 2011-2012 Ramshankar (aka Teknomancer)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ static NumberType FindLargestNumberType(XAtom *apAtoms[], size_t cAtoms)
 }
 
 
-int OpAdd (XAtom *apAtoms[], size_t cAtoms, void *pvData)
+int OpAdd(XAtom *apAtoms[], size_t cAtoms, void *pvData)
 {
     NOREF(pvData);
     NumberType dstType = FindLargestNumberType(apAtoms, cAtoms);
