@@ -592,10 +592,12 @@ int XEvaluator::Evaluate()
             XAtom *apAtoms[XANK_MAX_OPERATOR_PARAMETERS];
             Assert(pcOperator->Params() < XANK_MAX_OPERATOR_PARAMETERS);
             uint8_t cParams = pcOperator->Params();
-            while (--cParams)
+            while (cParams > 0)
             {
-                apAtoms[cParams] = Stack.top();   /* We've already checked Stack.size() above, so this is fine. */
+                apAtoms[cParams - 1] = Stack.top();   /* We've already checked Stack.size() above, so this is fine. */
+                DEBUGPRINTF(("%s\n", apAtoms[cParams - 1]->PrintToString().c_str()));
                 Stack.pop();
+                --cParams;
 
                 /** @todo handle type-cast stuff here, i.e. operator specifies what range it
                  *        can take and we fiddle with the Atom to figure out if it's valid or
@@ -605,6 +607,7 @@ int XEvaluator::Evaluate()
             XAtom *pResultAtom = NULL;
             if (pcOperator->Function())
             {
+                DEBUGPRINTF(("Invoking %s cParams=%" FMT_U8 "\n", pcOperator->Name().c_str(), pcOperator->Params()));
                 rc = pcOperator->Invoke(apAtoms, pcOperator->Params(), NULL /* pvData */);
                 if (IS_SUCCESS(rc))
                     pResultAtom = apAtoms[0];

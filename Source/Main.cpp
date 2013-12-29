@@ -36,7 +36,10 @@ int main(int argc, char **argv)
         if (IS_FAILURE(rc))
             Console.ErrorPrintf(rc, "Parsing failed.\n");
         else
+        {
             Console.Printf("Parse success\n");
+            Eval.Evaluate();
+        }
     }
     else
         Console.ColorPrintf(enmConsoleColorRed, "Evaluator initilization failed.\n");

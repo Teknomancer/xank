@@ -24,6 +24,8 @@
 #include "XErrors.h"
 #include "XGenericDefs.h"
 #include "XOperator.h"
+#include "Debug.h"
+#include "Assert.h"
 
 /*
  * Smallest to largest type. Types that are higher
@@ -35,8 +37,10 @@ typedef enum
 {
     enmUnknown,
     enmInteger,
-    enmFloat
+    enmFloat,
+    enmMax = enmFloat
 } NumberType;
+
 
 static NumberType FindLargestNumberType(XAtom *apAtoms[], size_t cAtoms)
 {
@@ -44,13 +48,16 @@ static NumberType FindLargestNumberType(XAtom *apAtoms[], size_t cAtoms)
     for (size_t i = 0; i < cAtoms; i++)
     {
         NumberType srcType;
+        Assert(apAtoms[i]->IsNumber());
         if (apAtoms[i]->IsInteger())
             srcType = enmInteger;
         else if (apAtoms[i]->IsFloat())
             srcType = enmFloat;
 
-        if (srcType > dstType)
+        if (srcType >= dstType)
             dstType = srcType;
+        if (dstType == enmMax)
+            break;
     }
     return dstType;
 }
@@ -59,39 +66,56 @@ static NumberType FindLargestNumberType(XAtom *apAtoms[], size_t cAtoms)
 int OpAdd(XAtom *apAtoms[], size_t cAtoms, void *pvData)
 {
     NOREF(pvData);
+    DEBUGPRINTF(("OpAdd\n"));
+
     NumberType dstType = FindLargestNumberType(apAtoms, cAtoms);
     int rc = INF_SUCCESS;
     if (dstType == enmInteger)
     {
         mpz_t Operand1;
         mpz_t Operand2;
+        mpz_init(Operand1);
+        mpz_init(Operand2);
         int rc1 = apAtoms[0]->GetInteger(Operand1);
         int rc2 = apAtoms[1]->GetInteger(Operand2);
         if (IS_SUCCESS(rc1) && IS_SUCCESS(rc2))
         {
             mpz_t Result;
+            mpz_init(Result);
             mpz_add(Result, Operand1, Operand2);
         }
         else
+        {
+            DEBUGPRINTF(("OpAdd failed dstType=%d rc1=%d rc2=%d\n", dstType, rc1, rc2));
             rc = ERR_INVALID_ATOM_TYPE_FOR_OPERATION;
+        }
     }
     else if (dstType == enmFloat)
     {
         mpf_t Operand1;
         mpf_t Operand2;
+        mpf_init(Operand1);
+        mpf_init(Operand2);
         int rc1 = apAtoms[0]->PromoteGetFloat(Operand1);
         int rc2 = apAtoms[1]->PromoteGetFloat(Operand2);
         if (IS_SUCCESS(rc1) && IS_SUCCESS(rc2))
         {
             mpf_t Result;
+            mpf_init(Result);
             mpf_add(Result, Operand1, Operand2);
             apAtoms[0]->SetFloat(Result);
         }
         else
+        {
+            DEBUGPRINTF(("OpAdd failed dstType=%d rc1=%d rc2=%d\n", dstType, rc1, rc2));
             rc = ERR_INVALID_ATOM_TYPE_FOR_OPERATION;
+        }
     }
     else
+    {
+        DEBUGPRINTF(("OpAdd failed dstType=%d\n", dstType));
         rc = ERR_INVALID_ATOM_TYPE_FOR_OPERATION;
+    }
 
     return rc;
 }
