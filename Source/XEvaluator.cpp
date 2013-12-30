@@ -313,7 +313,6 @@ int XEvaluator::Parse(const char *pcszExpr)
                     if (   pStackAtom->Operator()
                         && pStackAtom->Operator()->IsOpenParenthesis())
                         break;
-                    /** @todo implement XAtom::PrintToString() */
                     DEBUGPRINTF(("Popping '%s' to queue.\n", pStackAtom->PrintToString().c_str()));
                     Stack.pop();
                     Queue.push(pStackAtom);

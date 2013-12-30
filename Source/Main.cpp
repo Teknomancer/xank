@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     int rc = Eval.Init();
     if (IS_SUCCESS(rc))
     {
-        rc = Eval.Parse("1.4 + 42 + 10.42 + 11.01");
+        rc = Eval.Parse("1 + 42 + 10.599 + 1.58");
         if (IS_FAILURE(rc))
             Console.ErrorPrintf(rc, "Parsing failed.\n");
         else
@@ -45,3 +45,4 @@ int main(int argc, char **argv)
         Console.ColorPrintf(enmConsoleColorRed, "Evaluator initilization failed.\n");
     return 0;
 }
+

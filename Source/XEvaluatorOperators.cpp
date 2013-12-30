@@ -68,6 +68,8 @@ int OpAdd(XAtom *apAtoms[], size_t cAtoms, void *pvData)
     NOREF(pvData);
     DEBUGPRINTF(("OpAdd\n"));
 
+    /** @todo This is not all that efficient. Optimize it later. */
+
     NumberType dstType = FindLargestNumberType(apAtoms, cAtoms);
     int rc = INF_SUCCESS;
     if (dstType == enmInteger)
@@ -83,12 +85,17 @@ int OpAdd(XAtom *apAtoms[], size_t cAtoms, void *pvData)
             mpz_t Result;
             mpz_init(Result);
             mpz_add(Result, Operand1, Operand2);
+            apAtoms[0]->SetInteger(Result);
+            mpz_clear(Result);
         }
         else
         {
             DEBUGPRINTF(("OpAdd failed dstType=%d rc1=%d rc2=%d\n", dstType, rc1, rc2));
             rc = ERR_INVALID_ATOM_TYPE_FOR_OPERATION;
         }
+
+        mpz_clear(Operand1);
+        mpz_clear(Operand2);
     }
     else if (dstType == enmFloat)
     {
@@ -104,12 +111,16 @@ int OpAdd(XAtom *apAtoms[], size_t cAtoms, void *pvData)
             mpf_init(Result);
             mpf_add(Result, Operand1, Operand2);
             apAtoms[0]->SetFloat(Result);
+            mpf_clear(Result);
         }
         else
         {
             DEBUGPRINTF(("OpAdd failed dstType=%d rc1=%d rc2=%d\n", dstType, rc1, rc2));
             rc = ERR_INVALID_ATOM_TYPE_FOR_OPERATION;
         }
+
+        mpf_clear(Operand1);
+        mpf_clear(Operand2);
     }
     else
     {

@@ -196,3 +196,4 @@ void ConsoleIO::SetColor(bool fColorOutputEnable)
     m_fxTermColors = fColorOutputEnable;
 #endif
 }
+
