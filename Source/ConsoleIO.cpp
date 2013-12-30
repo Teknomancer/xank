@@ -186,7 +186,7 @@ void ConsoleIO::DebugPrintf(const char *pcszMsg, ...)
     bool fNewLine = true;
     char *pszBuf = StrStripLF(szBuf, &fNewLine);
 
-    fprintf(stderr, "%s%s%s", fNewLine ? "dbg: " : "", pszBuf, fNewLine ? "\n" : "");
+    fprintf(stderr, "%s%s%s", fNewLine ? "dbg:  " : "", pszBuf, fNewLine ? "\n" : "");
 }
 
 
