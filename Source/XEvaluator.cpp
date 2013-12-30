@@ -255,7 +255,8 @@ int XEvaluator::Init()
 
 int XEvaluator::Parse(const char *pcszExpr)
 {
-    NOREF(pcszExpr);
+    DEBUGPRINTF(("--- Parse ---\n"));
+
     if (!m_fInitialized)
         return ERR_NOT_INITIALIZED;
 
@@ -476,7 +477,7 @@ int XEvaluator::Parse(const char *pcszExpr)
                         DEBUGPRINTF(("Moving operator '%s' cParams=%" FMT_U8 " from stack to queue.\n",
                                 pcStackOperator->Name().c_str(), pcStackOperator->Params()));
                         Stack.pop();
-                        m_RPNQueue.push(pStackAtom);
+                        Queue.push(pStackAtom);
                     }
                     else
                         break;
@@ -545,6 +546,7 @@ int XEvaluator::Parse(const char *pcszExpr)
     }
 
     m_RPNQueue = Queue;
+    DumpAtomQueue(&Queue);
     CleanUp(NULL, NULL, INF_SUCCESS, "Expression parsed successfully.");
     return INF_SUCCESS;
 }
@@ -552,6 +554,8 @@ int XEvaluator::Parse(const char *pcszExpr)
 
 int XEvaluator::Evaluate()
 {
+    DEBUGPRINTF(("--- Evaluate ---\n"));
+
     if (!m_fInitialized)
         return ERR_NOT_INITIALIZED;
 
@@ -1026,3 +1030,45 @@ XAtom *XEvaluator::ParseCommand(const char *pcszExpr,  const char **ppcszEnd,  c
     NOREF(pcszExpr); NOREF(ppcszEnd); NOREF(pcPreviousAtom);
     return NULL;
 }
+
+void XEvaluator::DumpAtomStack(std::stack<XAtom *> *pStack)
+{
+    std::stack<XAtom *>TempStack;
+    const size_t cItems = pStack->size();
+    for (size_t i = 0; i < cItems; i++)
+    {
+        XAtom *pAtom = pStack->top();
+        TempStack.push(pAtom);
+        pStack->pop();
+
+        DEBUGPRINTF(("DumpStack> %s\n", pAtom->PrintToString().c_str()));
+    }
+
+    for (size_t i = 0; i < cItems; i++)
+    {
+        pStack->push(TempStack.top());
+        TempStack.pop();
+    }
+}
+
+
+void XEvaluator::DumpAtomQueue(std::queue<XAtom *> *pQueue)
+{
+    std::queue<XAtom *>TempQueue;
+    const size_t cItems = pQueue->size();
+    for (size_t i = 0; i < cItems; i++)
+    {
+        XAtom *pAtom = pQueue->front();
+        TempQueue.push(pAtom);
+        pQueue->pop();
+
+        DEBUGPRINTF(("DumpQueue> %s\n", pAtom->PrintToString().c_str()));
+    }
+
+    for (size_t i = 0; i < cItems; i++)
+    {
+        pQueue->push(TempQueue.front());
+        TempQueue.pop();
+    }
+}
+

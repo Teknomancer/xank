@@ -159,6 +159,20 @@ class XEvaluator
          */
         void                        CleanUp(std::stack<XAtom*> *pStack, std::queue<XAtom*> *pQueue, int rc, const char *pcszError, ...);
 
+        /**
+         * Dumps a given stack of Atoms to debug output.
+         *
+         * @param pQueue            Pointer to the queue of Atoms.
+         */
+        void                        DumpAtomStack(std::stack<XAtom *> *pStack);
+
+        /**
+         * Dumps a given queue of Atoms to debug output.
+         *
+         * @param pQueue            Pointer to the queue of Atoms.
+         */
+        void                        DumpAtomQueue(std::queue<XAtom *> *pQueue);
+
         bool                        m_fInitialized; /**< Whether this object has been successfully initialized. */
         std::string                 m_sExpr;        /**< The full, unmodified expression */
         std::queue<XAtom*>          m_RPNQueue;     /**< Internal RPN representation done at the parsing stage. */
