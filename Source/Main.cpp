@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     int rc = Eval.Init();
     if (IS_SUCCESS(rc))
     {
-        rc = Eval.Parse("1 + 42 + 10.599 + 1.58");
+        rc = Eval.Parse("1 + 42 + 10");
         if (IS_FAILURE(rc))
             Console.ErrorPrintf(rc, "Parsing failed.\n");
         else

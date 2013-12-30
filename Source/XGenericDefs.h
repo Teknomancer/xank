@@ -53,7 +53,7 @@
  *
  * @param   a           Any unused variable.
  */
-#define NOREF(a)                                     (void)(a)
+#define NOREF(a)                                        (void)(a)
 
 #endif /* XANK_GENERIC_DEFS_H */
 
